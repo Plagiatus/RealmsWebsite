@@ -1,0 +1,44 @@
+
+.social-links {
+  transform: rotate(45deg);
+  position: absolute;
+  
+  top: 0;
+  right: -90px;
+  width: 300px;
+}
+
+.social-links > a {
+  display:block;
+  text-align: center;
+  box-shadow: 0px 0px 3px 1px #444;
+  margin: 5px;
+  padding: 1px;
+  font-size: 0.8rem;
+}
+
+.github {
+  background-color: #111;
+  color: #eee;
+}
+
+.youtube{
+  background-color: #f00;
+  color: #fff;
+}
+
+.website{
+  background-color: #c62626;
+  color: #fff;
+}
+
+.twitter {
+  background-color: #1da1f2;
+  color: #f5f8fa;
+}
+
+.api {
+  margin-top: 10px !important;
+  background-color: white /* #db1f29*/;
+  color: #000;
+}

@@ -1,0 +1,278 @@
+body{
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+}
+
+.errorMessage {
+  color: red;
+}
+
+#login-overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top:0;
+  left:0;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  display: none;
+  z-index: 10000;
+}
+
+#login-overlay > svg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+#login {
+  /* text-align: center; */
+  width: 400px;
+  margin: 0px auto;
+  /* display:none; */
+}
+
+.why-trust:hover > .trust-explanation{
+  display: initial;
+  font-size: 0.8em;
+}
+
+.trust-explanation {
+  display: none;
+  font-size: 0.8em;
+}
+
+.trust-explanation:hover {
+  display: block;
+}
+
+.login-option{
+  /* display: block; */
+  background: #eee;
+  border-radius: 10px;
+  margin: 5px;
+  padding: 10px;
+}
+
+.login-option > *{
+  margin: 2px;
+}
+
+#realms {
+  display: none;
+}
+
+.RealmStatusIcon {
+  vertical-align: middle;
+}
+
+.RealmAddPlayer {
+  background-image: url("../img/add_icon.png");
+  background-size: 32px;
+  width: 35px;
+  height: 35px;
+}
+
+.RealmAddPlayer:hover {
+  background-image: url("../img/add_icon_hover.png");
+}
+
+.RealmPlayers {
+  display: inline-block;
+  position: absolute;
+  height: 700px;
+}
+
+.PlayerList {
+  overflow-y: scroll;
+  list-style: none;
+  padding: 0;
+  width: 210px;
+  height: calc(100% - 200px);
+}
+
+.PlayerList > li.unaccepted {
+  color: #777
+}
+
+.PlayerList > li > input {
+  float: right;
+  background-image: url("../img/cross_player_icon.png");
+  background-size: 17px;
+}
+.PlayerList > li > input:hover { 
+  background-image: url("../img/cross_player_icon_hover.png");
+  
+}
+.PlayerList > li > input:first-of-type {
+  background-image: url("../img/user_icon.png");
+}
+.PlayerList > li > input:first-of-type:hover {
+  background-image: url("../img/user_icon_hover.png");
+}
+.PlayerList > li > input.op:first-of-type {
+  background-image: url("../img/op_icon.png");
+}
+.PlayerList > li > input.op:first-of-type:hover {
+  background-image: url("../img/op_icon_hover.png");
+}
+
+
+.RealmWorlds {
+  border: 1px solid black;
+  margin-left: 220px;
+  display: flex;
+  justify-content: space-evenly; 
+}
+
+.RealmWorlds > div {
+  width: 200px;
+  height: 200px;
+  margin: 10px;
+  display: inline-block;
+  position: relative;
+  border: 1px solid black;
+}
+
+.RealmWorlds > div.selected{
+  box-shadow: 0 0 5px 2px lawngreen 
+}
+
+.RealmWorlds > div > img {
+  width: 200px;
+  height: 200px;
+  filter: grayscale(100%);
+}
+
+.RealmWorlds > div.selected > img {
+  filter: grayscale(0%);
+}
+
+.RealmWorlds > div > input {
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  bottom:10px;
+  right:10px;
+  background-image: url("../img/download.png");
+  background-size: 32px;
+}
+
+.RealmPlayers ~ div {
+  margin-left: 220px;
+}
+
+.RealmMainButtons {
+  padding: 10px;
+  text-align: center;
+}
+
+.RealmMainButtons > input {
+  display: inline-block;
+}
+
+.RealmReset{
+  border: 1px black solid;
+  display: none;
+}
+
+
+.RealmTemplates{
+  display: none;
+  border: 1px black solid;
+  min-height: 700px;
+  overflow: hidden;
+  padding-bottom: 30px;
+  position: relative;
+}
+
+.RealmTemplatesPreview {
+  position: absolute;
+  width: 330px;
+  padding: 10px;
+  margin: 20px;
+  border: 1px black solid;
+}
+
+.RealmTemplatesPreview > img {
+  width: 320px;
+  height: 320px;
+}
+
+.RealmTemplatesPreview > span {
+  display: block;
+}
+
+.version {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  /* border: 1px black solid; */
+  border-radius: 10px 0 0 10px;
+  padding: 5px;
+  padding-right: 20px;
+  background-color: #eee;
+}
+
+.RealmTemplatesList {
+  margin: 10px;
+  margin-left: 390px;
+}
+
+.RealmTemplatesList > input {
+  margin: 10px;
+  padding: 5px;
+  width: calc(100% - 30px);  
+}
+
+.RealmTemplatesList > div.RealmTemplate {
+  margin: 10px;
+  padding: 10px;
+  width: 180px;
+  height: 240px;
+  border: 1px black solid;
+  float: left;
+}
+
+.RealmTemplatesList > div.RealmTemplate > img {
+  width: 160px;
+  height: 160px;
+}
+
+.RealmTemplatesList > div.RealmTemplate > span {
+  display: block;
+}
+
+.RealmTemplates > div.RealmTemplatePageButtons{
+  display: block;
+  position: absolute;
+  bottom: 10px;
+  left: calc(50% + 120px);
+}
+
+.RealmUpload {
+  display: none;
+  padding: 10px;
+  border: 1px black solid;
+}
+
+.RealmBackups {
+  display: none;
+  padding: 10px;
+  border: 1px black solid;
+}
+.RealmBackups ul {
+  list-style: none;
+  padding:0;
+}
+.RealmBackups li {
+  margin: 5px;
+  padding: 10px;
+  border: 1px black solid;
+}

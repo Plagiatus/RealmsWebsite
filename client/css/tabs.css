@@ -1,0 +1,76 @@
+
+.tabbed .tabs { 
+  display: block; 
+  margin-left: 0; 
+  border-bottom: 1px solid silver;
+  clear: both;
+  position: relative;
+}
+
+.tabbed > input,
+.tabbed .tabs > div { display: none; }
+
+.tabbed .tabs>div {
+ padding: 20px;
+ width: calc(100% - 40px - 2px);
+ border: 1px solid silver;
+ background: #fff;
+ line-height: 1.5em;
+ letter-spacing: 0.3px;
+ color: #111;
+ min-height: 700px;
+}
+
+#tab0:checked ~ .tabs .tab0,
+#tab1:checked ~ .tabs .tab1,
+#tab2:checked ~ .tabs .tab2,
+#tab3:checked ~ .tabs .tab3,
+#tab4:checked ~ .tabs .tab4,
+#tab5:checked ~ .tabs .tab5,
+#tab6:checked ~ .tabs .tab6,
+#tab7:checked ~ .tabs .tab7,
+#tab8:checked ~ .tabs .tab8,
+#tab9:checked ~ .tabs .tab9
+{ display: block; }
+
+nav label {
+  float: left;
+  padding: 15px 15px;
+  border-top: 1px solid silver;
+  border-right: 1px solid silver;
+  background: hsl(210,50%,50%);
+  color: #eee;
+}
+
+nav label:nth-child(1) { border-left: 1px solid silver; }
+nav label:hover { background: hsl(210,50%,40%); }
+nav label:active { background: #ffffff; }
+
+#tab0:checked ~ nav label[for="tab0"],
+#tab1:checked ~ nav label[for="tab1"],
+#tab2:checked ~ nav label[for="tab2"],
+#tab3:checked ~ nav label[for="tab3"],
+#tab4:checked ~ nav label[for="tab4"],
+#tab5:checked ~ nav label[for="tab5"],
+#tab6:checked ~ nav label[for="tab6"],
+#tab7:checked ~ nav label[for="tab7"],
+#tab8:checked ~ nav label[for="tab8"],
+#tab9:checked ~ nav label[for="tab9"] {
+  background: white;
+  color: #111;
+  position: relative;
+  border-bottom: none;
+}
+
+/* #tab1:checked ~ nav label[for="tab1"]:after,
+#tab2:checked ~ nav label[for="tab2"]:after,
+#tab3:checked ~ nav label[for="tab3"]:after {
+  content: "";
+  display: block;
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  background: white;
+  left: 0;
+  bottom: -1px;
+} */

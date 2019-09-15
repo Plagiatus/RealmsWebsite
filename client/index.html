@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Remote Realms Settings</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/tabs.css">
+  <link rel="stylesheet" href="css/social.css">
+  <script src="js/types.js"></script>
+  <script src="js/connection.js"></script>
+  <script src="js/login.js"></script>
+  <script src="js/players.js"></script>
+  <script src="js/realms.js"></script>
+  <!-- <script src="js/cookies.js"></script> -->
+</head>
+
+<body>
+  <div id="login-overlay">
+      <svg width="150px"  height="150px"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="lds-flat-ball" style="background: none;">
+        <defs>
+          <mask ng-attr-id="{{config.mid}}" id="lds-flat-ball-mask-7dcefcb769479">
+            <circle cx="50" cy="50" r="45" fill="#181a1c"></circle>
+          </mask>
+        </defs>
+        <circle cx="50" cy="50" r="45" ng-attr-fill="{{config.base}}" fill="#cd2626"></circle>
+        <path ng-attr-fill="{{config.dark}}" mask="url(#lds-flat-ball-mask-7dcefcb769479)" fill="#181a1c" d="M 37.2721 56.7098 L 62.7279 31.2539 L 162.728 131.254 L 137.272 156.71 Z">
+          <animate attributeName="d" calcMode="spline" values="M 37.27207793864214 40.72792206135786 L 62.72792206135786 15.272077938642143 L 162.72792206135784 115.27207793864214 L 137.27207793864216 140.72792206135784 Z;M 37.27207793864214 79.72792206135786 L 62.72792206135786 54.27207793864214 L 162.72792206135784 154.27207793864216 L 137.27207793864216 179.72792206135784 Z;M 37.27207793864214 40.72792206135786 L 62.72792206135786 15.272077938642143 L 162.72792206135784 115.27207793864214 L 137.27207793864216 140.72792206135784 Z" keyTimes="0;0.5;1" dur="1" keySplines="0.45 0 0.9 0.55;0 0.45 0.55 0.9" begin="0s" repeatCount="indefinite"></animate>
+        </path>
+        <circle cx="50" ng-attr-cy="{{config.cy}}" ng-attr-r="{{config.radius}}" ng-attr-fill="{{config.color}}" cy="43.9818" r="18" fill="#181a1c">
+          <animate attributeName="cy" calcMode="spline" values="28;67;28" keyTimes="0;0.5;1" dur="1" keySplines="0.45 0 0.9 0.55;0 0.45 0.55 0.9" begin="0s" repeatCount="indefinite"></animate>
+        </circle>
+      </svg>
+  </div>
+  <div id="login">
+    <div class="login-option">
+      <label for="login-email">Email</label> <br>
+      <input type="email" name="email" id="login-email" placeholder="you@domain.com"><br>
+      <label for="login-password">Password</label> <br>
+      <input type="password" name="password" id="login-password" placeholder="Password"> <br>
+      <span class="errorMessage"></span> <br>
+      <input type="button" value="Login using Password" id="login-with-pw">
+    </div>
+    <span>OR</span>
+    <div class="login-option">
+      <label for="login-username">Username</label> <br>
+      <input type="text" name="username" id="login-username" placeholder="Username"><br>
+      <label for="login-authtoken">Authentification Token</label> <span title="Here is how to find that.">(?)</span> <br>
+      <input type="text" name="authtoken" id="login-authtoken" placeholder="AuthToken" size="40" pattern="([a-f0-9]){32}"> <br>
+      <span class="errorMessage"></span> <br>
+      <input type="button" value="Login using Token" id="login-with-token">
+    </div>
+    <div class="why-trust">
+      <div><em>Why should I trust you with my password/token?</em></div>
+      <div class="trust-explanation"><span>
+          Good question. Actually you shouldn't. You should trust noone on the internet, especially when they tell you
+          that they have a super safe system. All I can tell you is that I've done everything I know of to protect your
+          data (which is admittedly not much).
+          I'm not holding your data for any longer than what it takes to send your request to the Mojang servers and
+          back
+          to you (so optimally less than 1 second)
+          and will not save any of your data persistently (which is why you'll have to login again every time).
+          You'll have to take my word for it or check this project out <a
+            href="https://github.com/Plagiatus/RealmsWebsite">on GitHub</a> so you know exactly what
+          happens to your data. In theory nothing should happen to your data unless you have virus on your PC. But then
+          they likely already have this info... <br>
+          <strong>You can protect yourself by making sure you're on a safe connection (green lock next to the
+            URL)!</strong>
+        </span>
+      </div>
+    </div>
+
+  </div>
+  <div id="realms" class="tabbed">
+    <h1>Username</h1>
+    <input id="tab0" type="radio" name="tabs" checked />
+    <input id="tab1" type="radio" name="tabs" />
+    <input id="tab2" type="radio" name="tabs" />
+    <input id="tab3" type="radio" name="tabs" />
+    <input id="tab4" type="radio" name="tabs" />
+    <input id="tab5" type="radio" name="tabs" />
+    <input id="tab6" type="radio" name="tabs" />
+    <input id="tab7" type="radio" name="tabs" />
+    <input id="tab8" type="radio" name="tabs" />
+    <input id="tab9" type="radio" name="tabs" />
+
+    <nav id="RealmsList">
+      <label for="tab0">Realm 0</label>
+      <label for="tab1">Realm 1</label>
+      <label for="tab2">Realm 2</label>
+      <label for="tab3">Realm 3</label>
+    </nav>
+
+    <div class="tabs" id="ControlPanels">
+      <div class="tab0">
+        <div class="RealmSettings">
+          <img src="./img/on_icon.png" alt="" class="RealmStatusIcon">
+          <label for="RealmName">Name</label>
+          <input type="text" id="RealmName">
+          <label for="RealmDescription">Description</label>
+          <input type="text" id="RealmDescription">
+          <input type="button" id="RealmSettingsSave" value="save">
+          <input type="button" id="RealmOpenClose" value="Close Realm">
+        </div>
+        <div class="RealmPlayers">
+          <h3>Players</h3>
+          <label for="RealmInvite">Invite Player</label><br>
+          <input type="text" name="RealmInvite" id="RealmInvite" placeholder="Playername">
+          <input type="button" id="RealmAddPlayer" class="RealmAddPlayer">
+          <ul class="PlayerList">
+            <li>dragonmaster95 <input type="button"> <input type="button"> </li>
+            <li>Etex <input type="button" class="op"> <input type="button"></li>
+            <li>Plagypus<input type="button"> <input type="button"></li>
+            <li>pollieboy<input type="button"> <input type="button"></li>
+            <li class="unaccepted">Vilder50<input type="button"> <input type="button"></li>
+          </ul>
+        </div>
+        <div class="RealmWorlds">
+          <div class="selected"><img src="img/placeholder.png" alt=""><input type="button" value=""
+              title="Download latest"></div>
+          <div><img src="img/placeholder.png" alt=""><input type="button" value="" title="Download latest"></div>
+          <div><img src="img/placeholder.png" alt=""><input type="button" value="" title="Download latest"></div>
+          <div><img src="img/placeholder.png" alt=""><input type="button" value="" title="Download latest"></div>
+        </div>
+        <div class="RealmMainButtons">
+          <input type="button" value="Backups">
+          <input type="button" value="Reset">
+        </div>
+        <div class="RealmReset">
+          <h2>Reset</h2>
+          <input type="button" value="Generate New">
+          <input type="button" value="Upload">
+          <input type="button" value="World Template"> <br>
+          <input type="button" value="Adventure">
+          <input type="button" value="Experience">
+          <input type="button" value="Inspiration">
+        </div>
+        <div class="RealmTemplates">
+          <div class="RealmTemplatesPreview">
+            <span class="version">1.0.0</span>
+            <img src="img/placeholder.png" alt="Title Here">
+            <span class="MapTitle">Map Title</span>
+            <span>Creators</span>
+            <span>1+ Players</span>
+            <span>Trailer</span>
+            <span>Website</span>
+            <input type="button" value="Play">
+          </div>
+          <div class="RealmTemplatesList">
+            <input type="text" name="RealmTemplatesListSearch" id="" placeholder="🔎">
+            <div class="RealmTemplate">
+              <img src="img/placeholder.png" alt="Title Here">
+              <span class="MapTitle">Map Title</span>
+              <span>Creators</span>
+              <span>1+ Players</span>
+            </div>
+            <div class="RealmTemplate">
+              <img src="img/placeholder.png" alt="Title Here">
+              <span class="MapTitle">Map Title</span>
+              <span>Creators</span>
+              <span>1+ Players</span>
+            </div>
+            <div class="RealmTemplate">
+              <img src="img/placeholder.png" alt="Title Here">
+              <span class="MapTitle">Map Title</span>
+              <span>Creators</span>
+              <span>1+ Players</span>
+            </div>
+          </div>
+          <div class="RealmTemplatePageButtons">
+            <input type="button" value="<-">
+            <span>1 / 10</span>
+            <input type="button" value="->">
+          </div>
+        </div>
+        <div class="RealmUpload">
+          <h3>Reset</h3>
+          <span>Upload World</span>
+          <input type="file" name="WorldToUpload" id="WorldToUpload">
+        </div>
+        <div class="RealmBackups">
+          <h3>Backups</h3>
+          <ul>
+            <li><span>ThisIsABackup</span><span>1.5MB</span><br><span>09.09.2019</span></li>
+            <li><span>ThisIsABackup</span><span>1.5MB</span><br><span>09.09.2019</span></li>
+            <li><span>ThisIsABackup</span><span>1.5MB</span><br><span>09.09.2019</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="social-links">
+    <a href="https://github.com/plagiatus" target="_blank" class="github">Github</a>
+    <a href="https://youtube.com/plagiatus" target="_blank" class="youtube">Youtube</a>
+    <a href="https://plagiatus.net" target="_blank" class="website">Website</a>
+    <a href="https://twitter.com/realplagiatus" target="_blank" class="twitter">Twitter</a>
+    <a href="https://github.com/plagiatus/MojangAPIWrapper" target="_blank" class="api">MojangAPIWrapper</a>
+  </div>
+  <!-- <a href="https://github.com/plagiatus" target="_blank"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_green_007200.png?resize=149%2C149" class="fork-me" alt="Fork me on GitHub" data-recalc-dims="1"></a> -->
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+{
+  "baseURL": {
+    "java": "https://pc.realms.minecraft.net",
+    "pocket": "https://pocket.realms.minecraft.net",
+    "auth": "https://authserver.mojang.com"
+  },
+  "get": {
+    "user": {
+      "realms_accessible": "/mco/available",
+      "version_compatible": "/mco/client/compatible",
+      "get_servers": "/worlds",
+      "pending_invites": "/invites/pending",
+      "pending_invites_count": "/invites/count/pending",
+      "trial_available": "/trial"
+    },
+    "server": {
+      "get": "/worlds/$SERVER_ID",
+      "ip": "/worlds/v1/$SERVER_ID/join/pc",
+      "backups": "/worlds/$SERVER_ID/backups",
+      "download": "/worlds/$SERVER_ID/slot/$WORLD/download",
+      "ops": "/ops/$SERVER_ID",
+      "subscription": "/subscriptions/$SERVER_ID",
+      "online_players": "/activities/liveplayerlist"
+    },
+    "template": {
+      "get_templates": "/worlds/templates/$TEMPLATE?page=$PAGE&pageSize=$PAGE_SIZE"
+    }
+  },
+  "post": {
+    "user": {
+      "authenticate": "/authenticate",
+      "refresh": "/refresh",
+      "validate": "/validate",
+      "invalidate": "/invalidate",
+      "signout": "/signout"
+    },
+    "server": {
+      "add_user": "/invites/$SERVER_ID",
+      "op_user": "/ops/$SERVER_ID/$UUID"
+    }
+  },
+  "put": {
+    "server": {
+      "set_to_minigame": "/worlds/minigames/$MINIGAMEID/$SERVER_ID",
+      "close":"/worlds/$SERVER_ID/close",
+      "open":"/worlds/$SERVER_ID/open"
+    }
+  },
+  "del": {
+    "server": {
+      "remove_user": "/invites/$SERVER_ID/invite/$UUID",
+      "deop_user": "/ops/$SERVER_ID/$UUID"
+    }
+  },
+  "clientToken": "058d62d539b34158a3fb2023d524be22"
+}
