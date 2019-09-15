@@ -24,6 +24,7 @@ That's it, now it's already running.
   - [x] remove player
   - [x] op player
   - [x] deop player
+  - [ ] search through players
 - [ ] realm manipulation
   - [ ] change name
   - [ ] change motd
@@ -37,6 +38,7 @@ That's it, now it's already running.
 - [ ] templates (minigames, experience, adventure, etc)
   - [ ] show templates
   - [ ] apply template
+  - [ ] search through templates
 - [ ] support more than 1 realm
 
 ## Collaboration
