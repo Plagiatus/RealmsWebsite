@@ -5,9 +5,9 @@ namespace RealmPage {
     realms = await getOwnedRealms(player);
     console.log(realms);
     //@ts-ignore
-    realms.push({name: "Testrealm 2", motd:"nothing to see here"});
-    updatePlayerDisplay(realms[0].players);
+    // realms.push({name: "Testrealm 2", motd:"nothing to see here"});
     initTabs();
+    updatePlayerDisplay(realms[0].players);
   }
 
   function initTabs() {

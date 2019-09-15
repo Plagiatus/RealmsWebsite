@@ -5,9 +5,9 @@ var RealmPage;
         RealmPage.realms = await RealmPage.getOwnedRealms(RealmPage.player);
         console.log(RealmPage.realms);
         //@ts-ignore
-        RealmPage.realms.push({ name: "Testrealm 2", motd: "nothing to see here" });
-        RealmPage.updatePlayerDisplay(RealmPage.realms[0].players);
+        // realms.push({name: "Testrealm 2", motd:"nothing to see here"});
         initTabs();
+        RealmPage.updatePlayerDisplay(RealmPage.realms[0].players);
     }
     RealmPage.initAllDisplays = initAllDisplays;
     function initTabs() {
