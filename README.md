@@ -1,7 +1,7 @@
 # RealmsWebsite
 My attempt at making a website that allows you to modify your Minecraft Realm from outside the game
 
-The plan is to make it run on a website in the future, but not before it's stable, safe and decetly functional.
+The plan is to make it run on a website in the future, maybe even a mobile app. But not before it's stable, safe and decently functional.
 
 ## How to run for yourself
 
@@ -12,8 +12,9 @@ The plan is to make it run on a website in the future, but not before it's stabl
 
 ### Run
 1. run `node ./server/main.js`
-1. open `/client/index.html` in a browser of your choice (preferrably Firefox or Chrome)
-That's it, now it's already running.
+1. open `/client/index.html` in a browser of your choice (preferrably Firefox or Chrome)  
+
+That's it, now it's running and ready to be used.
 
 ## Tasks
 - [x] login
@@ -26,10 +27,13 @@ That's it, now it's already running.
   - [x] deop player
   - [ ] search through players
 - [ ] realm manipulation
+  - [ ] show days left
   - [ ] change name
   - [ ] change motd
   - [ ] open
   - [ ] close
+  - [ ] get ip
+  - [ ] show status (lights)
 - [ ] world manipulation
   - [ ] switch slot
   - [ ] download world

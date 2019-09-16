@@ -97,12 +97,15 @@
       <div class="tab0">
         <div class="RealmSettings">
           <img src="./img/on_icon.png" alt="" class="RealmStatusIcon">
+          <span id="RealmTimeLeft">XX days left</span> |
           <label for="RealmName">Name</label>
           <input type="text" id="RealmName">
           <label for="RealmDescription">Description</label>
           <input type="text" id="RealmDescription">
           <input type="button" id="RealmSettingsSave" value="save">
           <input type="button" id="RealmOpenClose" value="Close Realm">
+          <input type="text" id="RealmIP" disabled>
+          <input type="button" id="RealmIPButton" value="Get IP">
         </div>
         <div class="RealmPlayers">
           <h3>Players</h3>
@@ -127,6 +130,7 @@
         <div class="RealmMainButtons">
           <input type="button" value="Backups">
           <input type="button" value="Reset">
+          <input type="button" value="Settings">
         </div>
         <div class="RealmReset">
           <h2>Reset</h2>
