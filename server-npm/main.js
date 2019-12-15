@@ -69,7 +69,7 @@ async function authenticate(_input, _response) {
         let p = new auth_1.Player(email);
         await auth.authenticate(p, pw);
         _response.write(JSON.stringify(p));
-        console.log(p);
+        // console.log(p);
     }
 }
 postRequests.set(authenticate.name, authenticate);
