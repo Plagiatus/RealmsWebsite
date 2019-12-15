@@ -1,0 +1,13 @@
+{
+	"name": "realmadmin",
+	"version": "0.0.1",
+	"description": "Administrate your Realms from the Browser",
+	"author": "Plagiatus",
+	"main": "server-npm/main.js",
+	"scripts": {
+		"start": "node server-npm/main.js"
+	},
+	"engines": {
+		"node": "8.11.3"
+	}
+}
