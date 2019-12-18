@@ -7,12 +7,11 @@ class Auth {
         this.authenticateUrl = "/authenticate";
         this.refreshUrl = "/refresh";
         this.validateUrl = "/validate";
+        this.invalidateUrl = "/invalidate";
     }
-    // invalidateUrl: string = "/invalidate";
     // signoutUrl: string = "/signout";
     async validate(_p) {
         try {
-            console.log(_p.token);
             await Request(await _p.postTokensOnlyConfig(this.baseUrl + this.validateUrl));
         }
         catch (_e) {
@@ -46,6 +45,15 @@ class Auth {
         catch (error) {
             console.error("Refresh Error:", error.message);
             throw error;
+        }
+    }
+    async invalidate(_p) {
+        try {
+            let some = await Request(await _p.postTokensOnlyConfig(this.baseUrl + this.invalidateUrl));
+        }
+        catch (error) {
+            console.error("Invalidate Error:", error.message);
+            throw (error);
         }
     }
 }

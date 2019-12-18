@@ -5,12 +5,11 @@ export class Auth {
   private authenticateUrl: string = "/authenticate";
   private refreshUrl: string = "/refresh";
   private validateUrl: string = "/validate";
-  // invalidateUrl: string = "/invalidate";
+  invalidateUrl: string = "/invalidate";
   // signoutUrl: string = "/signout";
 
   async validate(_p: Player): Promise<void> {
     try {
-      console.log(_p.token);
       await Request(await _p.postTokensOnlyConfig(this.baseUrl + this.validateUrl))
     } catch (_e) {
       console.error("Error validating. Attempting to refresh...");
@@ -40,6 +39,14 @@ export class Auth {
     } catch (error) {
       console.error("Refresh Error:", error.message);
       throw error;
+    }
+  }
+  async invalidate(_p: Player): Promise<void>{
+    try {
+      let some = await Request(await _p.postTokensOnlyConfig(this.baseUrl + this.invalidateUrl));
+    } catch (error) {
+      console.error("Invalidate Error:", error.message);
+      throw (error);
     }
   }
 }
