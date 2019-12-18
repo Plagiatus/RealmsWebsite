@@ -4,6 +4,7 @@ import * as Http from "http";
 import * as Request from "request-promise-native/";
 import * as Url from "url";
 import { GetRequest } from "./get/GetRequests";
+import { PostRequest } from "./post/PostRequest";
 
 let port: string = process.env.PORT;
 if (!port) {
@@ -14,8 +15,8 @@ let server: Http.Server = Http.createServer();
 server.addListener("request", handleRequest);
 server.listen(port);
 
-let auth: Auth = new Auth();
-let postRequests: Map<string, Function> = new Map<string, Function>();
+export let auth: Auth = new Auth();
+let postRequests: PostRequest = new PostRequest();
 let get: GetRequest = new GetRequest();
 
 async function handleRequest(_request: Http.IncomingMessage, _response: Http.OutgoingMessage) {
@@ -45,12 +46,17 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Out
     let parsed: Url.UrlWithParsedQuery = Url.parse(_request.url, true);
     let path: string = parsed.pathname.substr(1);
     let query = parsed.query;
+    if (path && get.has(path)) {
+
       try {
         await get.get(path)(query, _response);
       } catch (e) {
         console.log(e.message);
         _response.write(JSON.stringify({ error: e.message }))
       }
+    } else {
+      _response.write(JSON.stringify({ error: "Path not found" }))
+    }
     _response.end();
   }
   else {
@@ -58,51 +64,6 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Out
     _response.end();
   }
 }
-
-
-async function authenticate(_input, _response: Http.OutgoingMessage) {
-  let email: string = _input.email;
-  let pw: string = _input.password;
-  if (!email || !pw) {
-    throw new Error("Not enough parameters given.");
-  } else {
-    let p: Player = new Player(email);
-    await auth.authenticate(p, pw);
-    _response.write(JSON.stringify(p));
-    // console.log(p);
-  }
-}
-postRequests.set(authenticate.name, authenticate);
-
-async function login(_input, _response: Http.OutgoingMessage) {
-  let email: string = _input.email;
-  let token: string = _input.token;
-  let uuid: string = _input.uuid;
-  if (!email || !token || !uuid) {
-    throw new Error("Not enough parameters given.");
-  } else {
-    let p: Player = new Player(email, token, uuid);
-    await auth.validate(p);
-    _response.write(JSON.stringify(p));
-  }
-}
-postRequests.set(login.name, login);
-
-async function getWorlds(_input, _response: Http.OutgoingMessage) {
-  let email: string = _input.email;
-  let token: string = _input.token;
-  let uuid: string = _input.uuid;
-  let name: string = _input.name;
-  if (!email || !token || !uuid || !name) {
-    throw new Error("Not enough parameters given.");
-  } else {
-    let p: Player = new Player(email, token, uuid, name);
-    let c: Client = new Client(p.getAuthToken(), "1.15", p.name);
-    // console.log(c.worlds);
-    _response.write(JSON.stringify(c.worlds));
-  }
-}
-postRequests.set(getWorlds.name, getWorlds);
 
 
 // let r: Client = new Client("token:7fa6518d5bbc40c7b9370bded454c150:e75e2d263b724a93a3e7a2491f4c454f", "1.15", "Plagiatus");

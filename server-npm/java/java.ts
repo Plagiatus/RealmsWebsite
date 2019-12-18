@@ -1,5 +1,5 @@
-// let serverAddress: string = "https://localhost:8100";
-let serverAddress: string = "https://realmadmin.herokuapp.com";
+let serverAddress: string = "http://localhost:8100";
+// let serverAddress: string = "https://realmadmin.herokuapp.com";
 
 //#region Error
 let errorUnderlay: HTMLDivElement = null;
@@ -155,6 +155,7 @@ function getCredentials() {
 }
 
 function confirmCredentials(email, uuid, name, token): boolean {
+  //TODO might need to check the timeout on this, it might be too long. Or even remove it after all
   if(getCookie("credentialsConfirmed")){
     return true;
   }
@@ -174,12 +175,19 @@ function confirmCredentials(email, uuid, name, token): boolean {
       if (result.error) {
         return false;
       } else {
-        setCookie("credentialsConfirmed", "true", 0.5);
+        // setCookie("credentialsConfirmed", "true", 0.5);
         return true;
       }
     }
   } catch (error) {
     displayError(error);
   }
+}
+
+function removeCredentials(){
+  removeCookie("email");
+  removeCookie("token");
+  removeCookie("uuid");
+  removeCookie("name");
 }
 //#endregion

@@ -14,4 +14,8 @@ export class GetRequest {
     }
     return this.requests.get(name);
   }
+  
+  has(name: string): boolean {
+    return this.requests.has(name);
+  }
 }

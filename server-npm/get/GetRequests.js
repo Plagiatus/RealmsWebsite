@@ -14,5 +14,8 @@ class GetRequest {
         }
         return this.requests.get(name);
     }
+    has(name) {
+        return this.requests.has(name);
+    }
 }
 exports.GetRequest = GetRequest;
