@@ -1,6 +1,7 @@
 import { Player } from "../auth";
 import * as Http from "http";
 import { Client } from "minecraft-realms";
+import { latestVersion } from "../main";
 
 export async function getWorlds(_input, _response: Http.OutgoingMessage) {
   let email: string = _input.email;
@@ -11,7 +12,7 @@ export async function getWorlds(_input, _response: Http.OutgoingMessage) {
     throw new Error("Not enough parameters given.");
   } else {
     let p: Player = new Player(email, token, uuid, name);
-    let c: Client = new Client(p.getAuthToken(), "1.15", p.name);
+    let c: Client = new Client(p.getAuthToken(), latestVersion, p.name);
     // console.log(c.worlds);
     _response.write(JSON.stringify(c.worlds));
   }
