@@ -11,6 +11,9 @@ if (!port) {
   port = "8100";
 }
 
+
+export let latestVersion: string = "1.15";
+getLatestVersion();
 let server: Http.Server = Http.createServer();
 server.addListener("request", handleRequest);
 server.listen(port);
@@ -18,6 +21,11 @@ server.listen(port);
 export let auth: Auth = new Auth();
 let postRequests: PostRequest = new PostRequest();
 let get: GetRequest = new GetRequest();
+
+async function getLatestVersion(){
+  latestVersion = JSON.parse(await Request("https://launchermeta.mojang.com/mc/game/version_manifest.json")).latest.release;
+  setTimeout(getLatestVersion, 1000 * 60 * 60);
+}
 
 async function handleRequest(_request: Http.IncomingMessage, _response: Http.OutgoingMessage) {
   _response.setHeader("content-type", "application/json ; charset=utf-8");
