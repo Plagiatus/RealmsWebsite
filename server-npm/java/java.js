@@ -99,7 +99,7 @@ function checkCredentials(andRedirect = true) {
     if (!email || !token || !uuid || !name) {
         console.log("CREDENTIALS NOT THERE ANYMORE");
         if (andRedirect)
-            window.location.replace("./login");
+            window.location.replace("../login");
         return false;
     }
     if (!confirmCredentials(email, uuid, name, token)) {
@@ -181,4 +181,27 @@ function removeCredentials() {
     removeCookie("uuid");
     removeCookie("name");
 }
+function checkWorldId() {
+    if (!getCookie("worldid")) {
+        window.location.replace("..");
+    }
+}
 //#endregion
+function sendPOSTRequest(data) {
+    try {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", serverAddress, false);
+        xhr.send(JSON.stringify(data));
+        if (xhr.response) {
+            let result = JSON.parse(xhr.response);
+            if (result.error) {
+                displayError(result.error);
+                return;
+            }
+            return result;
+        }
+    }
+    catch (error) {
+        displayError(error);
+    }
+}

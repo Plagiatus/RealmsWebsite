@@ -3,49 +3,37 @@ var overview;
     window.addEventListener("load", init);
     let realmsList;
     function init() {
+        document.getElementsByTagName("h1")[0].innerText = "Welcome " + getCookie("name");
         if (!checkCredentials(false)) {
             window.location.replace("login");
             return;
         }
+        document.getElementById("showAll").addEventListener("change", toggleVisibility);
         realmsList = document.getElementById("realmsList");
         createRealmsDisplay();
     }
     function createRealmsDisplay() {
         let data = getCredentials();
         data["command"] = "getWorlds";
-        try {
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", serverAddress, false);
-            xhr.send(JSON.stringify(data));
-            if (xhr.response) {
-                let result = JSON.parse(xhr.response);
-                if (result.error) {
-                    displayError(result.error);
-                    return;
-                }
-                if (result.servers && result.servers.length > 0) {
-                    console.log(result.servers);
-                    result.servers = result.servers.sort(sortRealms);
-                    realmsList.innerHTML = "";
-                    console.log(result.servers);
-                    for (let s of result.servers) {
-                        // console.log(s);
-                        createOneRealm(s, data.name);
-                    }
-                }
-                else {
-                    realmsList.innerHTML = "Nothing to see here. You don't seem to have";
-                }
+        let result = sendPOSTRequest(data);
+        if (result.servers && result.servers.length > 0) {
+            console.log(result.servers);
+            result.servers = result.servers.sort(sortRealms);
+            realmsList.innerHTML = "";
+            console.log(result.servers);
+            for (let s of result.servers) {
+                // console.log(s);
+                createOneRealm(s, data.name);
             }
         }
-        catch (error) {
-            displayError(error);
+        else {
+            realmsList.innerHTML = "Nothing to see here. You don't seem to have";
         }
     }
     function createOneRealm(_server, ownerName) {
         let owner = _server.owner == ownerName;
         realmsList.innerHTML +=
-            `<div class="realm ${owner ? "owned" : "notOwned"}">
+            `<div class="realm ${owner ? "owned" : "notOwned"} ${_server.expired ? "expired" : ""}">
         <img src="" alt="${_server.expired ? "expired" : "active"}">
         <img src="https://crafatar.com/avatars/${_server.ownerUUID}?size=40&overlay" alt="">
         <span>${_server.properties.name || ""}</span>
@@ -67,13 +55,26 @@ var overview;
             return -1;
         return a.owner > b.owner;
     }
+    function toggleVisibility(_e) {
+        let hideOthers = _e.target.checked;
+        for (let elem of document.getElementsByClassName("notOwned")) {
+            hideOthers ? elem.classList.add("hidden") : elem.classList.remove("hidden");
+        }
+    }
     function selectRealm(id) {
         setCookie("worldid", id.toString());
         window.location.replace("./overview");
     }
     overview.selectRealm = selectRealm;
     function leaveRealm(id) {
-        //TODO doublecheck if they really want to leave
+        let really = prompt(`If you really want to leave this realm, type "LEAVE" and click send.\nTo abort, type anything else.`);
+        if (really != "LEAVE")
+            return;
+        console.log("Yes, really.");
+        let data = getCredentials();
+        data["command"] = "leaveRealm";
+        data["world"] = id;
+        let result = sendPOSTRequest(data);
     }
     overview.leaveRealm = leaveRealm;
 })(overview || (overview = {}));

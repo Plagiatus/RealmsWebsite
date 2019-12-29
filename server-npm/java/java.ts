@@ -105,7 +105,7 @@ function checkCredentials(andRedirect: boolean = true): boolean {
   let refresh: string = getCookie("refresh");
   if (!email || !token || !uuid || !name) {
     console.log("CREDENTIALS NOT THERE ANYMORE")
-    if (andRedirect) window.location.replace("./login");
+    if (andRedirect) window.location.replace("../login");
     return false;
   }
   if (!confirmCredentials(email, uuid, name, token)) {
@@ -190,4 +190,29 @@ function removeCredentials(){
   removeCookie("uuid");
   removeCookie("name");
 }
+
+function checkWorldId(){
+  if(!getCookie("worldid")){
+    window.location.replace("..");
+  }
+}
+
 //#endregion
+
+function sendPOSTRequest(data: any): any{
+  try {
+    let xhr: XMLHttpRequest = new XMLHttpRequest();
+    xhr.open("POST", serverAddress, false);
+    xhr.send(JSON.stringify(data));
+    if (xhr.response) {
+      let result = JSON.parse(xhr.response);
+      if (result.error) {
+        displayError(result.error);
+        return;
+      }
+      return result;
+    }
+  } catch (error) {
+    displayError(error);
+  }
+}
