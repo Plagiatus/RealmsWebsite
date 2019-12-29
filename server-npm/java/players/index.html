@@ -7,17 +7,21 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Realms Overview</title>
   <script src="../java.js"></script>
+  <script src="./players.js"></script>
+  <link rel="stylesheet" href="../main.css">
 </head>
 
 <body>
   <object type="text/html" data="../mainmenu.html"></object>
   <h1>Welcome Username</h1>
   <div>
+    <input type="text" name="invite" id="invite" placeholder="playername">
+    <button id="inviteButton" onclick="invite()">Invite</button>
     <input type="text" name="search" id="search" placeholder="🔎 filter..">
-    <input type="checkbox" name="showAll" id="showAll" value="true" checked>
-    <label for="showAll">show only realms I own</label>
-    <div id="realmsList">
-      <span>Nothing to show.</span>
+    <!-- <input type="checkbox" name="showAll" id="showAll" value="true" checked> -->
+    <!-- <label for="showAll">show only realms I own</label> -->
+    <div id="playerList">
+      <span>Loading..</span>
     </div>
   </div>
 </body>
