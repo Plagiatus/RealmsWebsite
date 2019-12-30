@@ -22,8 +22,12 @@ export let auth: Auth = new Auth();
 let postRequests: PostRequest = new PostRequest();
 let get: GetRequest = new GetRequest();
 
-async function getLatestVersion(){
-  latestVersion = JSON.parse(await Request("https://launchermeta.mojang.com/mc/game/version_manifest.json")).latest.release;
+async function getLatestVersion() {
+  try {
+    latestVersion = JSON.parse(await Request("https://launchermeta.mojang.com/mc/game/version_manifest.json")).latest.release;
+  } catch (error) {
+    console.log("Couldn't reach Mojang's servers. Does our internet work? Keeping latest version on", latestVersion);
+  }
   setTimeout(getLatestVersion, 1000 * 60 * 60);
 }
 

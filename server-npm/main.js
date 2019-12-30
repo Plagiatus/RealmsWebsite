@@ -19,7 +19,12 @@ exports.auth = new auth_1.Auth();
 let postRequests = new PostRequest_1.PostRequest();
 let get = new GetRequests_1.GetRequest();
 async function getLatestVersion() {
-    exports.latestVersion = JSON.parse(await Request("https://launchermeta.mojang.com/mc/game/version_manifest.json")).latest.release;
+    try {
+        exports.latestVersion = JSON.parse(await Request("https://launchermeta.mojang.com/mc/game/version_manifest.json")).latest.release;
+    }
+    catch (error) {
+        console.log("Couldn't reach Mojang's servers. Does our internet work? Keeping latest version on", exports.latestVersion);
+    }
     setTimeout(getLatestVersion, 1000 * 60 * 60);
 }
 async function handleRequest(_request, _response) {
