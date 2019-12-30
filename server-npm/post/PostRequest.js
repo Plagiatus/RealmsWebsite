@@ -7,6 +7,8 @@ const invalidate_1 = require("./invalidate");
 const getPlayers_1 = require("./getPlayers");
 const toggleOP_1 = require("./toggleOP");
 const invite_1 = require("./invite");
+const detail_1 = require("./detail");
+const kick_1 = require("./kick");
 class PostRequest {
     constructor() {
         this.requests = new Map();
@@ -17,6 +19,8 @@ class PostRequest {
         this.requests.set(getPlayers_1.getPlayers.name, getPlayers_1.getPlayers);
         this.requests.set(toggleOP_1.toggleOP.name, toggleOP_1.toggleOP);
         this.requests.set(invite_1.invite.name, invite_1.invite);
+        this.requests.set(detail_1.detail.name, detail_1.detail);
+        this.requests.set(kick_1.kick.name, kick_1.kick);
     }
     get(name) {
         if (!this.requests.has(name)) {

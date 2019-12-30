@@ -5,6 +5,8 @@ import { invalidate } from "./invalidate";
 import { getPlayers } from "./getPlayers";
 import { toggleOP } from "./toggleOP";
 import { invite } from "./invite";
+import { detail } from "./detail";
+import { kick } from "./kick";
 
 export class PostRequest {
   requests: Map<string, Function> = new Map<string, Function>();
@@ -16,6 +18,8 @@ export class PostRequest {
     this.requests.set(getPlayers.name, getPlayers);
     this.requests.set(toggleOP.name, toggleOP);
     this.requests.set(invite.name, invite);
+    this.requests.set(detail.name, detail);
+    this.requests.set(kick.name, kick);
   }
   
   get(name: string): Function {
