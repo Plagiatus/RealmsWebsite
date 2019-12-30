@@ -1,45 +1,36 @@
 window.addEventListener("load", init);
 let playerListDiv;
+let searchInput;
 let inviteInput;
 let inviteButton;
 let players;
 function init() {
-    // checkWorldId();
-    // checkCredentials();
+    //TODO save/load using cookies to make it load faster
+    checkWorldId();
+    checkCredentials();
+    searchInput = document.getElementById("search");
     playerListDiv = document.getElementById("playerList");
     inviteInput = document.getElementById("invite");
     inviteButton = document.getElementById("inviteButton");
-    // players = getPlayers();
-    createPlayerDisplay(players);
-    document.getElementById("search").addEventListener("input", search);
+    searchInput.value = "";
+    inviteInput.value = "";
+    searchInput.addEventListener("input", searchBtn);
+    players = getPlayers();
+    updatePlayerDisplay(players);
 }
 function getPlayers() {
     let data = getCredentials();
     data["command"] = "getPlayers";
     data["world"] = getCookie("worldid");
-    try {
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", serverAddress, false);
-        xhr.send(JSON.stringify(data));
-        if (xhr.response) {
-            let result = JSON.parse(xhr.response);
-            if (result.error) {
-                displayError(result.error);
-                return;
-            }
-            return result;
-        }
-    }
-    catch (error) {
-        displayError(error);
-    }
+    return sendPOSTRequest(data);
 }
-function createPlayerDisplay(players) {
+function updatePlayerDisplay(players) {
     playerListDiv.innerHTML = players.length > 0 ? "" : "There doesn't seem to be anyone here. Start by inviting someone.";
     players.sort(sortPlayers);
     for (let i = 0; i < players.length; i++) {
         createOnePlayer(players[i]);
     }
+    search(searchInput.value);
 }
 function createOnePlayer(p) {
     playerListDiv.innerHTML +=
@@ -48,7 +39,7 @@ function createOnePlayer(p) {
       <img src="https://crafatar.com/avatars/${p.uuid}?size=40&overlay" alt="" width="40px" height="40px">
       <span>${p.name || ""}</span>
       <button class="op" onclick="toggleOP('${p.uuid}', ${!p.operator})">${p.operator ? "deop" : "op"}</button>
-      <button class="kick" onclick="kick(${p.name})">Kick</button>
+      <button class="kick" onclick="kick('${p.uuid}')">Kick</button>
     </div>`;
 }
 function sortPlayers(a, b) {
@@ -84,11 +75,16 @@ function toggleOP(_uuid, toggle) {
     btn.innerText = toggle ? "deop" : "op";
     btn.disabled = false;
 }
-function search(_e) {
+function searchBtn(_e) {
     let searchterm = _e.target.value.trim();
+    search(searchterm);
+}
+function search(searchterm) {
     let showAll = searchterm == "";
     for (let p of players) {
         let div = document.getElementById(p.uuid);
+        if (!div)
+            continue;
         if (showAll || shouldPlayerBeVisible(p, searchterm)) {
             div.classList.remove("hidden");
         }
@@ -111,11 +107,25 @@ function invite() {
     data["command"] = "invite";
     data["world"] = getCookie("worldid");
     data["playername"] = playername;
-    console.log(data);
     let result = sendPOSTRequest(data);
-    console.log(result);
+    updatePlayerDisplay(result.players);
     //TODO: add new player to the list. it should hopefully be in the response.
     // or just update the player list altogether if it's the server that's being sent back.
     inviteInput.disabled = false;
     inviteButton.disabled = false;
+}
+function kick(uuid) {
+    let div = document.getElementById(uuid);
+    let btn = div.querySelector(".kick");
+    btn.disabled = true;
+    let data = getCredentials();
+    data["command"] = "kick";
+    data["world"] = getCookie("worldid");
+    data["playeruuid"] = uuid;
+    let result = sendPOSTRequest(data);
+    if (result.error) {
+        btn.disabled = false;
+        return;
+    }
+    div.parentElement.removeChild(div);
 }
