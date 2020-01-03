@@ -8,32 +8,35 @@ The plan is to make it run on a website in the future, maybe even a mobile app. 
 ### Setup
 1. Clone/Download Repo (duh)
 1. make sure you have Node.js installed.
-1. run `npm i` in both `/server` and `/MojangAPI`.
+1. run `npm i` in the main folder.
 
 ### Run
 1. run `node ./server/main.js`
-1. open `/client/index.html` in a browser of your choice (preferrably Firefox or Chrome)  
+1. open `/client/java/index.html` in a browser of your choice (preferrably Firefox or Chrome)  
 
 That's it, now it's running and ready to be used.
 
 ## Tasks
 - [x] login
-  - [x] Email/PW
-  - [x] IGN/AuthToken
+- [x] logout
 - [x] player manipulation
   - [x] invite player
   - [x] remove player
   - [x] op player
   - [x] deop player
-  - [ ] search through players
-- [ ] realm manipulation
+  - [x] search through players
+- [x] overview
+  - [x] Realm status
+  - [x] online players
+  - [x] selected world + icon
+- [ ] settings
+  - [ ] show status (lights)
   - [ ] show days left
   - [ ] change name
   - [ ] change motd
   - [ ] open
   - [ ] close
   - [ ] get ip
-  - [ ] show status (lights)
 - [ ] world manipulation
   - [ ] switch slot
   - [ ] download world
@@ -43,8 +46,9 @@ That's it, now it's running and ready to be used.
   - [ ] show templates
   - [ ] apply template
   - [ ] search through templates
-- [ ] support more than 1 realm
+- [x] list all realms
+- [ ] show and accept/deny invitations
 
 ## Collaboration
 
-Please, feel free to make a pull request and improve my code. It's a fun hobby project that I honestly didn't put too much effort into, so neither the visuals nor the code itself is super good.
+Please, feel free to make a pull request and improve my code. It's a fun hobby project that I honestly didn't put too much effort into, so neither the visuals nor the code itself are super good.
