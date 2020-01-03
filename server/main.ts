@@ -1,120 +1,103 @@
+import { Client } from "minecraft-realms";
+import { Player, Auth } from "./auth";
 import * as Http from "http";
+import * as Request from "request-promise-native/";
 import * as Url from "url";
-import * as qs from "querystring";
-import { Player } from "../MojangAPI/Player";
-import { create } from "domain";
-import { Realm } from "../MojangAPI/Realm";
-import { API } from "../MojangAPI/MojangAPI";
+import { GetRequest } from "./get/GetRequests";
+import { PostRequest } from "./post/PostRequest";
 
-namespace RealmPageServer {
-  let port: string = process.env.PORT;
-  if (!port) {
-    port = "8100";
+let port: string = process.env.PORT;
+if (!port) {
+  port = "8100";
+}
+
+
+export let latestVersion: string = "1.15";
+getLatestVersion();
+let server: Http.Server = Http.createServer();
+server.addListener("request", handleRequest);
+server.listen(port);
+
+export let auth: Auth = new Auth();
+let postRequests: PostRequest = new PostRequest();
+let get: GetRequest = new GetRequest();
+
+async function getLatestVersion() {
+  try {
+    latestVersion = JSON.parse(await Request("https://launchermeta.mojang.com/mc/game/version_manifest.json")).latest.release;
+  } catch (error) {
+    console.log("Couldn't reach Mojang's servers. Does our internet work? Keeping latest version on", latestVersion);
   }
+  setTimeout(getLatestVersion, 1000 * 60 * 60);
+}
 
-  let server: Http.Server = Http.createServer();
-  server.addListener("request", handleRequest);
-  server.listen(port);
-
-  function handleRequest(_request: Http.IncomingMessage, _response: Http.OutgoingMessage) {
-    if (_request.method == "POST") {
-      let body = "";
-      _request.on("data", data => {
-        body += data;
-      });
-      _request.on("end", async () => {
-        _response.setHeader("content-type", " ; charset=utf-8");
-        _response.setHeader("Access-Control-Allow-Origin", "*");
-        let post: any = JSON.parse(body);
-
-        let p: Player = new Player();
-        p.name = post.username;
-        p.accessToken = post.token;
-        p.password = post.password;
-        p.email = post.email;
-        p.uuid = post.uuid;
-        let r: Realm = new Realm(p);
-        r.id = post.worldID;
-
-        let result: [Error, any];
-        switch (post.command) {
-          case "loginWithPW":
-            result = await to(p.authenticate());
-            if (result[0]) {
-              _response.write(createErrorString(result[0].message))
-              break;
-            }
-            _response.write(JSON.stringify(p));
-            break;
-          case "loginWithToken":
-            result = await to(p.validate());
-            if (result[0]) {
-              _response.write(createErrorString(result[0].message))
-              break;
-            }
-            _response.write(JSON.stringify(p));
-            break;
-          case "getOwnedRealms":
-            result = await to(p.getOwnedRealms());
-            if (result[0]) {
-              _response.write(createErrorString(result[0].message))
-              break;
-            }
-            _response.write(JSON.stringify(result[1]));
-            break;
-          case "removePlayer":
-            result = await to(r.removePlayer(post.playerUUID));
-            break;
-          case "invitePlayer":
-            result = await to(r.invitePlayer(post.playerName));
-            if (result[0]) {
-              _response.write(createErrorString(result[0].message))
-              break;
-            }
-            _response.write(JSON.stringify(result[1]));
-            break;
-          case "opPlayer":
-            result = await to(r.opPlayer(post.playerUUID));
-            if (result[0]) {
-              _response.write(createErrorString(result[0].message))
-              break;
-            }
-            _response.write(JSON.stringify(result[1]));
-            break;
-          case "deopPlayer":
-            result = await to(r.deopPlayer(post.playerUUID));
-            break;
-          case "getUUID":
-            result = await to(API.getUUIDFromName(post.playerName));
-            if (result[0]) {
-              _response.write(createErrorString(result[0].message))
-              break;
-            }
-            _response.write(JSON.stringify(result[1]));
-            break;
-          default:
-            _response.write(createErrorString("No/wrong command provided"));
+async function handleRequest(_request: Http.IncomingMessage, _response: Http.OutgoingMessage) {
+  _response.setHeader("content-type", "application/json ; charset=utf-8");
+  _response.setHeader("Access-Control-Allow-Origin", "*");
+  if (_request.method == "POST") {
+    let body = "";
+    _request.on("data", data => {
+      body += data;
+    });
+    _request.on("end", async () => {
+      let post: any = JSON.parse(body);
+      // console.log("POST", post);
+      if (post.command && postRequests.has(post.command)) {
+        try {
+          await postRequests.get(post.command)(post, _response);
+        } catch (e) {
+          console.log(e.message);
+          _response.write(JSON.stringify({ error: e.message }))
         }
-        if (result[0]) {
-          _response.write(createErrorString(result[0].message))
-        }
+      } else {
+        _response.write(JSON.stringify({ error: "Command not found." }));
+      }
+      _response.end();
+    });
+  } else if (_request.method == "GET") {
+    let parsed: Url.UrlWithParsedQuery = Url.parse(_request.url, true);
+    let path: string = parsed.pathname.substr(1);
+    let query = parsed.query;
+    if (path && get.has(path)) {
 
-        _response.end();
-      });
+      try {
+        await get.get(path)(query, _response);
+      } catch (e) {
+        console.log(e.message);
+        _response.write(JSON.stringify({ error: e.message }))
+      }
+    } else {
+      _response.write(JSON.stringify({ error: "Path not found" }))
     }
+    _response.end();
   }
-
-  function createErrorString(_message: string): string {
-    console.log(_message);
-    return JSON.stringify({ error: _message });
-  }
-
-  function to(_promise: Promise<any>): Promise<[Error, any]> {
-    let result: [Error, any] = [null, null];
-    // @ts-ignore
-    result = _promise.then(data => [null, data])
-      .catch(err => [err, null]);
-    // @ts-ignore
-    return result;
+  else {
+    _response.write(JSON.stringify({ error: "You shouldn't be sending me this requests" }));
+    _response.end();
   }
 }
+
+
+// let r: Client = new Client("token:7fa6518d5bbc40c7b9370bded454c150:e75e2d263b724a93a3e7a2491f4c454f", "1.15", "Plagiatus");
+// let r: Client = new Client("token:9c1b3949871441999761e0c3a12ca35b:64870cb3e3e14857bec6b9f597dc8b21", "1.15", "Plagypus");
+
+// let id: number = 4156375;
+// console.log(r.worlds.getWorld(4156375).detailInformation().sortPlayers().players[0]);
+// console.log(r.invites.);
+// async function test(){
+
+//   let auth: Auth = new Auth();
+//   let p: Player = new Player("therealplagiatus@gmail.com", "", "");
+//   try{
+//     await auth.validate(p);
+//   } catch(e){
+//     await auth.authenticate(p, "Scheuerle20.01.1995");
+//   }
+//   console.log(p);
+
+//   await auth.validate(p);
+
+//   let c: Client = new Client(`token:${p.token}:${p.uuid}`, "1.15", p.name);
+//   console.log(c);
+// }
+// test();

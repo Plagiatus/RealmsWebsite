@@ -3,16 +3,16 @@
 	"version": "0.0.1",
 	"description": "Administrate your Realms from the Browser",
 	"author": "Plagiatus",
-	"main": "server-npm/main.js",
+	"main": "server/main.js",
 	"scripts": {
-		"start": "node server-npm/main.js"
+		"start": "node server/main.js"
 	},
 	"engines": {
 		"node": "8.11.3"
 	},
 	"dependencies": {
 		"request": "2.88.0",
-    "request-promise-native": "1.0.7",
-    "minecraft-realms":"0.0.3"
+		"request-promise-native": "1.0.7",
+		"minecraft-realms": "0.0.3"
 	}
 }
