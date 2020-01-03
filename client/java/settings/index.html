@@ -4,11 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="../java.js"></script>
+  <script src="./settings.js"></script>
   <title>Settings</title>
 </head>
 <body>
   <object type="text/html" data="../mainmenu.html"></object>
   <h1>Settings</h1>
-  There is nothing here yet.
+  <img src="" alt="" id="openCloseImg">
+  <span id="openCloseTxt">Your Realm is currently OPEN</span>
+  <button onclick="settings.toggleOpen()" id="toggleOpen">Open/Close</button>
+
+  <span id="subscription">Subscription Status</span>
+
+  <input type="text" name="name" id="name" placeholder="name">
+  <input type="text" name="description" id="description" placeholder="description">
+  <button onclick="settings.updateNameDesc()">Update Name/Description</button>
 </body>
 </html>
