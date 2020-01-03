@@ -12,6 +12,7 @@ namespace overview {
     document.getElementById("showAll").addEventListener("change", toggleVisibility);
     realmsList = <HTMLDivElement>document.getElementById("realmsList");
     createRealmsDisplay();
+    document.getElementById("showAll").dispatchEvent(new Event("change"));
   }
 
   function createRealmsDisplay() {

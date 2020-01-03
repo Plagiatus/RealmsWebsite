@@ -1,3 +1,6 @@
+//TODO: rewrite anything that takes a while (especially server requests) using webworkers for multithreadding.
+// see https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
+
 let serverAddress: string = "http://localhost:8100";
 // let serverAddress: string = "https://realmadmin.herokuapp.com";
 
@@ -110,6 +113,7 @@ function checkCredentials(andRedirect: boolean = true): boolean {
   }
   if (!confirmCredentials(email, uuid, name, token)) {
     console.log("CREDENTIALS NOT WORKING ANYMORE!")
+    if (andRedirect) window.location.replace("../login");
     return false;
   }
   if (refresh == "true") {
@@ -179,6 +183,7 @@ function confirmCredentials(email, uuid, name, token): boolean {
         return true;
       }
     }
+    return false;
   } catch (error) {
     displayError(error);
   }
