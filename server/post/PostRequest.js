@@ -9,6 +9,9 @@ const toggleOP_1 = require("./toggleOP");
 const invite_1 = require("./invite");
 const detail_1 = require("./detail");
 const kick_1 = require("./kick");
+const open_1 = require("./open");
+const close_1 = require("./close");
+const updateProperties_1 = require("./updateProperties");
 class PostRequest {
     constructor() {
         this.requests = new Map();
@@ -21,6 +24,9 @@ class PostRequest {
         this.requests.set(invite_1.invite.name, invite_1.invite);
         this.requests.set(detail_1.detail.name, detail_1.detail);
         this.requests.set(kick_1.kick.name, kick_1.kick);
+        this.requests.set(open_1.open.name, open_1.open);
+        this.requests.set(close_1.close.name, close_1.close);
+        this.requests.set(updateProperties_1.updateProperties.name, updateProperties_1.updateProperties);
     }
     get(name) {
         if (!this.requests.has(name)) {

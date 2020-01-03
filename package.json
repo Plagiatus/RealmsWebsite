@@ -11,8 +11,9 @@
 		"node": "8.11.3"
 	},
 	"dependencies": {
+		"@types/node": "^13.1.2",
+		"minecraft-realms": "0.0.3",
 		"request": "2.88.0",
-		"request-promise-native": "1.0.7",
-		"minecraft-realms": "0.0.3"
+		"request-promise-native": "1.0.7"
 	}
 }

@@ -7,6 +7,9 @@ import { toggleOP } from "./toggleOP";
 import { invite } from "./invite";
 import { detail } from "./detail";
 import { kick } from "./kick";
+import { open } from "./open";
+import { close } from "./close";
+import { updateProperties } from "./updateProperties";
 
 export class PostRequest {
   requests: Map<string, Function> = new Map<string, Function>();
@@ -20,6 +23,9 @@ export class PostRequest {
     this.requests.set(invite.name, invite);
     this.requests.set(detail.name, detail);
     this.requests.set(kick.name, kick);
+    this.requests.set(open.name, open);
+    this.requests.set(close.name, close);
+    this.requests.set(updateProperties.name, updateProperties);
   }
   
   get(name: string): Function {
