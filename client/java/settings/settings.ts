@@ -54,7 +54,7 @@ namespace settings {
   }
   
   function updateOpenText() {
-    openText.innerText = "Your Realm is currently " + (serverIsOpen ? "OPEN" : "CLOSE");
+    openText.innerText = "Your Realm is currently " + (serverIsOpen ? "OPEN" : "CLOSED");
     openButton.innerText = serverIsOpen ? "close" : "open";
     if(serverIsOpen){
       statusImg.src = daysLeft > 15 ? "../img/on_icon.png" : "../img/expires_soon_icon.png";

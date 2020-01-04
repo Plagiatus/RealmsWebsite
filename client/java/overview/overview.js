@@ -29,12 +29,19 @@ var overview;
         setInterval(updatePlayers, 1000 * 15);
     }
     function generalOverview(r) {
+        let imgURL = "";
+        if (r.state == "OPEN")
+            imgURL = r.daysLeft > 15 ? "../img/on_icon.png" : "../img/expires_soon_icon.png";
+        if (r.state == "CLOSED")
+            imgURL = "../img/off_icon.png";
+        if (r.expired)
+            imgURL = "../img/expired_icon.png";
         generalDiv.innerHTML = `
-      <img src="${r.expired ? "" : ""}" alt="${r.expired ? "expired" : "active"}">
-      <span id="realmName">${r.properties.name}</span>
-      <span id="realmDescription">${r.properties.description}</span>
-      <span id="realmID">${r.id}</span>
-      <span id="realmSubscriptionStatus">${formatDays(r.daysLeft)}</span>
+      <img src="${imgURL}" alt="${r.expired ? "expired" : "active"}">
+      <span id="realmName">${removeFormatCodes(r.properties.name)}</span><br>
+      <span id="realmDescription">${removeFormatCodes(r.properties.description)}</span><br>
+      <span id="realmID">${r.id}</span><br>
+      <span id="realmSubscriptionStatus">${formatDays(r.daysLeft)}</span><br>
     `;
     }
     function formatDays(daysLeft) {
@@ -104,5 +111,8 @@ var overview;
         if (aname > bname)
             return 1;
         return 0;
+    }
+    function removeFormatCodes(s) {
+        return s.replace(/§./g, "");
     }
 })(overview || (overview = {}));

@@ -33,9 +33,16 @@ var overview;
     }
     function createOneRealm(_server, ownerName) {
         let owner = _server.owner == ownerName;
+        let imgURL = "";
+        if (_server.state == "OPEN")
+            imgURL = (owner && _server.daysLeft < 15) ? "./img/expires_soon_icon.png" : "./img/on_icon.png";
+        if (_server.state == "CLOSED")
+            imgURL = "./img/off_icon.png";
+        if (_server.expired)
+            imgURL = "./img/expired_icon.png";
         realmsList.innerHTML +=
             `<div class="realm ${owner ? "owned" : "notOwned"} ${_server.expired ? "expired" : ""}">
-        <img src="" alt="${_server.expired ? "expired" : "active"}">
+        <img src="${imgURL}" alt="${_server.expired ? "expired" : "active"}">
         <img src="https://crafatar.com/avatars/${_server.ownerUUID}?size=40&overlay" alt="">
         <span>${_server.properties.name || ""}</span>
         <span>${_server.minigameName ? "Minigame: " + _server.minigameName : _server.properties.description || ""}</span>
