@@ -4,15 +4,18 @@ var settings;
     let statusImg;
     let openButton;
     let openText;
+    let subscriptionText;
     let nameInput;
     let descInput;
     let serverIsOpen;
+    let daysLeft;
     function init() {
-        // checkCredentials();
-        // checkWorldId();
+        checkCredentials();
+        checkWorldId();
         statusImg = document.getElementById("openCloseImg");
         openButton = document.getElementById("toggleOpen");
         openText = document.getElementById("openCloseTxt");
+        subscriptionText = document.getElementById("subscription");
         nameInput = document.getElementById("name");
         descInput = document.getElementById("description");
         getServer();
@@ -28,6 +31,8 @@ var settings;
         nameInput.value = server.properties.name;
         descInput.value = server.properties.description;
         serverIsOpen = server.state == "OPEN";
+        daysLeft = server.daysLeft;
+        subscriptionText.innerText = formatDays(daysLeft);
         updateOpenText();
     }
     function toggleOpen() {
@@ -49,7 +54,12 @@ var settings;
     function updateOpenText() {
         openText.innerText = "Your Realm is currently " + (serverIsOpen ? "OPEN" : "CLOSE");
         openButton.innerText = serverIsOpen ? "close" : "open";
-        //TODO: status image
+        if (serverIsOpen) {
+            statusImg.src = daysLeft > 15 ? "../img/on_icon.png" : "../img/expires_soon_icon.png";
+        }
+        else {
+            statusImg.src = daysLeft > 0 ? "../img/off_icon.png" : "../img/expired_icon.png";
+        }
     }
     function updateNameDesc() {
         let data = getCredentials();
@@ -61,4 +71,23 @@ var settings;
         console.log(request);
     }
     settings.updateNameDesc = updateNameDesc;
+    function formatDays(daysLeft) {
+        if (daysLeft <= 0) {
+            return "Susbscription ran out.";
+        }
+        let now = new Date();
+        let end = new Date(Date.now() + 1000 * 60 * 60 * 24 * daysLeft);
+        let year = end.getFullYear() - now.getFullYear();
+        let months = end.getMonth() - now.getMonth();
+        let days = end.getDate() - now.getDate();
+        if (days < 0) {
+            months--;
+            days += 30;
+        }
+        if (months < 0) {
+            year--;
+            months += 12;
+        }
+        return `${year > 0 ? year + (year == 1 ? " year, " : " years, ") : ""}${months > 0 ? months + (months == 1 ? " month" : " months") + " and " : ""}${days} ${days == 1 ? "day" : "days"} remaining`;
+    }
 })(settings || (settings = {}));
