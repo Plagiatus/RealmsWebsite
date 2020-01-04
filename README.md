@@ -30,12 +30,12 @@ That's it, now it's running and ready to be used.
   - [x] online players
   - [x] selected world + icon
 - [ ] settings
-  - [ ] show status (lights)
-  - [ ] show days left
-  - [ ] change name
-  - [ ] change motd
-  - [ ] open
-  - [ ] close
+  - [x] show status (lights)
+  - [x] show days left
+  - [x] change name
+  - [x] change description
+  - [x] open
+  - [x] close
   - [ ] get ip
 - [ ] world manipulation
   - [ ] switch slot
