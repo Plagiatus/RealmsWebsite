@@ -1,0 +1,23 @@
+module.exports = {
+  Client: require('./src/Client/index'),
+  Backup: require('./src/Classes/Backup'),
+  BackupList: require('./src/Classes/BackupList'),
+  Enums: require('./src/Classes/Enums'),
+  Ops: require('./src/Classes/Ops'),
+  PendingInvite: require('./src/Classes/PendingInvite'),
+  PendingInviteList: require('./src/Classes/PendingInvitesList'),
+  PlayerInfo: require('./src/Classes/PlayerInfo'),
+  RealmsDescriptionDto: require('./src/Classes/RealmsDescriptionDto'),
+  RealmsNews: require('./src/Classes/RealmsNews'),
+  RealmsServer: require('./src/Classes/RealmsServer'),
+  RealmsServerAddress: require('./src/Classes/RealmsServerAddress'),
+  RealmsServerList: require('./src/Classes/RealmsServerList'),
+  RealmsWorldOptions: require('./src/Classes/RealmsWorldOptions'),
+  RealmsWorldResetDto: require('./src/Classes/RealmsWorldResetDto'),
+  Templates: require('./src/Classes/Templates'),
+  UploadInfo: require('./src/Classes/UploadInfo'),
+  ValueObject: require('./src/Classes/ValueObject'),
+  WorldDownload: require('./src/Classes/WorldDownload'),
+  WorldTemplate: require('./src/Classes/WorldTemplate'),
+  WorldTemplatePaginatedList: require('./src/Classes/WorldTemplatePaginatedList')
+}

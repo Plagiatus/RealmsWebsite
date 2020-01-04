@@ -1,0 +1,18 @@
+{
+  "name": "minecraft-realms",
+  "version": "0.0.3",
+  "description": "realms control",
+  "main": "index.js",
+  "repository": {
+  "type": "git",
+  "url": "https://github.com/Sirboys/node-realms"
+	},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sirboys",
+  "license": "GNU General Public License v3.0",
+  "dependencies": {
+    "xmlhttprequest": "^1.8.0"
+  }
+}
