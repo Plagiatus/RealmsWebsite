@@ -6,8 +6,8 @@ var overview;
     let worldsDiv;
     let playerListDiv;
     function init() {
-        // checkWorldId();
-        // checkCredentials();
+        checkWorldId();
+        checkCredentials();
         initReferences();
         createOverview();
     }

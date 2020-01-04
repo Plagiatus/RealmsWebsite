@@ -8,8 +8,8 @@ namespace overview {
   let playerListDiv: HTMLDivElement;
 
   function init() {
-    // checkWorldId();
-    // checkCredentials();
+    checkWorldId();
+    checkCredentials();
     initReferences();
     createOverview();
   }
