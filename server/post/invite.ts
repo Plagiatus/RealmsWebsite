@@ -1,6 +1,6 @@
 import { Player } from "../auth";
 import * as Http from "http";
-import { Client } from "minecraft-realms";
+import { Client } from "../../realmsapi";
 import { latestVersion } from "../main";
 
 export async function invite(_input, _response: Http.OutgoingMessage) {
