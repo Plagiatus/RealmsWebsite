@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const auth_1 = require("../auth");
-const minecraft_realms_1 = require("minecraft-realms");
+const MR = require("../../realmsapi");
 const main_1 = require("../main");
 async function updateProperties(_input, _response) {
     let email = _input.email;
@@ -16,11 +16,9 @@ async function updateProperties(_input, _response) {
     }
     else {
         let p = new auth_1.Player(email, token, uuid, name);
-        let c = new minecraft_realms_1.Client(p.getAuthToken(), main_1.latestVersion, p.name);
-        // let d: RealmsDescriptionDto = new RealmsDescriptionDto(worldName, worldDescription, c.worlds.getWorld(world));
-        // let rs: RealmsServer = ;
-        // (<any>rs.slots) = Array.from(rs.slots);
-        c.client.setDesctiption({ name: worldName, description: worldDescription, world: { id: world } });
+        let c = new MR.Client(p.getAuthToken(), main_1.latestVersion, p.name);
+        let d = new MR.RealmsDescriptionDto(worldName, worldDescription, c.worlds.getWorld(world));
+        c.client.setDescription(d);
         _response.write("no reply");
     }
 }

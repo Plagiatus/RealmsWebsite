@@ -1,6 +1,6 @@
 import { Player } from "../auth";
 import * as Http from "http";
-import { Client, RealmsServer, RealmsDescriptionDto } from "minecraft-realms";
+import * as MR from "../../realmsapi";
 import { latestVersion } from "../main";
 
 export async function updateProperties(_input, _response: Http.OutgoingMessage) {
@@ -15,11 +15,9 @@ export async function updateProperties(_input, _response: Http.OutgoingMessage) 
     throw new Error("Not enough parameters given.");
   } else {
     let p: Player = new Player(email, token, uuid, name);
-    let c: Client = new Client(p.getAuthToken(), latestVersion, p.name);
-    // let d: RealmsDescriptionDto = new RealmsDescriptionDto(worldName, worldDescription, c.worlds.getWorld(world));
-    // let rs: RealmsServer = ;
-    // (<any>rs.slots) = Array.from(rs.slots);
-    c.client.setDesctiption({name: worldName, description: worldDescription, world: {id: world}});
+    let c: MR.Client = new MR.Client(p.getAuthToken(), latestVersion, p.name);
+    let d: MR.RealmsDescriptionDto = new MR.RealmsDescriptionDto(worldName, worldDescription, c.worlds.getWorld(world));
+    c.client.setDescription(d);
     _response.write("no reply");
   }
 }
