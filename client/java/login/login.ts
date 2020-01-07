@@ -10,17 +10,17 @@ namespace login {
     }
   }
 
-  export function loginNow() {
+  export function loginWithEmail() {
+    loginError("");
     let formData: FormData = new FormData(<HTMLFormElement>document.getElementById("login"));
     let emailElement: HTMLInputElement = <HTMLInputElement>document.getElementById("email");
-    let passwordElement: HTMLInputElement = <HTMLInputElement>document.getElementById("password");
     if (!emailElement.checkValidity()) {
       emailElement.reportValidity();
       return;
     }
-    let password: string = passwordElement.value;
+    let password: string = String(formData.get("password"));
     if (password.length <= 0) {
-      passwordElement.reportValidity();
+      loginError("Please provide a password");
       return;
     }
     let email: string = emailElement.value;
@@ -33,6 +33,50 @@ namespace login {
       setCookie("refresh", refresh.toString(), remember);
       window.location.replace("..");
     }
+  }
+
+  export function loginWithToken() {
+    loginError("");
+    let formData: FormData = new FormData(<HTMLFormElement>document.getElementById("login"));
+    let emailElement: HTMLInputElement = <HTMLInputElement>document.getElementById("email2");
+    // let tokenElement: HTMLInputElement = <HTMLInputElement>document.getElementById("token");
+    let email: string = emailElement.value;
+    if (!emailElement.checkValidity() || email.length <= 0) {
+      emailElement.reportValidity();
+      loginError("Please provide a valid email");
+      return;
+    }
+    let playername: string = String(formData.get("playername"));
+    if (playername.length <= 0) {
+      loginError("Please provide your playername");
+      return;
+    }
+    let uuid: string = String(formData.get("uuid"));
+    uuid = uuid.replace(/-/g, "");
+    console.log(uuid, uuid.length);
+    if (uuid.length != 32) {
+      loginError("please provide a valid uuid");
+      return;
+    }
+    let token: string = String(formData.get("token"));
+    if (token.length <= 0) {
+      loginError("Please provide a token");
+      return;
+    }
+    let data = {
+      command: "login",
+      token: token,
+      uuid: uuid,
+      email: email
+    }
+    let result = sendPOSTRequest(data);
+    if (result.error) return;
+    let player = { name: playername, uuid: uuid, token: token, email: email };
+    let remember: number = Number(formData.get("remember"));
+    let refresh: boolean = Boolean(formData.get("refresh"));
+    setCredentials(player, remember);
+    setCookie("refresh", refresh.toString(), remember);
+    window.location.replace("..");
   }
 
   function authenticate(_email: string, _password: string) {
@@ -58,6 +102,10 @@ namespace login {
       displayError(error);
     }
     return null;
+  }
+
+  function loginError(msg: string) {
+    document.getElementById("errormessage").innerText = msg;
   }
 }
 

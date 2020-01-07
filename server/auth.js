@@ -83,7 +83,6 @@ class Player {
                 },
                 username: this.email,
                 password: _password,
-                clientToken: "058d62d539b34158a3fb2023d524be22",
             },
             json: true
         };
@@ -98,7 +97,6 @@ class Player {
                 }],
             body: {
                 accessToken: this.token,
-                clientToken: "058d62d539b34158a3fb2023d524be22",
             },
             json: true
         };

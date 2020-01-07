@@ -10,7 +10,7 @@ export class Auth {
 
   async validate(_p: Player): Promise<void> {
     try {
-      await Request(await _p.postTokensOnlyConfig(this.baseUrl + this.validateUrl))
+      await Request(await _p.postTokensOnlyConfig(this.baseUrl + this.validateUrl));
     } catch (_e) {
       console.error("Error validating. Attempting to refresh...");
       try {
@@ -86,7 +86,7 @@ export class Player {
         username: this.email,      // Can be an email address or player name for unmigrated accounts
         password: _password,
 
-        clientToken: "058d62d539b34158a3fb2023d524be22",     // optional
+        // clientToken: "058d62d539b34158a3fb2023d524be22",     // optional
         // "requestUser": true                     // optional; default: false; true adds the user object to the response
       },
       json: true
@@ -103,7 +103,7 @@ export class Player {
       }],
       body: {
         accessToken: this.token,
-        clientToken: "058d62d539b34158a3fb2023d524be22",
+        // clientToken: "058d62d539b34158a3fb2023d524be22",
       },
       json: true
     }

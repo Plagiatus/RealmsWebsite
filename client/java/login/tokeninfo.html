@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Token Information</title>
+</head>
+
+<body>
+  <h1>Token Information</h1>
+  <a href=".">⬅ Back to login</a>
+  <h2>What is a Token?</h2>
+  <p>
+    A token is a uniquely generated, long string of numbers and letters that basically serve as a way to authenticate
+    you with a server without needing to re-send your password all the time.
+    Lots of servers use this to authenticate you against their servers, and so does Mojang. A token is more secure than
+    a Password in a way, because you can easily create a new one
+    if you have the password, and you cannot get the password from the token. So even if your token is stolen, if
+    they're lucky the best they can do is log into a server or two before the system
+    notices something is up and asks you to log in again. <br>
+    This is the reason you can also log in on this website using your token, so even IF somehow your data is stolen
+    (we're doing our best, but we cannot guarantee anything), all they
+    have is a soon-to-be-useless token and publicly available information (Username and UUID).
+  </p>
+
+  <h2>Where do i find my token?</h2>
+  <p>
+    You can find your token once you've logged in into the client once in a file located at
+    <code>path/to/.minecraft/launcher_profiles.json</code>. <br>
+    In this file you can find all the tokens for the various profiles you might be logged in with. Coincidentally you can also find all the other info you need for a token-login here.
+    There is a part in it that might look something like this:<br>
+    <pre>
+      <code>
+        "authenticationDatabase" : {
+          "e9c7b9fc3c55418989ad6bf716ef594a" : {
+            "accessToken" : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlOWM3YjlmYzNjNTU0MTg5ODlhZDZiZjcxNandMoreAndMoreAndEvenMore.TokensAreReallyLong.",      <- This is your token.
+            "profiles" : {
+              "e75e2d263b724a93a3e7a2491f4c454f" : {  <- This is your UUID
+                "displayName" : "Plagiatus"           <- This is your username
+              }
+            },
+            "properties" : [],
+            "username" : "youremail@here.com"         <- This is your email
+          }
+        }
+      </code>
+    </pre>
+    This very long string is the token you need to copy and enter on this website. Since it is managed by the game, whenever you're getting a new token, the old one will not work anymore
+    and you'll have to copy it again. But that's just a small price to pay for better security, isn't it?
+  </p>
+  <a href=".">⬅ Back to login</a>
+</body>
+
+</html>
