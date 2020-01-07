@@ -40,9 +40,15 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Out
       body += data;
     });
     _request.on("end", async () => {
-      let post: any = JSON.parse(body);
-      // console.log("POST", post);
-      if (post.command && postRequests.has(post.command)) {
+
+      let post: any;
+      try {
+        post = JSON.parse(body);
+      } catch (e) {
+        _response.write(JSON.stringify({ error: "Failed to parse post request." }));
+      }
+      
+      if (post && post.command && postRequests.has(post.command)) {
         try {
           await postRequests.get(post.command)(post, _response);
         } catch (e) {

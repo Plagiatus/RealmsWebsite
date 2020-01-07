@@ -36,9 +36,14 @@ async function handleRequest(_request, _response) {
             body += data;
         });
         _request.on("end", async () => {
-            let post = JSON.parse(body);
-            // console.log("POST", post);
-            if (post.command && postRequests.has(post.command)) {
+            let post;
+            try {
+                post = JSON.parse(body);
+            }
+            catch (e) {
+                _response.write(JSON.stringify({ error: "Failed to parse post request." }));
+            }
+            if (post && post.command && postRequests.has(post.command)) {
                 try {
                     await postRequests.get(post.command)(post, _response);
                 }
