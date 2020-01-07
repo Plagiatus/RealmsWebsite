@@ -49,7 +49,7 @@ function createOnePlayer(p: Player) {
     `<div class="player ${p.accepted ? "accepted" : "notAccepted"}" id="${p.uuid}">
       <img src="" alt="${p.online ? "online" : "offline"}">
       <img src="https://crafatar.com/avatars/${p.uuid}?size=40&overlay" alt="" width="40px" height="40px">
-      <span>${p.name || ""}</span>
+      <span>${escapeHtml(p.name) || ""}</span>
       <button class="op" onclick="toggleOP('${p.uuid}', ${!p.operator})">${p.operator ? "deop" : "op"}</button>
       <button class="kick" onclick="kick('${p.uuid}')">Kick</button>
     </div>`;

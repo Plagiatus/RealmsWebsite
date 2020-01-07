@@ -44,9 +44,9 @@ var overview;
             `<div class="realm ${owner ? "owned" : "notOwned"} ${_server.expired ? "expired" : ""}">
         <img src="${imgURL}" alt="${_server.expired ? "expired" : "active"}">
         <img src="https://crafatar.com/avatars/${_server.ownerUUID}?size=40&overlay" alt="">
-        <span>${_server.properties.name || ""}</span>
-        <span>${_server.minigameName ? "Minigame: " + _server.minigameName : _server.properties.description || ""}</span>
-        <span>${_server.owner}</span>
+        <span>${escapeHtml(_server.properties.name) || ""}</span>
+        <span>${_server.minigameName ? "Minigame: " + escapeHtml(_server.minigameName) : escapeHtml(_server.properties.description) || ""}</span>
+        <span>${escapeHtml(_server.owner)}</span>
         <button onclick="${owner ? "overview.selectRealm(" + _server.id + ")" : "overview.leaveRealm(" + _server.id + ")"}">${owner ? "Edit" : "Leave"}</button>
       </div>`;
         //TODO add status of realm
