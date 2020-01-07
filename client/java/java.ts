@@ -221,3 +221,12 @@ function sendPOSTRequest(data: any): any{
     displayError(error);
   }
 }
+
+function escapeHtml(text: string): string{
+  return text
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}

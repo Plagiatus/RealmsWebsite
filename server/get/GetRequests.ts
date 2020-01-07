@@ -1,10 +1,9 @@
-import { skin } from "./skin";
 import { ping } from "./ping";
 
 export class GetRequest {
   requests: Map<string, Function> = new Map<string, Function>();
   constructor(){
-    this.requests.set(skin.name, skin);
+    //this.requests.set(skin.name, skin);
     this.requests.set(ping.name, ping);
   }
   
