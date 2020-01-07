@@ -1,4 +1,3 @@
-import { skin } from "./skin";
 import { ping } from "./ping";
 
 export class GetRequest {
