@@ -2,6 +2,7 @@ var overview;
 (function (overview) {
     window.addEventListener("load", init);
     let realmsList;
+    let toObsfuscate;
     function init() {
         document.getElementsByTagName("h1")[0].innerText = "Welcome " + getCookie("name");
         if (!checkCredentials(false)) {
@@ -12,16 +13,16 @@ var overview;
         realmsList = document.getElementById("realmsList");
         createRealmsDisplay();
         document.getElementById("showAll").dispatchEvent(new Event("change"));
+        toObsfuscate = document.getElementsByClassName("obfuscated");
+        // setInterval(obfuscate, 100, toObsfuscate);
     }
     function createRealmsDisplay() {
         let data = getCredentials();
         data["command"] = "getWorlds";
         let result = sendPOSTRequest(data);
         if (result.servers && result.servers.length > 0) {
-            console.log(result.servers);
             result.servers = result.servers.sort(sortRealms);
             realmsList.innerHTML = "";
-            console.log(result.servers);
             for (let s of result.servers) {
                 // console.log(s);
                 createOneRealm(s, data.name);

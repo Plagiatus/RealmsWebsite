@@ -2,6 +2,7 @@ namespace overview {
 
   window.addEventListener("load", init);
   let realmsList: HTMLDivElement;
+  let toObsfuscate: HTMLCollectionOf<Element>;
 
   function init() {
     document.getElementsByTagName("h1")[0].innerText = "Welcome " + getCookie("name");
@@ -13,6 +14,8 @@ namespace overview {
     realmsList = <HTMLDivElement>document.getElementById("realmsList");
     createRealmsDisplay();
     document.getElementById("showAll").dispatchEvent(new Event("change"));
+    toObsfuscate = document.getElementsByClassName("obfuscated");
+    // setInterval(obfuscate, 100, toObsfuscate);
   }
 
   function createRealmsDisplay() {
@@ -20,10 +23,8 @@ namespace overview {
     data["command"] = "getWorlds";
     let result = sendPOSTRequest(data);
     if (result.servers && result.servers.length > 0) {
-      console.log(result.servers);
       result.servers = result.servers.sort(sortRealms);
       realmsList.innerHTML = "";
-      console.log(result.servers);
       for (let s of result.servers) {
         // console.log(s);
         createOneRealm(s, data.name);
@@ -82,6 +83,20 @@ namespace overview {
     let result = sendPOSTRequest(data);
   }
 
+  // TODO: fix obfuscation to not override other formatting tags.
+  // function obfuscate(elements:  HTMLCollectionOf<Element>) {
+  //   let chars: string = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZöäüÖÄÜ+-#@$%&/(\\()[]{}";
+  //   for (let elem of elements) {
+  //     // if(elem.children.length > 0) obfuscate(elem.children);
+  //     let length: number = (<HTMLElement>elem).innerText.length;
+  //     console.log(elem);
+  //     // let newText: string = "";
+  //     // for (let i: number = 0; i < length; i++) {
+  //     //   newText += chars[Math.floor(Math.random() * chars.length)];
+  //     // }
+  //     // (<HTMLElement>elem).innerText = newText;
+  //   }
+  // }
 
   interface Server {
     id: number,
