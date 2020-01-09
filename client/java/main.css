@@ -6,3 +6,69 @@ footer {
   position: absolute;
   bottom: 0;
 }
+
+/* TEXT COLORS AND FORMATTING */
+.black{
+  color: #000000;
+}
+.dark_gray{
+  color: #555555;
+}
+.gray{
+  color: #aaaaaa;
+}
+.white{
+  color: #ffffff;
+}
+.dark_purple{
+  color: #aa00aa;
+}
+.light_purple{
+  color: #ff55ff;
+}
+.blue{
+  color: #5555ff;
+}
+.dark_blue{
+  color: #0000aa;
+}
+.dark_aqua{
+  color: #00aaaa;
+}
+.aqua{
+  color: #55ffff;
+}
+.green{
+  color: #55ff55;
+}
+.dark_green{
+  color: #00aa00;
+}
+.yellow{
+  color: #ffff55;
+}
+.gold{
+  color: #ffaa00;
+}
+.red{
+  color: #ff5555;
+}
+.dark_red{
+  color: #aa0000;
+}
+/*.obfuscated{
+  
+}*/
+.bold{
+  font-weight: bold;
+}
+.strikethrough{
+  text-decoration: line-through;
+}
+.italic{
+  font-style: italic;
+}
+.underline{
+  text-decoration: underline;
+}
+

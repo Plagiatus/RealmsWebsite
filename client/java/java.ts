@@ -160,7 +160,7 @@ function getCredentials() {
 
 function confirmCredentials(email, uuid, name, token): boolean {
   //TODO might need to check the timeout on this, it might be too long. Or even remove it after all
-  if(getCookie("credentialsConfirmed")){
+  if (getCookie("credentialsConfirmed")) {
     return true;
   }
   let data = {
@@ -189,22 +189,22 @@ function confirmCredentials(email, uuid, name, token): boolean {
   }
 }
 
-function removeCredentials(){
+function removeCredentials() {
   removeCookie("email");
   removeCookie("token");
   removeCookie("uuid");
   removeCookie("name");
 }
 
-function checkWorldId(){
-  if(!getCookie("worldid")){
+function checkWorldId() {
+  if (!getCookie("worldid")) {
     window.location.replace("..");
   }
 }
 
 //#endregion
 
-function sendPOSTRequest(data: any): any{
+function sendPOSTRequest(data: any): any {
   try {
     let xhr: XMLHttpRequest = new XMLHttpRequest();
     xhr.open("POST", serverAddress, false);
@@ -222,11 +222,48 @@ function sendPOSTRequest(data: any): any{
   }
 }
 
-function escapeHtml(text: string): string{
+function escapeHtml(text: string): string {
   return text
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function applyFormatingCodes(text: string): string {
+  let result: string = "<span>";
+  let classes = {
+    "0": "black", "1": "dark_blue", "2": "dark_green", "3": "dark_aqua", "4": "dark_red", "5": "dark_purple", "6": "gold", "7": "gray", "8": "dark_gray", "9": "blue",
+    "a": "green", "b": "aqua", "c": "red", "d": "light_purple", "e": "yellow", "f": "white", "k": "obfuscated", "l": "bold", "m": "strikethrough", "n": "underline", "o": "italic", "r": "reset"
+  };
+  let textArray: string[] = text.split("§");
+  if (textArray.length <= 0) return "";
+  let depth: number = 1;
+  result += textArray[0];
+  for (let i: number = 1; i < textArray.length; i++) {
+    if (textArray[i].length <= 0) {
+      result += "§";
+      continue;
+    }
+    let char: string = textArray[i].substr(0, 1);
+    if (char == "r") {
+      resetDepth();
+      continue;
+    }
+    if (!classes[char]) {
+      result += "§" + textArray[i];
+      continue;
+    }
+    result += `<span class="${classes[char]}">${textArray[i].substring(1)}`;
+    depth++;
+  }
+  resetDepth();
+  return result;
+  function resetDepth() {
+    for (let i: number = 0; i < depth; i++) {
+      result += "</span>"
+    }
+    depth = 0;
+  }
 }

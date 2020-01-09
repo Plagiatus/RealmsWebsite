@@ -1,7 +1,7 @@
 //TODO: rewrite anything that takes a while (especially server requests) using webworkers for multithreadding.
 // see https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
-// let serverAddress = "http://localhost:8100";
-let serverAddress = "https://realmadmin.herokuapp.com";
+let serverAddress = "http://localhost:8100";
+// let serverAddress: string = "https://realmadmin.herokuapp.com";
 //#region Error
 let errorUnderlay = null;
 function displayError(error) {
@@ -217,4 +217,41 @@ function escapeHtml(text) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+}
+function applyFormatingCodes(text) {
+    let result = "<span>";
+    let classes = {
+        "0": "black", "1": "dark_blue", "2": "dark_green", "3": "dark_aqua", "4": "dark_red", "5": "dark_purple", "6": "gold", "7": "gray", "8": "dark_gray", "9": "blue",
+        "a": "green", "b": "aqua", "c": "red", "d": "light_purple", "e": "yellow", "f": "white", "k": "obfuscated", "l": "bold", "m": "strikethrough", "n": "underline", "o": "italic", "r": "reset"
+    };
+    let textArray = text.split("§");
+    if (textArray.length <= 0)
+        return "";
+    let depth = 1;
+    result += textArray[0];
+    for (let i = 1; i < textArray.length; i++) {
+        if (textArray[i].length <= 0) {
+            result += "§";
+            continue;
+        }
+        let char = textArray[i].substr(0, 1);
+        if (char == "r") {
+            resetDepth();
+            continue;
+        }
+        if (!classes[char]) {
+            result += "§" + textArray[i];
+            continue;
+        }
+        result += `<span class="${classes[char]}">${textArray[i].substring(1)}`;
+        depth++;
+    }
+    resetDepth();
+    return result;
+    function resetDepth() {
+        for (let i = 0; i < depth; i++) {
+            result += "</span>";
+        }
+        depth = 0;
+    }
 }

@@ -38,8 +38,8 @@ var overview;
             imgURL = "../img/expired_icon.png";
         generalDiv.innerHTML = `
       <img src="${imgURL}" alt="${r.expired ? "expired" : "active"}">
-      <span id="realmName">${escapeHtml(removeFormatCodes(r.properties.name))}</span><br>
-      <span id="realmDescription">${escapeHtml(removeFormatCodes(r.properties.description))}</span><br>
+      <span id="realmName">${applyFormatingCodes(escapeHtml(r.properties.name))}</span><br>
+      <span id="realmDescription">${applyFormatingCodes(escapeHtml(r.properties.description))}</span><br>
       <span id="realmID">${r.id}</span><br>
       <span id="realmSubscriptionStatus">${formatDays(r.daysLeft)}</span><br>
     `;
