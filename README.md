@@ -1,7 +1,12 @@
-# RealmsWebsite
+# Realms Website / Realms Admin
 My attempt at making a website that allows you to modify your Minecraft Realm from outside the game
 
 The plan is to make it run on a website in the future, maybe even a mobile app. But not before it's stable, safe and decently functional.
+
+## See it in action
+[➡ click here ⬅](https://plagiatus.github.io/RealmsWebsite/client/)  
+WARNING: This is the very WIP version of the Repo and everything might break at any time for any reason. For a more stable, less "nightly" version try [this](https://plagiatus.net/tools/realmadmin/).
+
 
 ## How to run for yourself
 
