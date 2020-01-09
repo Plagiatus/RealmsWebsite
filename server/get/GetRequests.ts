@@ -1,10 +1,12 @@
 import { ping } from "./ping";
+// import { playerUUID } from "./playerUUID";
 
 export class GetRequest {
   requests: Map<string, Function> = new Map<string, Function>();
   constructor(){
     //this.requests.set(skin.name, skin);
     this.requests.set(ping.name, ping);
+    // this.requests.set(playerUUID.name, playerUUID);
   }
   
   get(name: string): Function {
