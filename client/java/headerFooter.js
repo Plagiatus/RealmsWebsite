@@ -10,7 +10,7 @@ var headerFooter;
         if (!headerFooter.loadHeader)
             return;
         let pathnameRaw = window.location.pathname.split("/");
-        let pathname = pathnameRaw[pathnameRaw.length - 1].includes(".html") ? pathnameRaw[pathnameRaw.length - 2] : pathnameRaw[pathnameRaw.length - 1];
+        let pathname = pathnameRaw[pathnameRaw.length - 1].includes(".html") || pathnameRaw[pathnameRaw.length - 1].length == 0 ? pathnameRaw[pathnameRaw.length - 2] : pathnameRaw[pathnameRaw.length - 1];
         let worldid = getCookie("worldid");
         let newBodyContent = `
     <main>
