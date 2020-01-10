@@ -1,11 +1,12 @@
 var login;
 (function (login) {
     window.addEventListener("load", init);
+    headerFooter.loadHeader = false;
     function init() {
         // console.log(window.location);
         if (checkCredentials(false)) {
             console.log("already logged in");
-            window.location.replace("..");
+            window.location.replace("../realms");
             return;
         }
     }

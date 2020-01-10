@@ -7,82 +7,85 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Login</title>
   <script src="../java.js"></script>
+  <script src="../headerFooter.js"></script>
   <script src="login.js"></script>
+  <link rel="stylesheet" href="../main.css">
 </head>
 
 <body>
-  <form id="login">
-    <div id="credentials">
-      <label for="email">Email</label>
-      <input type="email" name="email" id="email" placeholder="you@example.com" autofocus>
-      <label for="password">Password</label>
-      <input type="password" name="password" id="password" placeholder="password">
-      <button type="button" onclick="login.loginWithEmail()">Login using Email/Password</button>
-    </div>
-    <div id="tokenCredentials">
-      <label for="email2">Email</label>
-      <input type="email" name="email2" id="email2" placeholder="you@example.com" autofocus>
-      <label for="playername">Playername</label>
-      <input type="text" name="playername" id="playername" placeholder="Notch">
-      <label for="uuid">UUID</label>
-      <input type="text" name="uuid" id="uuid" placeholder="069a79f444e94726a5befca90e38aaf5">
-      <label for="token">Token</label>
-      <input type="password" name="token" id="token" placeholder="AVeryLongTokenThatTakesAllTheSpaceHere">
-      <a href="./tokeninfo.html">What is a token and where can i find mine?</a>
-      <button type="button" onclick="login.loginWithToken()">Login using Email/Token/UUID/Playername</button>
-    </div>
-    <div id="rememberContainer">
-      <span>Stay logged in for</span>
-      <input type="radio" name="remember" id="remember1h" value="1">
-      <label for="remember1h">an hour</label>
-      <input type="radio" name="remember" id="remember1d" value="24">
-      <label for="remember1d">a day</label>
-      <input type="radio" name="remember" id="remember7d" value="168">
-      <label for="remember7d">a week</label>
-      <input type="radio" name="remember" id="remember30d" value="720" checked>
-      <label for="remember30d">a month</label>
-    </div>
-    <div id="refreshContainer">
-      <input type="checkbox" name="refresh" id="refresh" value="true">
-      <label for="refresh">Refresh</label>
-      <a title="Refresh the login whenever you use the site">(?)</a>
-    </div>
-    <div id="error">
-      <span id="errormessage" style="color: red;"></span>
-    </div>
-  </form>
-  <div id="explanation">
-    <h3>This is an early alpha version</h3>
-    <span>It's laggy, it's slow, it looks ugly and occasionally throws an error. I'm aware and working on that.
-      :D</span>
+  <main>
+    <form id="login">
+      <div id="credentials">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" placeholder="you@example.com" autofocus>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" placeholder="password">
+        <button type="button" onclick="login.loginWithEmail()">Login using Email/Password</button>
+      </div>
+      <div id="tokenCredentials">
+        <label for="email2">Email</label>
+        <input type="email" name="email2" id="email2" placeholder="you@example.com" autofocus>
+        <label for="playername">Playername</label>
+        <input type="text" name="playername" id="playername" placeholder="Notch">
+        <label for="uuid">UUID</label>
+        <input type="text" name="uuid" id="uuid" placeholder="069a79f444e94726a5befca90e38aaf5">
+        <label for="token">Token</label>
+        <input type="password" name="token" id="token" placeholder="AVeryLongTokenThatTakesAllTheSpaceHere">
+        <a href="./tokeninfo.html">What is a token and where can i find mine?</a>
+        <button type="button" onclick="login.loginWithToken()">Login using Email/Token/UUID/Playername</button>
+      </div>
+      <div id="rememberContainer">
+        <span>Stay logged in for</span>
+        <input type="radio" name="remember" id="remember1h" value="1">
+        <label for="remember1h">an hour</label>
+        <input type="radio" name="remember" id="remember1d" value="24">
+        <label for="remember1d">a day</label>
+        <input type="radio" name="remember" id="remember7d" value="168">
+        <label for="remember7d">a week</label>
+        <input type="radio" name="remember" id="remember30d" value="720" checked>
+        <label for="remember30d">a month</label>
+      </div>
+      <div id="refreshContainer">
+        <input type="checkbox" name="refresh" id="refresh" value="true">
+        <label for="refresh">Refresh</label>
+        <a title="Refresh the login whenever you use the site">(?)</a>
+      </div>
+      <div id="error">
+        <span id="errormessage" style="color: red;"></span>
+      </div>
+    </form>
+    <div id="explanation">
+      <h3>This is an early alpha version</h3>
+      <span>It's laggy, it's slow, it looks ugly and occasionally throws an error. I'm aware and working on that.
+        :D</span>
 
-    <h3>Why should I trust you with my login data?</h3>
-    <span>
-      Good question, thanks for asking. <br>
-      You shouldn't. It's as simple as that. Trust no-one who wants your login data for anything, other than the
-      original company you've made that info for.<br>
-      <br>
-      This is also why you can login using the token, as that one is easily invalidated and doesn't allow anyone to
-      steal your account details.
-      <br>
-      And I would really like for this application to be server-less, browser/client side only, but sadly mojangs api
-      servers don't allow requests from browsers directly,
-      so I need a server to relay that request for you to be able to access the api. I've made the code open source,
-      in
-      part for that reason, so that everyone can open it up
-      and see that nothing is logged other than error messages, that nothing is saved on the server and everything is
-      saved in your browser (oh yeah btw, I'm using cookies for that).
-      <br><br>
-      <a href="https://github.com/Plagiatus/RealmsWebsite" target="_blank">Sourcecode of this website and the
-        server.</a>
-      <br><br>
-      If you have any questions about this project, feel free to <a href="https://plagiatus.net/#contact"
-        target="_blank">contact me</a> and I'll gladly answer any and all questions you have.
-      <br><br>
-      - Plagiatus
-    </span>
-  </div>
-
+      <h3>Why should I trust you with my login data?</h3>
+      <span>
+        Good question, thanks for asking. <br>
+        You shouldn't. It's as simple as that. Trust no-one who wants your login data for anything, other than the
+        original company you've made that info for.<br>
+        <br>
+        This is also why you can login using the token, as that one is easily invalidated and doesn't allow anyone to
+        steal your account details.
+        <br>
+        And I would really like for this application to be server-less, browser/client side only, but sadly mojangs api
+        servers don't allow requests from browsers directly,
+        so I need a server to relay that request for you to be able to access the api. I've made the code open source,
+        in
+        part for that reason, so that everyone can open it up
+        and see that nothing is logged other than error messages, that nothing is saved on the server and everything is
+        saved in your browser (oh yeah btw, I'm using cookies for that).
+        <br><br>
+        <a href="https://github.com/Plagiatus/RealmsWebsite" target="_blank">Sourcecode of this website and the
+          server.</a>
+        <br><br>
+        If you have any questions about this project, feel free to <a href="https://plagiatus.net/#contact"
+          target="_blank">contact me</a> and I'll gladly answer any and all questions you have.
+        <br><br>
+        - Plagiatus
+      </span>
+    </div>
+  </main>
 </body>
 
 </html>

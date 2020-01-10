@@ -1,12 +1,12 @@
 namespace headerFooter {
+  export let loadHeader: boolean = true;
+  export let loadFooter: boolean = true;
   window.addEventListener("load", header);
   window.addEventListener("load", footer);
   let div: HTMLDivElement = <HTMLDivElement>document.getElementById("RealmDisplayInHeader");
   // div.innerHTML = "TEST";
   function header() {
-    // for(let elem of document.getElementsByClassName("needsWorldId")){
-    //   (<HTMLAnchorElement>elem).removeAttribute("href");
-    // }
+    if(!loadHeader) return;
     let worldid = getCookie("worldid");
     let newBodyContent: string = `
     <main>
@@ -32,12 +32,13 @@ namespace headerFooter {
     document.body.innerHTML = newBodyContent;
   }
   function footer() {
+    if(!loadFooter) return;
     let footer: string = `
     <footer>
       <hr>
       <div class="info">
         <span class="bold red">THIS IS AN UNSTABLE ALPHA VERSION and currently under development!</span>
-        I know that everything currently is slow and unresponsive and ugly, it's on my list.
+        I know that everything currently is slow and unresponsive and ugly, I'm working on it, bit by bit.
       </div>
       <div class="links">
         <nav>
