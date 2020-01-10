@@ -18,6 +18,7 @@ var headerFooter;
         <div style="height: 1px;"></div>
         <nav id="mainmenu">
           <ul>
+            <li><img src="../img/icon.png" alt="" height="30px" style="padding: 0 5px"></li>
             <li><a class="${pathname == "realms" ? "activePage" : ""}" href="../realms">Realms</a></li>
             <li><a class="${pathname == "overview" ? "activePage" : ""}${worldid ? "" : "disabled"}" ${worldid ? 'href="../overview"' : ""}>Overview</a></li>
             <li><a class="${pathname == "players" ? "activePage" : ""} ${worldid ? "" : "disabled"}" ${worldid ? 'href="../players"' : ""}>Players</a></li>

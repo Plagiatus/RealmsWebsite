@@ -8,5 +8,5 @@ function logout() {
     if (result.error)
         return;
     removeCredentials();
-    window.location.replace("..");
+    window.location.replace("../login");
 }
