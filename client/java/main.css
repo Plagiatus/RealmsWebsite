@@ -2,9 +2,19 @@
   display: none;
 }
 
-footer {
-  position: absolute;
-  bottom: 0;
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+main{
+  min-height: calc(100vh - 100px);
+}
+
+footer{
+  height: 100px;
+  background-color: #efefef;
+  text-align: center;
 }
 
 /* TEXT COLORS AND FORMATTING */

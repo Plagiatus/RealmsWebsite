@@ -1,0 +1,61 @@
+var headerFooter;
+(function (headerFooter) {
+    window.addEventListener("load", header);
+    window.addEventListener("load", footer);
+    let div = document.getElementById("RealmDisplayInHeader");
+    // div.innerHTML = "TEST";
+    function header() {
+        // for(let elem of document.getElementsByClassName("needsWorldId")){
+        //   (<HTMLAnchorElement>elem).removeAttribute("href");
+        // }
+        let worldid = getCookie("worldid");
+        let newBodyContent = `
+    <main>
+      <header>
+        <div style="height: 1px;"></div>
+        <nav id="mainmenu">
+          <ul>
+            <li><a href="../realms">Realms</a></li>
+            <li><a href="../overview">Overview</a></li>
+            <li><a ${worldid ? 'href="../players"' : ""}>Players</a></li>
+            <li><a ${worldid ? 'href="../worlds"' : ""}>Worlds</a></li>
+            <li><a ${worldid ? 'href="../settings"' : ""}>Settings</a></li>
+            <li><a href="../logout">Logout</a></li>
+          </ul>
+        </nav>
+        <div id="RealmDisplayInHeader">
+          <!-- RealmName -->
+        </div>
+        </header>
+        ${document.body.innerHTML}
+      </main>`;
+        document.body.innerHTML = newBodyContent;
+    }
+    function footer() {
+        let footer = `
+    <footer>
+      <hr>
+      <div class="info">
+        <span class="bold red">THIS IS AN UNSTABLE ALPHA VERSION and currently under development!</span>
+        I know that everything currently is slow and unresponsive and ugly, it's on my list.
+      </div>
+      <div class="links">
+        <nav>
+          <a href="https://github.com/Plagiatus/RealmsWebsite">Website-Code on Github</a> | 
+          <a href="https://plagiatus.net/">Other things I do</a> | 
+          <a href="https://plagiatus.net/impressum">Impressum</a> | 
+          <a href="https://plagiatus.net/impressum">Data Protection Information</a> | 
+          <a href="https://plagiatus.net/#contact">Contact</a>
+        </nav>
+      </div>
+      <div class="thanks">
+        Thank you to <a href="https://crafatar.com">Crafatar</a> for providing the avatars.
+      </div>
+      <div class="copyright">
+        © Lukas Scheuerle, 2020. All Rights Reserved.
+        This page is not affiliated to or endorsed by Mojang or Microsoft. 
+      </div>
+    </footer>`;
+        document.body.innerHTML += footer;
+    }
+})(headerFooter || (headerFooter = {}));
