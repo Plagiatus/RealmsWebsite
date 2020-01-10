@@ -10,6 +10,7 @@ var overview;
         checkCredentials();
         initReferences();
         createOverview();
+        obfuscate();
     }
     function initReferences() {
         generalDiv = document.getElementById("general");

@@ -1,8 +1,8 @@
 //TODO: rewrite anything that takes a while (especially server requests) using webworkers for multithreadding.
 // see https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
 
-let serverAddress: string = "http://localhost:8100";
-// let serverAddress: string = "https://realmadmin.herokuapp.com";
+// let serverAddress: string = "http://localhost:8100";
+let serverAddress: string = "https://realmadmin.herokuapp.com";
 
 //#region Error
 let errorUnderlay: HTMLDivElement = null;
@@ -266,4 +266,36 @@ function applyFormatingCodes(text: string): string {
     }
     depth = 0;
   }
+}
+
+function obfuscate(){
+  let toObsfuscate: Text[] = prepareObfuscation(document.getElementsByClassName("obfuscated"));
+  setInterval(obfuscateThis, 100, toObsfuscate);
+}
+
+function obfuscateThis(texts: Text[]) {
+  let chars: string = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZöäüÖÄÜ+-#@$%&/(\\()[]{}";
+  for (let txt of texts) {
+    let length: number = txt.data.length;
+    let newText: string = "";
+    for (let i: number = 0; i < length; i++) {
+      newText += chars[Math.floor(Math.random() * chars.length)];
+    }
+    txt.data = newText;
+  }
+}
+
+function prepareObfuscation(elements: HTMLCollectionOf<Element>): Text[] {
+  let texts: Text[] = [];
+  for (let elem of elements) {
+    if (elem.children.length > 0) {
+      texts = texts.concat(prepareObfuscation(elem.children));
+    }
+    for (let cN of elem.childNodes) {
+      if (cN.nodeType == Node.TEXT_NODE) {
+        texts.push(<Text>cN);
+      }
+    }
+  }
+  return texts;
 }

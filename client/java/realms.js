@@ -2,7 +2,6 @@ var overview;
 (function (overview) {
     window.addEventListener("load", init);
     let realmsList;
-    let toObsfuscate;
     function init() {
         document.getElementsByTagName("h1")[0].innerText = "Welcome " + getCookie("name");
         if (!checkCredentials(false)) {
@@ -13,8 +12,7 @@ var overview;
         realmsList = document.getElementById("realmsList");
         createRealmsDisplay();
         document.getElementById("showAll").dispatchEvent(new Event("change"));
-        toObsfuscate = document.getElementsByClassName("obfuscated");
-        // setInterval(obfuscate, 100, toObsfuscate);
+        obfuscate();
     }
     function createRealmsDisplay() {
         let data = getCredentials();

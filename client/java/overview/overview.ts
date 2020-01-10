@@ -12,6 +12,7 @@ namespace overview {
     checkCredentials();
     initReferences();
     createOverview();
+    obfuscate();
   }
 
   function initReferences() {
