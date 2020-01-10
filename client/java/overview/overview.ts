@@ -120,43 +120,4 @@ namespace overview {
   function removeFormatCodes(s: string): string {
     return s.replace(/§./g, "");
   }
-
-
-  interface RealmsServer {
-    id: number;
-    remoteSubscriptionId: number;
-    owner: string;
-    ownerUUID: string;
-    properties: { name: string, description: string };
-    defaultPermission: string;
-    state: string;
-    daysLeft: number;
-    expired: boolean;
-    expiredTrial: boolean;
-    gracePeriod: boolean;
-    worldType: string;
-    players: Player[];
-    maxPlayers: number;
-    minigameName: string;
-    minigameId: number;
-    minigameImage: string;
-    activeSlot: number;
-    slots: Map<number, RealmsWorldOptions>;
-    member: boolean;
-    clubId: number;
-  }
-  interface Player {
-    name: string;
-    uuid: string;
-    operator: boolean;
-    accepted: boolean;
-    online: boolean;
-  }
-  interface RealmsWorldOptions {
-    slotName: string;
-    templateId: number;
-    templateImage: string;
-    adventureMap: boolean;
-    empty: boolean;
-  }
 }

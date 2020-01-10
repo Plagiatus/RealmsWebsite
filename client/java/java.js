@@ -187,9 +187,11 @@ function removeCredentials() {
     removeCookie("name");
 }
 function checkWorldId() {
+    let wid = Number(getCookie("worldid"));
     if (!getCookie("worldid")) {
         window.location.replace("..");
     }
+    return wid;
 }
 //#endregion
 function sendPOSTRequest(data) {
@@ -283,4 +285,21 @@ function prepareObfuscation(elements) {
         }
     }
     return texts;
+}
+// Usage:
+// let wic: WorldIDChecker = new WorldIDChecker();
+// wic.addEventListener("worldIDChange",yourFunction);
+class WorldIDChecker extends EventTarget {
+    constructor() {
+        super();
+        this.id = Number(getCookie("worldid"));
+        setInterval(this.checkID.bind(this), 1000);
+    }
+    checkID() {
+        if (this.id == Number(getCookie("worldid"))) {
+            return;
+        }
+        this.id = Number(getCookie("worldid"));
+        this.dispatchEvent(new Event("worldIDChange"));
+    }
 }

@@ -197,9 +197,11 @@ function removeCredentials() {
 }
 
 function checkWorldId() {
+  let wid: number = Number(getCookie("worldid"));
   if (!getCookie("worldid")) {
     window.location.replace("..");
   }
+  return wid;
 }
 
 //#endregion
@@ -268,7 +270,7 @@ function applyFormatingCodes(text: string): string {
   }
 }
 
-function obfuscate(){
+function obfuscate() {
   let toObsfuscate: Text[] = prepareObfuscation(document.getElementsByClassName("obfuscated"));
   setInterval(obfuscateThis, 100, toObsfuscate);
 }
@@ -298,4 +300,62 @@ function prepareObfuscation(elements: HTMLCollectionOf<Element>): Text[] {
     }
   }
   return texts;
+}
+
+// Usage:
+// let wic: WorldIDChecker = new WorldIDChecker();
+// wic.addEventListener("worldIDChange",yourFunction);
+class WorldIDChecker extends EventTarget {
+  private id: number;
+  constructor() {
+    super();
+    this.id = Number(getCookie("worldid"));
+    setInterval(this.checkID.bind(this), 1000)
+  }
+  checkID() {
+    if (this.id == Number(getCookie("worldid"))) {
+      return;
+    }
+    this.id = Number(getCookie("worldid"));
+    this.dispatchEvent(new Event("worldIDChange"));
+  }
+}
+
+interface RealmsServer {
+  error: any;
+  id: number;
+  remoteSubscriptionId: number;
+  owner: string;
+  ownerUUID: string;
+  properties: { name: string, description: string };
+  defaultPermission: string;
+  state: string;
+  daysLeft: number;
+  expired: boolean;
+  expiredTrial: boolean;
+  gracePeriod: boolean;
+  worldType: string;
+  players: Player[];
+  maxPlayers: number;
+  minigameName: string;
+  minigameId: number;
+  minigameImage: string;
+  activeSlot: number;
+  slots: Map<number, RealmsWorldOptions>;
+  member: boolean;
+  clubId: number;
+}
+interface Player {
+  name: string;
+  uuid: string;
+  operator: boolean;
+  accepted: boolean;
+  online: boolean;
+}
+interface RealmsWorldOptions {
+  slotName: string;
+  templateId: number;
+  templateImage: string;
+  adventureMap: boolean;
+  empty: boolean;
 }
