@@ -4,8 +4,7 @@ var overview;
     let realmsList;
     function init() {
         document.getElementsByTagName("h1")[0].innerText = "Welcome " + getCookie("name");
-        if (!checkCredentials(false)) {
-            window.location.replace("login");
+        if (!checkCredentials()) {
             return;
         }
         document.getElementById("showAll").addEventListener("change", toggleVisibility);
@@ -70,7 +69,7 @@ var overview;
     }
     function selectRealm(id) {
         setCookie("worldid", id.toString());
-        window.location.replace("./overview");
+        window.location.replace("../overview");
     }
     overview.selectRealm = selectRealm;
     function leaveRealm(id) {
