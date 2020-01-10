@@ -1,5 +1,5 @@
-var overview;
-(function (overview) {
+var realmsList;
+(function (realmsList_1) {
     window.addEventListener("load", init);
     let realmsList;
     function init() {
@@ -45,7 +45,7 @@ var overview;
         <span>${applyFormatingCodes(escapeHtml(_server.properties.name || ""))}</span>
         <span>${_server.minigameName ? "Minigame: " + escapeHtml(_server.minigameName) : applyFormatingCodes(escapeHtml(_server.properties.description || ""))}</span>
         <span>${escapeHtml(_server.owner)}</span>
-        <button onclick="${owner ? "overview.selectRealm(" + _server.id + ")" : "overview.leaveRealm(" + _server.id + ")"}">${owner ? "Edit" : "Leave"}</button>
+        <button onclick="${owner ? "realmsList.selectRealm(" + _server.id + ")" : "realmsList.leaveRealm(" + _server.id + ")"}">${owner ? "Edit" : "Leave"}</button>
       </div>`;
         //TODO add status of realm
     }
@@ -71,7 +71,7 @@ var overview;
         setCookie("worldid", id.toString());
         window.location.replace("../overview");
     }
-    overview.selectRealm = selectRealm;
+    realmsList_1.selectRealm = selectRealm;
     function leaveRealm(id) {
         let really = prompt(`If you really want to leave this realm, type "LEAVE" and click send.\nTo abort, type anything else.`);
         if (really != "LEAVE")
@@ -82,5 +82,5 @@ var overview;
         data["world"] = id;
         let result = sendPOSTRequest(data);
     }
-    overview.leaveRealm = leaveRealm;
-})(overview || (overview = {}));
+    realmsList_1.leaveRealm = leaveRealm;
+})(realmsList || (realmsList = {}));

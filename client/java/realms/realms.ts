@@ -1,4 +1,4 @@
-namespace overview {
+namespace realmsList {
 
   window.addEventListener("load", init);
   let realmsList: HTMLDivElement;
@@ -44,7 +44,7 @@ namespace overview {
         <span>${applyFormatingCodes(escapeHtml(_server.properties.name || ""))}</span>
         <span>${_server.minigameName ? "Minigame: " + escapeHtml(_server.minigameName) : applyFormatingCodes(escapeHtml(_server.properties.description || ""))}</span>
         <span>${escapeHtml(_server.owner)}</span>
-        <button onclick="${owner ? "overview.selectRealm(" + _server.id + ")" : "overview.leaveRealm(" + _server.id + ")"}">${owner ? "Edit" : "Leave"}</button>
+        <button onclick="${owner ? "realmsList.selectRealm(" + _server.id + ")" : "realmsList.leaveRealm(" + _server.id + ")"}">${owner ? "Edit" : "Leave"}</button>
       </div>`;
     //TODO add status of realm
   }

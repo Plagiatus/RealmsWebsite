@@ -118,7 +118,7 @@ footer{
 
 /* OVERRIDES */
 
-@media screen and (min-width: 700px){
+@media screen and (min-width: 720px){
   /* HEADER */
   nav#mainmenu > ul li a{
     width: 80px;
