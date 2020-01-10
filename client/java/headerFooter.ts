@@ -6,7 +6,9 @@ namespace headerFooter {
   let div: HTMLDivElement = <HTMLDivElement>document.getElementById("RealmDisplayInHeader");
   // div.innerHTML = "TEST";
   function header() {
-    if(!loadHeader) return;
+    if (!loadHeader) return;
+    let pathnameRaw: string[] = window.location.pathname.split("/");
+    let pathname: string = pathnameRaw[pathnameRaw.length - 1].includes(".html") ? pathnameRaw[pathnameRaw.length - 2] : pathnameRaw[pathnameRaw.length - 1];
     let worldid = getCookie("worldid");
     let newBodyContent: string = `
     <main>
@@ -14,12 +16,12 @@ namespace headerFooter {
         <div style="height: 1px;"></div>
         <nav id="mainmenu">
           <ul>
-            <li><a href="../realms">Realms</a></li>
-            <li><a href="../overview">Overview</a></li>
-            <li><a ${worldid ? 'href="../players"' : ""}>Players</a></li>
-            <li><a ${worldid ? 'href="../worlds"' : ""}>Worlds</a></li>
-            <li><a ${worldid ? 'href="../settings"' : ""}>Settings</a></li>
-            <li><a href="../logout">Logout</a></li>
+            <li><a class="${pathname=="realms" ? "activePage" : ""}" href="../realms">Realms</a></li>
+            <li><a class="${pathname=="overview" ? "activePage" : ""}${worldid ? "" : "disabled"}" ${worldid ? 'href="../overview"' : ""}>Overview</a></li>
+            <li><a class="${pathname=="players" ? "activePage" : ""} ${worldid ? "" : "disabled"}" ${worldid ? 'href="../players"' : ""}>Players</a></li>
+            <li><a class="${pathname=="worlds" ? "activePage" : ""} ${worldid ? "" : "disabled"}" ${worldid ? 'href="../worlds"' : ""}>Worlds</a></li>
+            <li><a class="${pathname=="settings" ? "activePage" : ""} ${worldid ? "" : "disabled"}" ${worldid ? 'href="../settings"' : ""}>Settings</a></li>
+            <li class="floatRight"><a class="${pathname=="logout" ? "activePage" : ""}" href="../logout">Logout</a></li>
           </ul>
         </nav>
         <div id="RealmDisplayInHeader">
@@ -32,7 +34,7 @@ namespace headerFooter {
     document.body.innerHTML = newBodyContent;
   }
   function footer() {
-    if(!loadFooter) return;
+    if (!loadFooter) return;
     let footer: string = `
     <footer>
       <hr>

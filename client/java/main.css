@@ -7,6 +7,40 @@ html, body {
   margin: 0;
 }
 
+/* HEADER */
+nav#mainmenu > ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav#mainmenu > ul li {
+  text-align: center;
+}
+nav#mainmenu > ul li a {
+  /* width: 80px; */
+  display: block;
+  text-decoration: none;
+  padding: 8px 16px;
+  background-color: #eeeeee;
+  color: #000000;
+}
+
+nav#mainmenu > ul li a:hover:not(.disabled) {
+  background-color: #555;
+  color: white;
+}
+nav#mainmenu > ul li a.disabled {
+  color: #aaaaaa;
+  background-color: #fafafa;
+}
+
+.activePage {
+  background-color: purple !important;
+  color: white !important;
+}
+
+/* FOOTER */
 main{
   min-height: calc(100vh - 100px);
 }
@@ -82,3 +116,24 @@ footer{
   text-decoration: underline;
 }
 
+/* OVERRIDES */
+
+@media screen and (min-width: 700px){
+  /* HEADER */
+  nav#mainmenu > ul li a{
+    width: 80px;
+  }
+  nav#mainmenu > ul li{
+    float: left;
+    border-right: 1px solid #000;
+  }
+  nav#mainmenu > ul{
+    background-color: #eeeeee;
+    overflow: hidden;
+  }
+  nav#mainmenu > ul li.floatRight{
+    float: right;
+    border-left: 1px solid #000;
+    border-right: 0;
+  }
+}
