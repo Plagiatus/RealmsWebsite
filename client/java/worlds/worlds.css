@@ -26,3 +26,9 @@ label {
   margin: 10px;
   padding: 10px;
 }
+#template-wrapper {
+  border: 1px solid;
+  clear: both;
+  margin: 10px;
+  padding: 10px;
+}
