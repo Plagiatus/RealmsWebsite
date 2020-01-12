@@ -10,6 +10,8 @@ import { kick } from "./kick";
 import { open } from "./open";
 import { close } from "./close";
 import { updateProperties } from "./updateProperties";
+import { changeSlot } from "./changeSlot";
+import { templates } from "./templates";
 
 export class PostRequest {
   requests: Map<string, Function> = new Map<string, Function>();
@@ -26,6 +28,8 @@ export class PostRequest {
     this.requests.set(open.name, open);
     this.requests.set(close.name, close);
     this.requests.set(updateProperties.name, updateProperties);
+    this.requests.set(changeSlot.name, changeSlot);
+    this.requests.set(templates.name, templates);
   }
   
   get(name: string): Function {

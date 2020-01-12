@@ -19,7 +19,7 @@ async function updateProperties(_input, _response) {
         let c = new MR.Client(p.getAuthToken(), main_1.latestVersion, p.name);
         let d = new MR.RealmsDescriptionDto(worldName, worldDescription, c.worlds.getWorld(world));
         c.client.setDescription(d);
-        _response.write("no reply");
+        _response.write(JSON.stringify({ reply: "none" }));
     }
 }
 exports.updateProperties = updateProperties;
