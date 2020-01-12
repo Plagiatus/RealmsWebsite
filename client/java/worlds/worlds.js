@@ -6,13 +6,17 @@ var worldsPage;
     let selectedSlot;
     let switchButtons;
     let templates;
+    let selectedTemplateDiv;
+    let templateWrapperDiv;
     function init() {
         worldid = checkWorldId();
         checkCredentials();
         getWorlds();
         switchButtons = document.getElementsByClassName("switch-slot-btn");
         document.getElementById("template-search").addEventListener("input", filterTemplates);
-        // settingsButtons = <HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("world-settings-btn");
+        selectedTemplateDiv = document.getElementById("selected-template");
+        templateWrapperDiv = document.getElementById("template-wrapper");
+        window.addEventListener("scroll", moveSelectedTemplate);
     }
     function getWorlds() {
         let data = getCredentials();
@@ -124,7 +128,7 @@ var worldsPage;
     }
     worldsPage.switchTo = switchTo;
     function showMinigames() {
-        document.getElementById("template-wrapper").classList.remove("hidden");
+        templateWrapperDiv.classList.remove("hidden");
         let data = getCredentials();
         data["command"] = "templates";
         data["type"] = "MINIGAMES";
@@ -168,7 +172,6 @@ var worldsPage;
     }
     worldsPage.filterTemplates = filterTemplates;
     function selectTemplate(event) {
-        let selectedTemplateDiv = document.getElementById("selected-template");
         let id = Number(event.currentTarget.id.split("-")[1]);
         let selectedTemplate = templates.find(tmp => tmp.id == id);
         let youtubeID = "";
@@ -211,7 +214,7 @@ var worldsPage;
         document.getElementById("worlds").querySelector(".active").classList.remove("active");
         document.getElementById("world-minigame").classList.add("active");
         window.scrollTo(0, 0);
-        document.getElementById("template-wrapper").classList.add("hidden");
+        templateWrapperDiv.classList.add("hidden");
         document.getElementById("show-minigames-btn").innerText = "Switch Minigame";
         let minigameContainer = document.getElementById("world-minigame");
         let selectedTemplate = templates.find(tmp => tmp.id == id);
@@ -219,4 +222,18 @@ var worldsPage;
         minigameContainer.querySelector("img").src = "data:image/png;base64, " + selectedTemplate.image;
     }
     worldsPage.activateTemplate = activateTemplate;
+    function moveSelectedTemplate(e) {
+        if (templateWrapperDiv.classList.contains("hidden"))
+            return;
+        let currentTop = Number(selectedTemplateDiv.style.top.split("px")[0]) || 0;
+        let maximumOffset = selectedTemplateDiv.parentElement.getBoundingClientRect().height - getAbsoluteHeight(selectedTemplateDiv) - getAbsoluteHeight(selectedTemplateDiv.previousElementSibling) - 20;
+        // console.log(selectedTemplateDiv);
+        selectedTemplateDiv.style.top = Math.min(Math.max(0, currentTop - selectedTemplateDiv.getBoundingClientRect().y + 20), maximumOffset).toString() + "px";
+    }
+    function getAbsoluteHeight(el) {
+        var styles = window.getComputedStyle(el);
+        var margin = parseFloat(styles['marginTop']) +
+            parseFloat(styles['marginBottom']);
+        return Math.ceil(el.offsetHeight + margin);
+    }
 })(worldsPage || (worldsPage = {}));

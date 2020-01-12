@@ -6,13 +6,17 @@ namespace worldsPage {
   let selectedSlot: number;
   let switchButtons: HTMLCollectionOf<HTMLButtonElement>;
   let templates: Template[];
+  let selectedTemplateDiv: HTMLDivElement;
+  let templateWrapperDiv: HTMLDivElement;
   function init() {
     worldid = checkWorldId();
     checkCredentials();
     getWorlds();
     switchButtons = <HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("switch-slot-btn");
     document.getElementById("template-search").addEventListener("input", filterTemplates);
-    // settingsButtons = <HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("world-settings-btn");
+    selectedTemplateDiv = <HTMLDivElement>document.getElementById("selected-template");
+    templateWrapperDiv = <HTMLDivElement>document.getElementById("template-wrapper");
+    window.addEventListener("scroll", moveSelectedTemplate);
   }
 
   function getWorlds() {
@@ -117,7 +121,7 @@ namespace worldsPage {
   }
 
   export function showMinigames() {
-    document.getElementById("template-wrapper").classList.remove("hidden");
+    templateWrapperDiv.classList.remove("hidden");
     let data = getCredentials();
     data["command"] = "templates";
     data["type"] = "MINIGAMES";
@@ -159,7 +163,6 @@ namespace worldsPage {
   }
 
   export function selectTemplate(event: Event) {
-    let selectedTemplateDiv: HTMLDivElement = <HTMLDivElement>document.getElementById("selected-template");
     let id: number = Number((<HTMLDivElement>event.currentTarget).id.split("-")[1]);
     let selectedTemplate: Template = templates.find(tmp => tmp.id == id);
     let youtubeID: string = "";
@@ -200,12 +203,28 @@ namespace worldsPage {
     document.getElementById("worlds").querySelector(".active").classList.remove("active");
     document.getElementById("world-minigame").classList.add("active");
     window.scrollTo(0, 0);
-    document.getElementById("template-wrapper").classList.add("hidden");
+   templateWrapperDiv.classList.add("hidden");
     document.getElementById("show-minigames-btn").innerText = "Switch Minigame";
     let minigameContainer: HTMLElement = document.getElementById("world-minigame");
     let selectedTemplate: Template = templates.find(tmp => tmp.id == id);
     (<HTMLSpanElement>minigameContainer.querySelector(".world-name")).innerText = selectedTemplate.name;
     (<HTMLImageElement>minigameContainer.querySelector("img")).src = "data:image/png;base64, "+ selectedTemplate.image;
+  }
+  
+  function moveSelectedTemplate(e: Event){
+    if(templateWrapperDiv.classList.contains("hidden")) return;
+    let currentTop: number = Number(selectedTemplateDiv.style.top.split("px")[0]) || 0;
+    let maximumOffset: number = selectedTemplateDiv.parentElement.getBoundingClientRect().height - getAbsoluteHeight(selectedTemplateDiv) - getAbsoluteHeight(<HTMLElement>selectedTemplateDiv.previousElementSibling) - 20;
+    // console.log(selectedTemplateDiv);
+    selectedTemplateDiv.style.top = Math.min(Math.max(0, currentTop - selectedTemplateDiv.getBoundingClientRect().y + 20), maximumOffset).toString() + "px";
+  }
+
+  function getAbsoluteHeight(el: HTMLElement) {
+    var styles = window.getComputedStyle(el);
+    var margin = parseFloat(styles['marginTop']) +
+                 parseFloat(styles['marginBottom']);
+  
+    return Math.ceil(el.offsetHeight + margin);
   }
 
   interface Template {
@@ -219,4 +238,5 @@ namespace worldsPage {
     type: string;
     link: string;
   }
+
 }
