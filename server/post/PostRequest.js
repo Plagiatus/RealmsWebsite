@@ -14,6 +14,7 @@ const close_1 = require("./close");
 const updateProperties_1 = require("./updateProperties");
 const changeSlot_1 = require("./changeSlot");
 const templates_1 = require("./templates");
+const setMinigame_1 = require("./setMinigame");
 class PostRequest {
     constructor() {
         this.requests = new Map();
@@ -31,6 +32,7 @@ class PostRequest {
         this.requests.set(updateProperties_1.updateProperties.name, updateProperties_1.updateProperties);
         this.requests.set(changeSlot_1.changeSlot.name, changeSlot_1.changeSlot);
         this.requests.set(templates_1.templates.name, templates_1.templates);
+        this.requests.set(setMinigame_1.setMinigame.name, setMinigame_1.setMinigame);
     }
     get(name) {
         if (!this.requests.has(name)) {

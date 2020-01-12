@@ -5,11 +5,13 @@ var worldsPage;
     let server;
     let selectedSlot;
     let switchButtons;
+    let templates;
     function init() {
         worldid = checkWorldId();
         checkCredentials();
         getWorlds();
         switchButtons = document.getElementsByClassName("switch-slot-btn");
+        document.getElementById("template-search").addEventListener("input", filterTemplates);
         // settingsButtons = <HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("world-settings-btn");
     }
     function getWorlds() {
@@ -26,20 +28,20 @@ var worldsPage;
         worlds.innerHTML = "";
         for (let i = 1; i < slots.size + 1; i++) {
             worlds.innerHTML += `
-      <div class="world-wrapper ${i == result.activeSlot ? "active" : ""}" id="world-${i}">
+      <div class="world-wrapper ${i == result.activeSlot && !result.minigameId ? "active" : ""}" id="world-${i}">
         <img src="${slots.get(i).templateImage ? "data:image/png;base64, " + slots.get(i).templateImage : "../img/placeholder.png"}" alt="" class="world-image">
         <span class="world-name">${slots.get(i).slotName || `World ${i}`}</span>
-        <button class="switch-slot-btn" onclick="worldsPage.switchTo(${i})" ${i == result.activeSlot ? "disabled" : ""}>Switch</button>
+        <button class="switch-slot-btn" onclick="worldsPage.switchTo(${i})" ${i == result.activeSlot && !result.minigameId ? "disabled" : ""}>Switch</button>
         <button class="world-settings-btn" onclick="worldsPage.showSettings(${i})" >World Settings</button>
         <button disabled>Replace World</button>
       </div>
       `;
         }
         worlds.innerHTML += `
-    <div class="world-wrapper ${4 == result.activeSlot ? "active" : ""}" id="world-3">
+    <div class="world-wrapper ${result.minigameId ? "active" : ""}" id="world-minigame">
       <img src="${result.minigameImage ? "data:image/png;base64, " + result.minigameImage : "../img/placeholder.png"}" alt="" class="world-image">
       <span class="world-name">${result.minigameName || "Minigame"}</span>
-      <button disabled>Switch to temporary Minigame</button>
+      <button id="show-minigames-btn" onclick="worldsPage.showMinigames()">${result.minigameId ? "Switch Minigame" : "Switch to temporary Minigame"}</button>
     </div>
     `;
     }
@@ -63,6 +65,7 @@ var worldsPage;
                 input.value = slotOptions[setting];
             }
         }
+        window.scrollTo(0, document.getElementById("world-settings-wrapper").offsetTop);
     }
     worldsPage.showSettings = showSettings;
     function saveWorldSettings() {
@@ -115,8 +118,105 @@ var worldsPage;
         }
         server = fixSlots(result);
         document.querySelector("#world-" + server.activeSlot + " .switch-slot-btn").disabled = true;
-        document.querySelector(".active").classList.remove("active");
+        document.getElementById("worlds").querySelector(".active").classList.remove("active");
         document.getElementById("world-" + slot).classList.add("active");
+        document.getElementById("show-minigames-btn").innerText = "Switch to temporary Minigame";
     }
     worldsPage.switchTo = switchTo;
+    function showMinigames() {
+        document.getElementById("template-wrapper").classList.remove("hidden");
+        let data = getCredentials();
+        data["command"] = "templates";
+        data["type"] = "MINIGAMES";
+        let result = sendPOSTRequest(data);
+        if (result.error)
+            return;
+        displayTemplates(result);
+    }
+    worldsPage.showMinigames = showMinigames;
+    function displayTemplates(_templates) {
+        if (!_templates || _templates.length <= 0)
+            return;
+        templates = _templates;
+        document.getElementById("template-type").innerText = _templates[0].type;
+        let templateDiv = document.getElementById("templates-wrapper");
+        templateDiv.innerHTML = "";
+        for (let temp of _templates) {
+            let div = document.createElement("div");
+            div.classList.add("template");
+            div.id = "template-" + temp.id;
+            div.innerHTML = `
+        <img src="data:image/png;base64, ${temp.image}" alt="">
+        <span class="template-name">${temp.name}</span>
+        <span class="template-author">By ${temp.author}</span>
+        <span class="template-players">${temp.recommendedPlayers}</span>
+      `;
+            div.addEventListener("click", selectTemplate);
+            templateDiv.appendChild(div);
+        }
+    }
+    function filterTemplates(event) {
+        let searchTerm = event.target.value.toLowerCase();
+        for (let temp of templates) {
+            if (searchTerm == "" || temp.name.toLowerCase().includes(searchTerm) || temp.author.toLowerCase().includes(searchTerm)) {
+                document.getElementById("template-" + temp.id).classList.remove("hidden");
+            }
+            else {
+                document.getElementById("template-" + temp.id).classList.add("hidden");
+            }
+        }
+    }
+    worldsPage.filterTemplates = filterTemplates;
+    function selectTemplate(event) {
+        let selectedTemplateDiv = document.getElementById("selected-template");
+        let id = Number(event.currentTarget.id.split("-")[1]);
+        let selectedTemplate = templates.find(tmp => tmp.id == id);
+        let youtubeID = "";
+        if (selectedTemplate.trailer.includes("youtube.com")) {
+            youtubeID = selectedTemplate.trailer.split("v=")[1];
+        }
+        else if (selectedTemplate.trailer.includes("youtu.be")) {
+            youtubeID = selectedTemplate.trailer.split("be/")[1];
+        }
+        selectedTemplateDiv.innerHTML = `
+      <img src="data:image/png;base64, ${selectedTemplate.image}" alt="">
+      <span class="template-version">${selectedTemplate.version}</span>
+      <span class="template-name">${selectedTemplate.name}</span>
+      <span class="template-author">By ${selectedTemplate.author}</span>
+      <span class="template-players">${selectedTemplate.recommendedPlayers}</span>`;
+        if (selectedTemplate && selectedTemplate.trailer != "") {
+            selectedTemplateDiv.innerHTML += `<iframe class="template-trailer" src="https://www.youtube.com/embed/${youtubeID}"></iframe>`;
+        }
+        if (selectedTemplate.link && selectedTemplate.link != "") {
+            selectedTemplateDiv.innerHTML += `<a class="template-link" href="${selectedTemplate.link}">Creator Website</a>`;
+        }
+        selectedTemplateDiv.innerHTML += `<button class="template-confirm-button" id="template-confirm-button" onclick="worldsPage.activateTemplate(${id})">Select Minigame</button>`;
+        // window.scrollTo(0, selectedTemplateDiv.offsetTop);
+        let previousActiveElement = document.getElementById("templates-wrapper").querySelector(".active");
+        if (previousActiveElement)
+            previousActiveElement.classList.remove("active");
+        event.currentTarget.classList.add("active");
+    }
+    worldsPage.selectTemplate = selectTemplate;
+    function activateTemplate(id) {
+        document.getElementById("template-confirm-button").disabled = true;
+        let data = getCredentials();
+        data["command"] = "setMinigame";
+        data["world"] = worldid;
+        data["id"] = id;
+        let result = sendPOSTRequest(data);
+        document.getElementById("template-confirm-button").disabled = false;
+        if (result.error)
+            return;
+        document.getElementById("worlds").querySelector(".active").classList.remove("active");
+        document.getElementById("world-minigame").classList.add("active");
+        window.scrollTo(0, 0);
+        document.getElementById("template-wrapper").classList.add("hidden");
+        document.getElementById("show-minigames-btn").innerText = "Switch Minigame";
+        let minigameContainer = document.getElementById("world-minigame");
+        let selectedTemplate = templates.find(tmp => tmp.id == id);
+        minigameContainer.querySelector(".world-name").innerText = selectedTemplate.name;
+        minigameContainer.querySelector("img").src = "data:image/png;base64, " + selectedTemplate.image;
+    }
+    worldsPage.activateTemplate = activateTemplate;
 })(worldsPage || (worldsPage = {}));

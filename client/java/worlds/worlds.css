@@ -31,4 +31,63 @@ label {
   clear: both;
   margin: 10px;
   padding: 10px;
+  position: relative;
+}
+#template-wrapper:not(.hidden) {
+  display: grid;
+}
+
+#templates-wrapper {
+  overflow: hidden;
+}
+
+.template {
+  width: 160px;
+  height: 250px;
+  margin: 10px;
+  padding: 10px;
+  float: left;
+  border: 1px solid;
+  text-align: center;
+}
+
+.template span,
+#selected-template span {
+  display: block;
+}
+
+#selected-template {
+  width: 300px;
+  height: 420px;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid;
+  text-align: center;
+  position: relative;
+}
+
+.template-version {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px;
+  background-color: white;
+  outline: 1px solid black;
+}
+
+.template-link{
+  display: block;
+}
+
+#template-search{
+  margin: 10px;
+  font-size: x-large;
+}
+
+#template-type{
+  grid-column: 1 / span 2;
+}
+
+#template-filter-wrapper{
+
 }

@@ -12,6 +12,7 @@ import { close } from "./close";
 import { updateProperties } from "./updateProperties";
 import { changeSlot } from "./changeSlot";
 import { templates } from "./templates";
+import { setMinigame } from "./setMinigame";
 
 export class PostRequest {
   requests: Map<string, Function> = new Map<string, Function>();
@@ -30,6 +31,7 @@ export class PostRequest {
     this.requests.set(updateProperties.name, updateProperties);
     this.requests.set(changeSlot.name, changeSlot);
     this.requests.set(templates.name, templates);
+    this.requests.set(setMinigame.name, setMinigame);
   }
   
   get(name: string): Function {

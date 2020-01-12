@@ -23,45 +23,51 @@
       <table>
         <tr>
           <td><label for="commandBlocks">Commandblocks Enabled</label></td>
-          <td><input type="hidden" name="commandBlocks" value="false"><input type="checkbox" name="commandBlocks" id="commandBlocks" value="true"></td>
+          <td><input type="hidden" name="commandBlocks" value="false"><input type="checkbox" name="commandBlocks"
+              id="commandBlocks" value="true"></td>
         </tr>
         <tr>
           <td><label for="forceGameMode">Force Gamemode</label></td>
-          <td><input type="hidden" name="forceGamemode" value="false"><input type="checkbox" name="forceGamemode" id="forceGameMode" value="true"></td>
+          <td><input type="hidden" name="forceGamemode" value="false"><input type="checkbox" name="forceGamemode"
+              id="forceGameMode" value="true"></td>
         </tr>
         <tr>
           <td><label for="gamemode">Default Gamemode</label></td>
           <td><select name="gamemode" id="gamemode">
-            <option value="0">Survival</option>
-            <option value="1">Creative</option>
-            <option value="2">Adventure</option>
-            <option value="3">Spectator</option>
-          </select></td>
+              <option value="0">Survival</option>
+              <option value="1">Creative</option>
+              <option value="2">Adventure</option>
+              <option value="3">Spectator</option>
+            </select></td>
         </tr>
         <tr>
           <td><label for="difficulty">Difficulty</label></td>
           <td><select name="difficulty" id="difficulty">
-            <option value="0">Peaceful</option>
-            <option value="1">Easy</option>
-            <option value="2">Normal</option>
-            <option value="3">Hard</option>
-          </select></td>
+              <option value="0">Peaceful</option>
+              <option value="1">Easy</option>
+              <option value="2">Normal</option>
+              <option value="3">Hard</option>
+            </select></td>
         </tr>
         <tr>
           <td><label for="pvp">PvP Enabled</label></td>
-          <td><input type="hidden" name="pvp" value="false"><input type="checkbox" name="pvp" id="pvp" value="true"></td>
+          <td><input type="hidden" name="pvp" value="false"><input type="checkbox" name="pvp" id="pvp" value="true">
+          </td>
         </tr>
         <tr>
           <td><label for="spawnAnimals">Spawn Animals</label></td>
-          <td><input type="hidden" name="spawnAnimals" value="false"><input type="checkbox" name="spawnAnimals" id="spawnAnimals" value="true"></td>
+          <td><input type="hidden" name="spawnAnimals" value="false"><input type="checkbox" name="spawnAnimals"
+              id="spawnAnimals" value="true"></td>
         </tr>
         <tr>
           <td><label for="spawnMonsters">Spawn Monsters</label></td>
-          <td><input type="hidden" name="spawnMonsters" value="false"><input type="checkbox" name="spawnMonsters" id="spawnMonsters" value="true"></td>
+          <td><input type="hidden" name="spawnMonsters" value="false"><input type="checkbox" name="spawnMonsters"
+              id="spawnMonsters" value="true"></td>
         </tr>
         <tr>
           <td><label for="spawnNPCs">Spawn Villagers</label></td>
-          <td><input type="hidden" name="spawnNPCs" value="false"><input type="checkbox" name="spawnNPCs" id="spawnNPCs" value="true"></td>
+          <td><input type="hidden" name="spawnNPCs" value="false"><input type="checkbox" name="spawnNPCs" id="spawnNPCs"
+              value="true"></td>
         </tr>
         <tr>
           <td><label for="spawnProtection">Spawn Protection (0 = disabled)</label></td>
@@ -78,7 +84,19 @@
     </form>
   </div>
   <div class="hidden" id="template-wrapper">
-    
+    <h2 id="template-type">TYPE</h2>
+    <div id="selected-template">
+      <span>Nothing selected</span>
+    </div>
+    <div id="template-filter-wrapper">
+      <div id="template-filter">
+        <input type="text" name="template-search" id="template-search" placeholder="🔎 filter...">
+        <!-- TODO: Add filter for player amount -->
+      </div>
+      <div id="templates-wrapper">
+        <span>Loading... (this might take up to 15 seconds)</span>
+      </div>
+    </div>
   </div>
   <div style="height: 1px; clear: both;"></div>
 </body>
