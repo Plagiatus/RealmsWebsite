@@ -35,6 +35,7 @@ label {
 }
 #template-wrapper:not(.hidden) {
   display: grid;
+  grid-template-columns: 350px auto;
 }
 
 #templates-wrapper {
@@ -82,12 +83,18 @@ label {
 #template-search{
   margin: 10px;
   font-size: x-large;
+  width: calc(100% - 20px);
 }
 
 #template-type{
   grid-column: 1 / span 2;
 }
 
-#template-filter-wrapper{
-
+@media screen and (max-width: 720px){
+  #template-type{
+    grid-column: 1;
+  }
+  #template-wrapper:not(.hidden) {
+    display: initial;
+  }
 }

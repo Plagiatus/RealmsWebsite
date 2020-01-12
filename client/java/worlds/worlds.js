@@ -225,6 +225,11 @@ var worldsPage;
     function moveSelectedTemplate(e) {
         if (templateWrapperDiv.classList.contains("hidden"))
             return;
+        if (window.innerWidth < 720) {
+            if (selectedTemplateDiv.style.top != "")
+                selectedTemplateDiv.style.top = "";
+            return;
+        }
         let currentTop = Number(selectedTemplateDiv.style.top.split("px")[0]) || 0;
         let maximumOffset = selectedTemplateDiv.parentElement.getBoundingClientRect().height - getAbsoluteHeight(selectedTemplateDiv) - getAbsoluteHeight(selectedTemplateDiv.previousElementSibling) - 20;
         // console.log(selectedTemplateDiv);

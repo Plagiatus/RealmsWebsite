@@ -203,16 +203,21 @@ namespace worldsPage {
     document.getElementById("worlds").querySelector(".active").classList.remove("active");
     document.getElementById("world-minigame").classList.add("active");
     window.scrollTo(0, 0);
-   templateWrapperDiv.classList.add("hidden");
+    templateWrapperDiv.classList.add("hidden");
     document.getElementById("show-minigames-btn").innerText = "Switch Minigame";
     let minigameContainer: HTMLElement = document.getElementById("world-minigame");
     let selectedTemplate: Template = templates.find(tmp => tmp.id == id);
     (<HTMLSpanElement>minigameContainer.querySelector(".world-name")).innerText = selectedTemplate.name;
-    (<HTMLImageElement>minigameContainer.querySelector("img")).src = "data:image/png;base64, "+ selectedTemplate.image;
+    (<HTMLImageElement>minigameContainer.querySelector("img")).src = "data:image/png;base64, " + selectedTemplate.image;
   }
-  
-  function moveSelectedTemplate(e: Event){
-    if(templateWrapperDiv.classList.contains("hidden")) return;
+
+  function moveSelectedTemplate(e: Event) {
+    if (templateWrapperDiv.classList.contains("hidden")) return;
+    if (window.innerWidth < 720) {
+      if (selectedTemplateDiv.style.top != "")
+        selectedTemplateDiv.style.top = "";
+      return;
+    }
     let currentTop: number = Number(selectedTemplateDiv.style.top.split("px")[0]) || 0;
     let maximumOffset: number = selectedTemplateDiv.parentElement.getBoundingClientRect().height - getAbsoluteHeight(selectedTemplateDiv) - getAbsoluteHeight(<HTMLElement>selectedTemplateDiv.previousElementSibling) - 20;
     // console.log(selectedTemplateDiv);
@@ -222,8 +227,8 @@ namespace worldsPage {
   function getAbsoluteHeight(el: HTMLElement) {
     var styles = window.getComputedStyle(el);
     var margin = parseFloat(styles['marginTop']) +
-                 parseFloat(styles['marginBottom']);
-  
+      parseFloat(styles['marginBottom']);
+
     return Math.ceil(el.offsetHeight + margin);
   }
 
