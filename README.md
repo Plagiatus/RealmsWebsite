@@ -43,14 +43,14 @@ That's it, now it's running and ready to be used.
   - [x] close
   - [ ] get ip
 - [ ] world manipulation
-  - [ ] switch slot
+  - [x] switch slot
   - [ ] download world
   - [ ] reset world
-  - [ ] swap to minigame
-- [ ] templates (minigames, experience, adventure, etc)
-  - [ ] show templates
-  - [ ] apply template
-  - [ ] search through templates
+  - [x] swap to minigame
+- [x] templates (minigames, experience, adventure, etc)
+  - [x] show templates
+  - [x] apply template
+  - [x] search through templates
 - [x] list all realms
 - [ ] show and accept/deny invitations
 
