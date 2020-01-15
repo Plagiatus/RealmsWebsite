@@ -1,8 +1,8 @@
 //TODO: rewrite anything that takes a while (especially server requests) using webworkers for multithreadding.
 // see https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
 
-let serverAddress: string = "http://localhost:8100";
-// let serverAddress: string = "https://realmadmin.herokuapp.com";
+// let serverAddress: string = "http://localhost:8100";
+let serverAddress: string = "https://realmadmin.herokuapp.com";
 
 //#region Error
 let errorUnderlay: HTMLDivElement = null;
