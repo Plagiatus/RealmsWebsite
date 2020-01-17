@@ -1,0 +1,65 @@
+#inviteWrapper > *{
+  margin: 10px;
+  font-size: larger;
+}
+
+#search {
+  font-size: x-large;
+  width: calc(100% - 30px);
+  margin: 10px;
+}
+
+#playerList {
+  overflow: hidden;
+  margin: 8px;
+}
+
+.player {
+  border: 1px solid black;
+  position: relative;
+  margin: 2px;
+  height: 60px;
+  width: 300px;
+  float: left;
+}
+
+.player * {
+  position: absolute;
+}
+
+.onlinestatus {
+  width: 32px;
+  height: 32px;
+  left: 5px;
+  top: 13px;
+}
+
+.avatar{
+  width: 48px;
+  height: 48px;
+  top: 6px;
+  left: 40px;
+}
+
+.crown {
+  width: 24px;
+  height: 24px;
+  top: 2px;
+  left: 70px;
+  transform: rotate(30deg);
+}
+
+.playername {
+  right: 5px;
+  top: 5px;
+}
+
+.opBtn {
+  bottom: 10px;
+  right: 70px;
+}
+
+.kick {
+  bottom: 10px;
+  right: 10px;
+}

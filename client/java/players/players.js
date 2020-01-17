@@ -35,10 +35,11 @@ function updatePlayerDisplay(players) {
 function createOnePlayer(p) {
     playerListDiv.innerHTML +=
         `<div class="player ${p.accepted ? "accepted" : "notAccepted"}" id="${p.uuid}">
-      <img src="" alt="${p.online ? "online" : "offline"}">
-      <img src="https://crafatar.com/avatars/${p.uuid}?size=40&overlay" alt="" width="40px" height="40px">
-      <span>${escapeHtml(p.name) || ""}</span>
-      <button class="op" onclick="toggleOP('${p.uuid}', ${!p.operator})">${p.operator ? "deop" : "op"}</button>
+      <img class="onlinestatus" src="${p.accepted ? (p.online ? "../img/online_icon.png" : "../img/offline_icon.png") : "../img/not_accepted_icon.png"}" alt="${p.accepted ? (p.online ? "on" : "off") : "off"}">
+      <img class="avatar" src="https://crafatar.com/avatars/${p.uuid}?size=48&overlay" alt="">
+      <img class="crown ${p.operator ? "" : "hidden"}" src="../img/op_icon.png" alt="">
+      <span class="playername">${escapeHtml(p.name) || ""}</span>
+      <button class="opBtn" onclick="toggleOP('${p.uuid}', ${!p.operator})">${p.operator ? "deop" : "op"}</button>
       <button class="kick" onclick="kick('${p.uuid}')">Kick</button>
     </div>`;
 }
@@ -61,7 +62,7 @@ function sortPlayers(a, b) {
 }
 function toggleOP(_uuid, toggle) {
     let div = document.getElementById(_uuid);
-    let btn = div.querySelector(".op");
+    let btn = div.querySelector(".opBtn");
     btn.disabled = true;
     let data = getCredentials();
     data["command"] = "toggleOP";
@@ -74,6 +75,12 @@ function toggleOP(_uuid, toggle) {
     btn.setAttribute("onclick", `toggleOP("${_uuid}", ${!toggle})`);
     btn.innerText = toggle ? "deop" : "op";
     btn.disabled = false;
+    if (toggle) {
+        div.querySelector(".crown").classList.remove("hidden");
+    }
+    else {
+        div.querySelector(".crown").classList.add("hidden");
+    }
 }
 function searchBtn(_e) {
     let searchterm = _e.target.value.trim();

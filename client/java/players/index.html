@@ -10,16 +10,18 @@
   <script src="../headerFooter.js"></script>
   <script src="./players.js"></script>
   <link rel="stylesheet" href="../main.css">
+  <link rel="stylesheet" href="players.css">
 </head>
 
 <body>
   <h1>Welcome Username</h1>
   <div>
-    <input type="text" name="invite" id="invite" placeholder="playername">
-    <button id="inviteButton" onclick="invite()">Invite</button>
+    <div id="inviteWrapper">
+      <span>Invite someone new</span>
+      <input type="text" name="invite" id="invite" placeholder="playername" maxlength="16">
+      <button id="inviteButton" onclick="invite()">Invite</button>
+    </div>
     <input type="text" name="search" id="search" placeholder="🔎 filter..">
-    <!-- <input type="checkbox" name="showAll" id="showAll" value="true" checked> -->
-    <!-- <label for="showAll">show only realms I own</label> -->
     <div id="playerList">
       <span>Loading..</span>
     </div>
