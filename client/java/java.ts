@@ -363,4 +363,13 @@ interface RealmsWorldOptions {
   templateImage: string;
   adventureMap: boolean;
   empty: boolean;
+  commandBlocks: boolean;
+  difficulty: number;
+  forceGameMode: boolean;
+  gameMode: number;
+  pvp: boolean;
+  spawnAnimals: boolean;
+  spawnMonsters: boolean;
+  spawnNPCs: boolean;
+  spawnProtection: boolean;
 }

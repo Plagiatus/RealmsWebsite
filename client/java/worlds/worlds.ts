@@ -74,7 +74,7 @@ namespace worldsPage {
     let form: HTMLFormElement = <HTMLFormElement>document.getElementById("world-settings");
     let data: any = getCredentials();
     data["command"] = "worldSettings";
-    data["worldid"] = worldid;
+    data["world"] = worldid;
     data["slot"] = selectedSlot;
     data["newSettings"] = {};
     let formdata: FormData = new FormData(form);
@@ -89,10 +89,19 @@ namespace worldsPage {
       }
     }
     data.newSettings = JSON.stringify(data.newSettings);
-    console.log(data);
+    let result = sendPOSTRequest(data);
+    if (result.error) return;
+    // update saved server and html display
+    let slotOptions: RealmsWorldOptions = server.slots.get(selectedSlot);
+    let settings = JSON.parse(data.newSettings);
+    for (let setting in settings) {
+      slotOptions[setting] = settings[setting];
+    }
+    (<HTMLSpanElement>document.getElementById("world-" + selectedSlot).querySelector(".world-name")).innerText = slotOptions.slotName != "" ? slotOptions.slotName : `World ${selectedSlot}`;
+    showSettings(selectedSlot);
   }
 
-  export function cancelWorldSettings() {
+  export function closeWorldSettings() {
     document.getElementById("world-settings-wrapper").classList.add("hidden");
     (<HTMLButtonElement>document.querySelector("#world-" + selectedSlot + " .world-settings-btn")).disabled = false;
   }

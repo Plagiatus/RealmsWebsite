@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const auth_1 = require("../auth");
-const MR = require("../../realmsapi");
+// import * as MR from "../../realmsapi";
 const main_1 = require("../main");
+const Request = require("../../realmsapi/src/Client/Request.js");
 async function worldSettings(_input, _response) {
     let email = _input.email;
     let token = _input.token;
@@ -15,10 +15,8 @@ async function worldSettings(_input, _response) {
         throw new Error("Not enough parameters given.");
     }
     else {
-        let p = new auth_1.Player(email, token, uuid, name);
-        let c = new MR.Client(p.getAuthToken(), main_1.latestVersion, p.name);
-        let rwo = MR.RealmsWorldOptions.parse(newSettings);
-        //TODO do something here now
+        let r = new Request(token, uuid, main_1.latestVersion, name);
+        r.post("/worlds/" + world + "/slot/" + slot, newSettings);
         _response.write(JSON.stringify({ result: "success" }));
     }
 }

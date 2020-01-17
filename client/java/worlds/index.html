@@ -28,7 +28,7 @@
         </tr>
         <tr>
           <td><label for="forceGameMode">Force Gamemode</label></td>
-          <td><input type="hidden" name="forceGamemode" value="false"><input type="checkbox" name="forceGamemode"
+          <td><input type="hidden" name="forceGameMode" value="false"><input type="checkbox" name="forceGameMode"
               id="forceGameMode" value="true"></td>
         </tr>
         <tr>
@@ -79,8 +79,8 @@
           <td><input type="text" name="slotName" id="slotName" maxlength="10"></td>
         </tr>
       </table>
-      <button type="button" onclick="worldsPage.saveWorldSettings()" disabled>Save & Exit</button>
-      <button type="button" onclick="worldsPage.cancelWorldSettings()">Cancel</button>
+      <button type="button" onclick="worldsPage.saveWorldSettings()">Save</button>
+      <button type="button" onclick="worldsPage.closeWorldSettings()">Close</button>
     </form>
   </div>
   <div class="hidden" id="template-wrapper">

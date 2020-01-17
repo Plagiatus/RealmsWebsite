@@ -76,7 +76,7 @@ var worldsPage;
         let form = document.getElementById("world-settings");
         let data = getCredentials();
         data["command"] = "worldSettings";
-        data["worldid"] = worldid;
+        data["world"] = worldid;
         data["slot"] = selectedSlot;
         data["newSettings"] = {};
         let formdata = new FormData(form);
@@ -92,14 +92,24 @@ var worldsPage;
             }
         }
         data.newSettings = JSON.stringify(data.newSettings);
-        console.log(data);
+        let result = sendPOSTRequest(data);
+        if (result.error)
+            return;
+        // update saved server and html display
+        let slotOptions = server.slots.get(selectedSlot);
+        let settings = JSON.parse(data.newSettings);
+        for (let setting in settings) {
+            slotOptions[setting] = settings[setting];
+        }
+        document.getElementById("world-" + selectedSlot).querySelector(".world-name").innerText = slotOptions.slotName != "" ? slotOptions.slotName : `World ${selectedSlot}`;
+        showSettings(selectedSlot);
     }
     worldsPage.saveWorldSettings = saveWorldSettings;
-    function cancelWorldSettings() {
+    function closeWorldSettings() {
         document.getElementById("world-settings-wrapper").classList.add("hidden");
         document.querySelector("#world-" + selectedSlot + " .world-settings-btn").disabled = false;
     }
-    worldsPage.cancelWorldSettings = cancelWorldSettings;
+    worldsPage.closeWorldSettings = closeWorldSettings;
     function switchTo(slot) {
         if (!server)
             return;

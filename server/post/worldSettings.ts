@@ -1,7 +1,8 @@
 import { Player } from "../auth";
 import * as Http from "http";
-import * as MR from "../../realmsapi";
+// import * as MR from "../../realmsapi";
 import { latestVersion } from "../main";
+import * as Request from "../../realmsapi/src/Client/Request.js";
 
 export async function worldSettings(_input, _response: Http.OutgoingMessage) {
   let email: string = _input.email;
@@ -14,10 +15,8 @@ export async function worldSettings(_input, _response: Http.OutgoingMessage) {
   if (!email || !token || !uuid || !name || !world || !slot || !newSettings) {
     throw new Error("Not enough parameters given.");
   } else {
-    let p: Player = new Player(email, token, uuid, name);
-    let c: MR.Client = new MR.Client(p.getAuthToken(), latestVersion, p.name);
-    let rwo: MR.RealmsWorldOptions = MR.RealmsWorldOptions.parse(newSettings);
-    //TODO do something here now
+    let r: Request = new Request(token, uuid, latestVersion, name);
+    r.post("/worlds/"+world+"/slot/"+slot, newSettings);
     _response.write(JSON.stringify({result: "success"}));
   }
 }
