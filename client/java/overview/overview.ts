@@ -43,7 +43,7 @@ namespace overview {
       <img src="${imgURL}" alt="${r.expired ? "expired" : "active"}">
       <span id="realmName">${applyFormatingCodes(escapeHtml(r.properties.name))}</span><br>
       <span id="realmDescription">${applyFormatingCodes(escapeHtml(r.properties.description))}</span><br>
-      <span id="realmID">${r.id}</span><br>
+      <span id="realmID">Id: ${r.id}</span><br>
       <span id="realmSubscriptionStatus">${formatDays(r.daysLeft)}</span><br>
     `;
   }
@@ -69,13 +69,23 @@ namespace overview {
   }
 
   function worldOverview(r: RealmsServer) {
+    console.log(r);
     r.slots = new Map(r.slots);
     let active: RealmsWorldOptions = r.slots.get(r.activeSlot);
-    worldsDiv.innerHTML = `
-    <img src=${active.templateImage ? "data:image/png;base64, " + active.templateImage : "../img/placeholder.png"} alt="">
-    <span>${active.slotName || "World " + r.activeSlot}</span>
-    <span></span>
-    `;
+    worldsDiv.innerHTML = "";
+    if (r.minigameId) {
+      worldsDiv.innerHTML += `
+      <span>Selected Minigame</span>
+      <img src="${r.minigameImage ? "data:image/png;base64, " + r.minigameImage : "../img/placeholder.png"}" alt="">
+      <span>${r.minigameName || "World " + r.activeSlot}</span>
+      `;
+    } else {
+      worldsDiv.innerHTML += `
+      <span>Selected Slot</span>
+      <img src=${active.templateImage ? "data:image/png;base64, " + active.templateImage : ("../img/placeholder.png")} alt="">
+      <span>${active.slotName || "World " + r.activeSlot}</span>
+      `;
+    }
   }
 
   function playerOverview(players: Player[]) {
@@ -87,7 +97,7 @@ namespace overview {
         online++;
         playerListDiv.innerHTML +=
           `<div class="player">
-            <img src="https://crafatar.com/avatars/${players[i].uuid}?size=40&overlay" alt="" width="40px" height="40px">
+            <img src="https://crafatar.com/avatars/${players[i].uuid}?size=48&overlay" alt="">
             <span>${players[i].name || ""}</span>
           </div>`;
       }
