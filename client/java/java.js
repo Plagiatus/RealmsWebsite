@@ -189,7 +189,7 @@ function removeCredentials() {
 function checkWorldId() {
     let wid = Number(getCookie("worldid"));
     if (!getCookie("worldid")) {
-        window.location.replace("..");
+        window.location.replace("../realms");
     }
     return wid;
 }
