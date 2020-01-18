@@ -39,12 +39,12 @@ namespace realmsList {
     if (_server.expired) imgURL = "../img/expired_icon.png";
     realmsList.innerHTML +=
       `<div class="realm ${owner ? "owned" : "notOwned"} ${_server.expired ? "expired" : ""}">
-        <img src="${imgURL}" alt="${_server.expired ? "expired" : "active"}">
-        <img src="https://crafatar.com/avatars/${_server.ownerUUID}?size=40&overlay" alt="">
-        <span>${applyFormatingCodes(escapeHtml(_server.properties.name || ""))}</span>
-        <span>${_server.minigameName ? "Minigame: " + escapeHtml(_server.minigameName) : applyFormatingCodes(escapeHtml(_server.properties.description || ""))}</span>
-        <span>${escapeHtml(_server.owner)}</span>
-        <button onclick="${owner ? "realmsList.selectRealm(" + _server.id + ")" : "realmsList.leaveRealm(" + _server.id + ")"}">${owner ? "Edit" : "Leave"}</button>
+        <img class="status" src="${imgURL}" alt="${_server.expired ? "expired" : "active"}">
+        <img class="avatar" src="https://crafatar.com/avatars/${_server.ownerUUID}?size=48&overlay" alt="">
+        <span>${applyFormatingCodes(escapeHtml(_server.properties.name || "\u00A0"))}</span>
+        <span>${_server.minigameName ? "<span class='gold'>Minigame:</span> " + escapeHtml(_server.minigameName) : applyFormatingCodes(escapeHtml(_server.properties.description || "\u00A0"))}</span>
+        <span>${escapeHtml(_server.owner) || "\u00A0"}</span>
+        <button onclick="${owner ? "realmsList.selectRealm(" + _server.id + ")" : "realmsList.leaveRealm(" + _server.id + ")"}" ${owner ? "" : "disabled"}>${owner ? "Edit" : "Leave"}</button>
       </div>`;
     //TODO add status of realm
   }
