@@ -6,6 +6,9 @@
 #search {
   font-size: x-large;
   width: calc(100% - 30px);
+}
+
+#displaySettings{
   margin: 10px;
 }
 

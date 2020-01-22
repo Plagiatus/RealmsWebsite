@@ -13,6 +13,14 @@ let searchInput: HTMLInputElement;
 let inviteInput: HTMLInputElement;
 let inviteButton: HTMLButtonElement;
 let players: Player[];
+let includeOffline: boolean = true;
+let includeInvited: boolean = true;
+let excludeNonOp: boolean = false;
+let includeOfflineInput: HTMLInputElement;
+let includeInvitedInput: HTMLInputElement;
+let excludeNonOpInput: HTMLInputElement;
+
+
 function init() {
   //TODO save/load using cookies to make it load faster
   checkWorldId();
@@ -26,6 +34,7 @@ function init() {
   searchInput.addEventListener("input", searchBtn);
   players = getPlayers();
   updatePlayerDisplay(players);
+  setupSettings();
 }
 
 function getPlayers(): Player[] {
@@ -41,7 +50,6 @@ function updatePlayerDisplay(players: Player[]) {
   for (let i: number = 0; i < players.length; i++) {
     createOnePlayer(players[i]);
   }
-  search(searchInput.value);
 }
 
 function createOnePlayer(p: Player) {
@@ -49,7 +57,7 @@ function createOnePlayer(p: Player) {
     `<div class="player ${p.accepted ? "accepted" : "notAccepted"}" id="${p.uuid}">
       <img class="onlinestatus" src="${p.accepted ? (p.online ? "../img/online_icon.png" : "../img/offline_icon.png") : "../img/not_accepted_icon.png"}" alt="${p.accepted ? (p.online ? "on" : "off") : "off"}">
       <img class="avatar" src="https://crafatar.com/avatars/${p.uuid}?size=48&overlay" alt="">
-      <img class="crown ${p.operator ? "":"hidden"}" src="../img/op_icon.png" alt="">
+      <img class="crown ${p.operator ? "" : "hidden"}" src="../img/op_icon.png" alt="">
       <span class="playername">${escapeHtml(p.name) || ""}</span>
       <button class="opBtn" onclick="toggleOP('${p.uuid}', ${!p.operator})">${p.operator ? "deop" : "op"}</button>
       <button class="kick" onclick="kick('${p.uuid}')">Kick</button>
@@ -84,7 +92,7 @@ function toggleOP(_uuid: string, toggle: boolean) {
   btn.setAttribute("onclick", `toggleOP("${_uuid}", ${!toggle})`);
   btn.innerText = toggle ? "deop" : "op";
   btn.disabled = false;
-  if(toggle){
+  if (toggle) {
     div.querySelector(".crown").classList.remove("hidden");
   } else {
     div.querySelector(".crown").classList.add("hidden");
@@ -96,11 +104,10 @@ function searchBtn(_e: Event) {
   search(searchterm);
 }
 function search(searchterm: string) {
-  let showAll: boolean = searchterm == "";
   for (let p of players) {
     let div: HTMLDivElement = <HTMLDivElement>document.getElementById(p.uuid);
     if (!div) continue;
-    if (showAll || shouldPlayerBeVisible(p, searchterm)) {
+    if (shouldPlayerBeVisible(p, searchterm)) {
       div.classList.remove("hidden");
     } else {
       div.classList.add("hidden");
@@ -108,8 +115,11 @@ function search(searchterm: string) {
   }
 }
 function shouldPlayerBeVisible(p: Player, s: string) {
+  if(excludeNonOp && !p.operator) return false;
+  if(!includeInvited && !p.accepted) return false;
+  if(!includeOffline && !p.online) return false;
   s = s.toLowerCase();
-  if (p.name.toLowerCase().indexOf(s) > -1) return true;
+  if (p.name.toLowerCase().includes(s) || s == "") return true;
   return false;
 }
 
@@ -148,4 +158,21 @@ function kick(uuid: string) {
     return;
   }
   div.parentElement.removeChild(div);
+}
+
+function setupSettings() {
+  includeOfflineInput = <HTMLInputElement>document.getElementById("includeOffline");
+  includeInvitedInput = <HTMLInputElement>document.getElementById("includeNotAccepted");
+  excludeNonOpInput = <HTMLInputElement>document.getElementById("showOnlyOP");
+  includeOfflineInput.addEventListener("change", updateSettings);
+  includeInvitedInput.addEventListener("change", updateSettings);
+  excludeNonOpInput.addEventListener("change", updateSettings);
+  updateSettings();
+}
+
+function updateSettings() {
+  includeOffline = includeOfflineInput.checked;
+  includeInvited = includeInvitedInput.checked;
+  excludeNonOp = excludeNonOpInput.checked;
+  search(searchInput.value);
 }

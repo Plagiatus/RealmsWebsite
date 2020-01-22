@@ -4,6 +4,12 @@ let searchInput;
 let inviteInput;
 let inviteButton;
 let players;
+let includeOffline = true;
+let includeInvited = true;
+let excludeNonOp = false;
+let includeOfflineInput;
+let includeInvitedInput;
+let excludeNonOpInput;
 function init() {
     //TODO save/load using cookies to make it load faster
     checkWorldId();
@@ -17,6 +23,7 @@ function init() {
     searchInput.addEventListener("input", searchBtn);
     players = getPlayers();
     updatePlayerDisplay(players);
+    setupSettings();
 }
 function getPlayers() {
     let data = getCredentials();
@@ -30,7 +37,6 @@ function updatePlayerDisplay(players) {
     for (let i = 0; i < players.length; i++) {
         createOnePlayer(players[i]);
     }
-    search(searchInput.value);
 }
 function createOnePlayer(p) {
     playerListDiv.innerHTML +=
@@ -87,12 +93,11 @@ function searchBtn(_e) {
     search(searchterm);
 }
 function search(searchterm) {
-    let showAll = searchterm == "";
     for (let p of players) {
         let div = document.getElementById(p.uuid);
         if (!div)
             continue;
-        if (showAll || shouldPlayerBeVisible(p, searchterm)) {
+        if (shouldPlayerBeVisible(p, searchterm)) {
             div.classList.remove("hidden");
         }
         else {
@@ -101,8 +106,14 @@ function search(searchterm) {
     }
 }
 function shouldPlayerBeVisible(p, s) {
+    if (excludeNonOp && !p.operator)
+        return false;
+    if (!includeInvited && !p.accepted)
+        return false;
+    if (!includeOffline && !p.online)
+        return false;
     s = s.toLowerCase();
-    if (p.name.toLowerCase().indexOf(s) > -1)
+    if (p.name.toLowerCase().includes(s) || s == "")
         return true;
     return false;
 }
@@ -135,4 +146,19 @@ function kick(uuid) {
         return;
     }
     div.parentElement.removeChild(div);
+}
+function setupSettings() {
+    includeOfflineInput = document.getElementById("includeOffline");
+    includeInvitedInput = document.getElementById("includeNotAccepted");
+    excludeNonOpInput = document.getElementById("showOnlyOP");
+    includeOfflineInput.addEventListener("change", updateSettings);
+    includeInvitedInput.addEventListener("change", updateSettings);
+    excludeNonOpInput.addEventListener("change", updateSettings);
+    updateSettings();
+}
+function updateSettings() {
+    includeOffline = includeOfflineInput.checked;
+    includeInvited = includeInvitedInput.checked;
+    excludeNonOp = excludeNonOpInput.checked;
+    search(searchInput.value);
 }

@@ -21,7 +21,15 @@
       <input type="text" name="invite" id="invite" placeholder="playername" maxlength="16">
       <button id="inviteButton" onclick="invite()">Invite</button>
     </div>
-    <input type="text" name="search" id="search" placeholder="🔎 filter..">
+    <div id="displaySettings">
+      <input type="text" name="search" id="search" placeholder="🔎 filter.."><br>
+      <input type="checkbox" name="includeOffline" id="includeOffline" checked>
+      <label for="includeOffline">include offline players</label>
+      <input type="checkbox" name="includeNotAccepted" id="includeNotAccepted" checked>
+      <label for="includeNotAccepted">include invited players <span title="include players that haven't accepted the invitation yet">(?)</span> </label>
+      <input type="checkbox" name="showOnlyOP" id="showOnlyOP">
+      <label for="showOnlyOP">show only OP players</label>
+    </div>
     <div id="playerList">
       <span>Loading..</span>
     </div>
