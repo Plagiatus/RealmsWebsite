@@ -2,6 +2,7 @@ namespace realmsList {
 
   window.addEventListener("load", init);
   let realmsList: HTMLDivElement;
+  let servers: Server[] = [];
 
   function init() {
     document.getElementsByTagName("h1")[0].innerText = "Welcome " + getCookie("name");
@@ -13,6 +14,7 @@ namespace realmsList {
     createRealmsDisplay();
     document.getElementById("showAll").dispatchEvent(new Event("change"));
     obfuscate();
+    document.getElementById("search").addEventListener("input", search);
   }
 
   function createRealmsDisplay() {
@@ -21,6 +23,7 @@ namespace realmsList {
     let result = sendPOSTRequest(data);
     if (result.servers && result.servers.length > 0) {
       result.servers = result.servers.sort(sortRealms);
+      servers = result.servers;
       realmsList.innerHTML = "";
       for (let s of result.servers) {
         // console.log(s);
@@ -38,7 +41,7 @@ namespace realmsList {
     if (_server.state == "CLOSED") imgURL = "../img/off_icon.png";
     if (_server.expired) imgURL = "../img/expired_icon.png";
     realmsList.innerHTML +=
-      `<div class="realm ${owner ? "owned" : "notOwned"} ${_server.expired ? "expired" : ""}">
+      `<div class="realm ${owner ? "owned" : "notOwned"} ${_server.expired ? "expired" : ""}" id="${_server.id}">
         <img class="status" src="${imgURL}" alt="${_server.expired ? "expired" : "active"}">
         <img class="avatar" src="https://crafatar.com/avatars/${_server.ownerUUID}?size=48&overlay" alt="">
         <span>${applyFormatingCodes(escapeHtml(_server.properties.name || "\u00A0"))}</span>
@@ -79,6 +82,20 @@ namespace realmsList {
     data["world"] = id;
     let result = sendPOSTRequest(data);
   }
+
+  export function search(_e: InputEvent){
+    let searchterm: string = (<HTMLInputElement>_e.target).value.toLowerCase();
+    for(let s of servers){
+      let shouldBeDisplayed: boolean = false;
+      if(s.properties.description) if(s.properties.description.toLowerCase().includes(searchterm)) shouldBeDisplayed = true;
+      if(s.properties.name) if(s.properties.name.toLowerCase().includes(searchterm)) shouldBeDisplayed = true;
+      if(searchterm == "" || s.owner.toLowerCase().includes(searchterm) || shouldBeDisplayed){
+        document.getElementById(s.id.toString()).classList.remove("hidden");
+      } else {
+        document.getElementById(s.id.toString()).classList.add("hidden");
+      }
+    }
+  } 
 
   interface Server {
     id: number,

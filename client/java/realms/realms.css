@@ -1,3 +1,14 @@
+input[type=text] {
+  margin-bottom: 10px;
+  display: block;
+  font-size: larger;
+}
+
+#options {
+  margin: 10px;
+  padding: 2px;
+}
+
 .realm {
   overflow: hidden;
   border: 1px solid black;

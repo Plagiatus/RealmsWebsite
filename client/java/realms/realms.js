@@ -2,6 +2,7 @@ var realmsList;
 (function (realmsList_1) {
     window.addEventListener("load", init);
     let realmsList;
+    let servers = [];
     function init() {
         document.getElementsByTagName("h1")[0].innerText = "Welcome " + getCookie("name");
         if (!checkCredentials()) {
@@ -12,6 +13,7 @@ var realmsList;
         createRealmsDisplay();
         document.getElementById("showAll").dispatchEvent(new Event("change"));
         obfuscate();
+        document.getElementById("search").addEventListener("input", search);
     }
     function createRealmsDisplay() {
         let data = getCredentials();
@@ -19,6 +21,7 @@ var realmsList;
         let result = sendPOSTRequest(data);
         if (result.servers && result.servers.length > 0) {
             result.servers = result.servers.sort(sortRealms);
+            servers = result.servers;
             realmsList.innerHTML = "";
             for (let s of result.servers) {
                 // console.log(s);
@@ -39,7 +42,7 @@ var realmsList;
         if (_server.expired)
             imgURL = "../img/expired_icon.png";
         realmsList.innerHTML +=
-            `<div class="realm ${owner ? "owned" : "notOwned"} ${_server.expired ? "expired" : ""}">
+            `<div class="realm ${owner ? "owned" : "notOwned"} ${_server.expired ? "expired" : ""}" id="${_server.id}">
         <img class="status" src="${imgURL}" alt="${_server.expired ? "expired" : "active"}">
         <img class="avatar" src="https://crafatar.com/avatars/${_server.ownerUUID}?size=48&overlay" alt="">
         <span>${applyFormatingCodes(escapeHtml(_server.properties.name || "\u00A0"))}</span>
@@ -83,4 +86,23 @@ var realmsList;
         let result = sendPOSTRequest(data);
     }
     realmsList_1.leaveRealm = leaveRealm;
+    function search(_e) {
+        let searchterm = _e.target.value.toLowerCase();
+        for (let s of servers) {
+            let shouldBeDisplayed = false;
+            if (s.properties.description)
+                if (s.properties.description.toLowerCase().includes(searchterm))
+                    shouldBeDisplayed = true;
+            if (s.properties.name)
+                if (s.properties.name.toLowerCase().includes(searchterm))
+                    shouldBeDisplayed = true;
+            if (searchterm == "" || s.owner.toLowerCase().includes(searchterm) || shouldBeDisplayed) {
+                document.getElementById(s.id.toString()).classList.remove("hidden");
+            }
+            else {
+                document.getElementById(s.id.toString()).classList.add("hidden");
+            }
+        }
+    }
+    realmsList_1.search = search;
 })(realmsList || (realmsList = {}));
