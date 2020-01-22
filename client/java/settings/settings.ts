@@ -8,6 +8,7 @@ namespace settings {
   let subscriptionText: HTMLSpanElement;
   let nameInput: HTMLInputElement;
   let descInput: HTMLInputElement;
+  let preview: HTMLDivElement;
   let serverIsOpen: boolean;
   let daysLeft: number;
 
@@ -20,6 +21,7 @@ namespace settings {
     subscriptionText = <HTMLSpanElement>document.getElementById("subscription");
     nameInput = <HTMLInputElement>document.getElementById("name");
     descInput = <HTMLInputElement>document.getElementById("description");
+    preview = <HTMLDivElement>document.getElementById("preview");
     getServer();
   }
 
@@ -38,6 +40,11 @@ namespace settings {
     daysLeft = server.daysLeft;
     subscriptionText.innerText = formatDays(daysLeft);
     updateOpenText();
+    openButton.disabled = false;
+    (<HTMLButtonElement>document.getElementById("updateNameDesc")).disabled = false;
+    nameInput.addEventListener("input", updatePreview);
+    descInput.addEventListener("input", updatePreview);
+    updatePreview(null);
   }
   export function toggleOpen() {
     if (serverIsOpen == undefined) return;
@@ -54,7 +61,7 @@ namespace settings {
   }
   
   function updateOpenText() {
-    openText.innerText = "Your Realm is currently " + (serverIsOpen ? "OPEN" : "CLOSED");
+    openText.innerHTML = "Your Realm is currently " + (serverIsOpen ? "<span class='dark_green'>OPEN" : "<span class='red'>CLOSED") + "</span>";
     openButton.innerText = serverIsOpen ? "close" : "open";
     if(serverIsOpen){
       statusImg.src = daysLeft > 15 ? "../img/on_icon.png" : "../img/expires_soon_icon.png";
@@ -91,5 +98,12 @@ namespace settings {
       months += 12;
     }
     return `${year > 0 ? year + (year == 1 ? " year, " : " years, ") : ""}${months > 0 ? months + (months == 1 ? " month" : " months") + " and " : ""}${days} ${days == 1 ? "day" : "days"} remaining`;
+  }
+
+  export function updatePreview(_e: InputEvent){
+    preview.innerHTML = `
+    ${applyFormatingCodes(escapeHtml(nameInput.value))}<br>
+    ${applyFormatingCodes(escapeHtml(descInput.value))}
+    `
   }
 }

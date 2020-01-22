@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,18 +10,33 @@
   <script src="./settings.js"></script>
   <title>Settings</title>
   <link rel="stylesheet" href="../main.css">
+  <link rel="stylesheet" href="settings.css">
 </head>
+
 <body>
-  <h1>Settings</h1>
-  <img src="" alt="" id="openCloseImg">
-  <span id="openCloseTxt">Loading...</span>
-  <button onclick="settings.toggleOpen()" id="toggleOpen">Open/Close</button><br>
+  <div id="settings">
+    <h1>Settings</h1>
+    <div id="openCloseDiv">
+      <img src="../img/expired_icon.png" alt="" id="openCloseImg">
+      <span id="openCloseTxt">Loading...</span>
+      <button onclick="settings.toggleOpen()" id="toggleOpen" disabled>Open/Close</button>
+    </div>
 
-  <span id="subscription">Loading...</span><br>
+    <div id="subscriptionDiv">
+      <span id="subscription">Loading...</span><br>
+    </div>
 
-  <input type="text" name="name" id="name" placeholder="name">
-  <input type="text" name="description" id="description" placeholder="description">
-  <button onclick="settings.updateNameDesc()">Update Name/Description</button>
-  <span><em>supports <a href="https://www.digminecraft.com/lists/color_list_pc.php" target="_blank">color and other codes</a>.</em></span>
+    <div id="changeSettings">
+      <input type="text" name="name" id="name" placeholder="name">
+      <input type="text" name="description" id="description" placeholder="description">
+      <button onclick="settings.updateNameDesc()" id="updateNameDesc" disabled>Update Name/Description</button><br>
+      <span class="italic">supports <a href="https://www.digminecraft.com/lists/color_list_pc.php" target="_blank">color and other codes</a></span>
+      <div id="preview">
+        <span>Loading...</span>
+      </div>
+      <span class="italic">Obfuscation is disabled for the preview.</span>
+    </div>
+  </div>
 </body>
+
 </html>

@@ -7,6 +7,7 @@ var settings;
     let subscriptionText;
     let nameInput;
     let descInput;
+    let preview;
     let serverIsOpen;
     let daysLeft;
     function init() {
@@ -18,6 +19,7 @@ var settings;
         subscriptionText = document.getElementById("subscription");
         nameInput = document.getElementById("name");
         descInput = document.getElementById("description");
+        preview = document.getElementById("preview");
         getServer();
     }
     function getServer() {
@@ -34,6 +36,11 @@ var settings;
         daysLeft = server.daysLeft;
         subscriptionText.innerText = formatDays(daysLeft);
         updateOpenText();
+        openButton.disabled = false;
+        document.getElementById("updateNameDesc").disabled = false;
+        nameInput.addEventListener("input", updatePreview);
+        descInput.addEventListener("input", updatePreview);
+        updatePreview(null);
     }
     function toggleOpen() {
         if (serverIsOpen == undefined)
@@ -52,7 +59,7 @@ var settings;
     }
     settings.toggleOpen = toggleOpen;
     function updateOpenText() {
-        openText.innerText = "Your Realm is currently " + (serverIsOpen ? "OPEN" : "CLOSED");
+        openText.innerHTML = "Your Realm is currently " + (serverIsOpen ? "<span class='dark_green'>OPEN" : "<span class='red'>CLOSED") + "</span>";
         openButton.innerText = serverIsOpen ? "close" : "open";
         if (serverIsOpen) {
             statusImg.src = daysLeft > 15 ? "../img/on_icon.png" : "../img/expires_soon_icon.png";
@@ -90,4 +97,11 @@ var settings;
         }
         return `${year > 0 ? year + (year == 1 ? " year, " : " years, ") : ""}${months > 0 ? months + (months == 1 ? " month" : " months") + " and " : ""}${days} ${days == 1 ? "day" : "days"} remaining`;
     }
+    function updatePreview(_e) {
+        preview.innerHTML = `
+    ${applyFormatingCodes(escapeHtml(nameInput.value))}<br>
+    ${applyFormatingCodes(escapeHtml(descInput.value))}
+    `;
+    }
+    settings.updatePreview = updatePreview;
 })(settings || (settings = {}));
