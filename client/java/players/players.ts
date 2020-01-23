@@ -58,7 +58,7 @@ function createOnePlayer(p: Player) {
       <img class="onlinestatus" src="${p.accepted ? (p.online ? "../img/online_icon.png" : "../img/offline_icon.png") : "../img/not_accepted_icon.png"}" alt="${p.accepted ? (p.online ? "on" : "off") : "off"}">
       <img class="avatar" src="https://crafatar.com/avatars/${p.uuid}?size=48&overlay" alt="">
       <img class="crown ${p.operator ? "" : "hidden"}" src="../img/op_icon.png" alt="">
-      <span class="playername">${escapeHtml(p.name) || ""}</span>
+      <span class="playername"><img class="crown2 ${p.operator ? "" : "hidden"}" src="../img/op_icon.png" alt="">${escapeHtml(p.name) || ""}</span>
       <button class="opBtn" onclick="toggleOP('${p.uuid}', ${!p.operator})">${p.operator ? "deop" : "op"}</button>
       <button class="kick" onclick="kick('${p.uuid}')">Kick</button>
     </div>`;
@@ -94,9 +94,13 @@ function toggleOP(_uuid: string, toggle: boolean) {
   btn.disabled = false;
   if (toggle) {
     div.querySelector(".crown").classList.remove("hidden");
+    div.querySelector(".crown2").classList.remove("hidden");
   } else {
     div.querySelector(".crown").classList.add("hidden");
+    div.querySelector(".crown2").classList.add("hidden");
   }
+  players.find(p => p.uuid == _uuid).operator = toggle;
+  search(searchInput.value);
 }
 
 function searchBtn(_e: Event) {
@@ -115,9 +119,9 @@ function search(searchterm: string) {
   }
 }
 function shouldPlayerBeVisible(p: Player, s: string) {
-  if(excludeNonOp && !p.operator) return false;
-  if(!includeInvited && !p.accepted) return false;
-  if(!includeOffline && !p.online) return false;
+  if (excludeNonOp && !p.operator) return false;
+  if (!includeInvited && !p.accepted) return false;
+  if (!includeOffline && !p.online) return false;
   s = s.toLowerCase();
   if (p.name.toLowerCase().includes(s) || s == "") return true;
   return false;
@@ -158,6 +162,7 @@ function kick(uuid: string) {
     return;
   }
   div.parentElement.removeChild(div);
+  players.splice(players.findIndex(p => p.uuid == uuid), 1);
 }
 
 function setupSettings() {

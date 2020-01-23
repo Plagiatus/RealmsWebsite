@@ -52,6 +52,11 @@
   transform: rotate(30deg);
 }
 
+.crown2 {
+  top: -0.2em;
+  left: -2em;
+}
+
 .playername {
   right: 5px;
   top: 5px;
