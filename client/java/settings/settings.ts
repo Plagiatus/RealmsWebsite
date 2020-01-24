@@ -100,7 +100,7 @@ namespace settings {
     return `${year > 0 ? year + (year == 1 ? " year, " : " years, ") : ""}${months > 0 ? months + (months == 1 ? " month" : " months") + " and " : ""}${days} ${days == 1 ? "day" : "days"} remaining`;
   }
 
-  export function updatePreview(_e: InputEvent){
+  export function updatePreview(_e: Event){
     preview.innerHTML = `
     ${applyFormatingCodes(escapeHtml(nameInput.value))}<br>
     ${applyFormatingCodes(escapeHtml(descInput.value))}

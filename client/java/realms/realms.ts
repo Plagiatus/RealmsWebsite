@@ -83,7 +83,7 @@ namespace realmsList {
     let result = sendPOSTRequest(data);
   }
 
-  export function search(_e: InputEvent){
+  export function search(_e: Event){
     let searchterm: string = (<HTMLInputElement>_e.target).value.toLowerCase();
     for(let s of servers){
       let shouldBeDisplayed: boolean = false;

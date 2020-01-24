@@ -157,7 +157,7 @@ namespace worldsPage {
     }
   }
 
-  export function filterTemplates(event: InputEvent) {
+  export function filterTemplates(event: Event) {
     let searchTerm: string = (<HTMLInputElement>event.target).value.toLowerCase();
     for (let temp of templates) {
       if (searchTerm == "" || temp.name.toLowerCase().includes(searchTerm) || temp.author.toLowerCase().includes(searchTerm)) {
@@ -227,7 +227,7 @@ namespace worldsPage {
     let currentTop: number = Number(selectedTemplateDiv.style.top.split("px")[0]) || 0;
     let maximumOffset: number = selectedTemplateDiv.parentElement.getBoundingClientRect().height - getAbsoluteHeight(selectedTemplateDiv) - getAbsoluteHeight(<HTMLElement>selectedTemplateDiv.previousElementSibling) - 20;
     // console.log(selectedTemplateDiv);
-    selectedTemplateDiv.style.top = Math.min(Math.max(0, currentTop - selectedTemplateDiv.getBoundingClientRect().y + 20), maximumOffset).toString() + "px";
+    selectedTemplateDiv.style.top = Math.min(Math.max(0, currentTop - (<DOMRect>selectedTemplateDiv.getBoundingClientRect()).y + 20), maximumOffset).toString() + "px";
   }
 
   function getAbsoluteHeight(el: HTMLElement) {
