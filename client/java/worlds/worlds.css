@@ -1,3 +1,7 @@
+#worlds {
+  overflow: hidden;
+}
+
 .world-wrapper{
   width: 160px;
   height: 250px;
@@ -90,11 +94,29 @@ label {
   grid-column: 1 / span 2;
 }
 
-@media screen and (max-width: 720px){
-  #template-type{
+@media screen and (max-width: 795px){
+  #template-type {
     grid-column: 1;
   }
   #template-wrapper:not(.hidden) {
-    display: initial;
+    display: block;
+    border: none;
+  }
+  #selected-template {
+    margin: 0;
+  }
+  #templates-wrapper {
+    padding: 10px;
+  }
+  .template {
+    width: 110px;
+    height: 200px;
+    font-size: smaller;
+    margin: 5px;
+    padding: 5px;
+  }
+  .template > img {
+    width: 110px;
+    height: 110px;
   }
 }
