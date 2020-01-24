@@ -37,7 +37,7 @@ namespace worldsPage {
         <span class="world-name">${slots.get(i).slotName || `World ${i}`}</span>
         <button class="switch-slot-btn" onclick="worldsPage.switchTo(${i})" ${i == result.activeSlot && !result.minigameId ? "disabled" : ""}>Switch</button>
         <button class="world-settings-btn" onclick="worldsPage.showSettings(${i})" >World Settings</button>
-        <button disabled>Replace World</button>
+        <button class="world-reset-btn" disabled>Replace World</button>
       </div>
       `;
     }
@@ -52,7 +52,7 @@ namespace worldsPage {
 
   export function showSettings(slot: number) {
     if (!server) return;
-    if (selectedSlot) (<HTMLButtonElement>document.querySelector("#world-" + selectedSlot + " .world-settings-btn")).disabled = false;
+    closeAll();
     selectedSlot = slot;
     (<HTMLButtonElement>document.querySelector("#world-" + slot + " .world-settings-btn")).disabled = true;
     let slotOptions = server.slots.get(slot);
@@ -101,11 +101,6 @@ namespace worldsPage {
     showSettings(selectedSlot);
   }
 
-  export function closeWorldSettings() {
-    document.getElementById("world-settings-wrapper").classList.add("hidden");
-    (<HTMLButtonElement>document.querySelector("#world-" + selectedSlot + " .world-settings-btn")).disabled = false;
-  }
-
   export function switchTo(slot: number) {
     if (!server) return;
     for (let btn of switchButtons) { btn.disabled = true; btn.innerText = "Switching..."; }
@@ -130,6 +125,8 @@ namespace worldsPage {
   }
 
   export function showMinigames() {
+    closeAll();
+    (<HTMLButtonElement>document.querySelector("#show-minigames-btn")).disabled=true;
     templateWrapperDiv.classList.remove("hidden");
     let data = getCredentials();
     data["command"] = "templates";
@@ -222,7 +219,7 @@ namespace worldsPage {
 
   function moveSelectedTemplate(e: Event) {
     if (templateWrapperDiv.classList.contains("hidden")) return;
-    if (window.innerWidth < 720) {
+    if (window.innerWidth < 795) {
       if (selectedTemplateDiv.style.top != "")
         selectedTemplateDiv.style.top = "";
       return;
@@ -239,6 +236,21 @@ namespace worldsPage {
       parseFloat(styles['marginBottom']);
 
     return Math.ceil(el.offsetHeight + margin);
+  }
+
+  export function closeAll() {
+    let buttons: HTMLButtonElement[] = Array.from(<HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("world-settings-btn"));
+    // buttons = buttons.concat(Array.from(<HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("world-reset-btn")));
+    buttons.push(<HTMLButtonElement>document.getElementById("show-minigames-btn"));
+    for(let btn of buttons){
+      btn.disabled = false;
+    }
+    
+    selectedSlot = null;
+    let allDivs: HTMLCollectionOf<HTMLDivElement> = <HTMLCollectionOf<HTMLDivElement>>document.getElementsByClassName("settings-div");
+    for (let div of allDivs) {
+      div.classList.add("hidden");
+    }
   }
 
   interface Template {

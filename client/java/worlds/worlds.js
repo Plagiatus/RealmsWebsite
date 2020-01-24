@@ -37,7 +37,7 @@ var worldsPage;
         <span class="world-name">${slots.get(i).slotName || `World ${i}`}</span>
         <button class="switch-slot-btn" onclick="worldsPage.switchTo(${i})" ${i == result.activeSlot && !result.minigameId ? "disabled" : ""}>Switch</button>
         <button class="world-settings-btn" onclick="worldsPage.showSettings(${i})" >World Settings</button>
-        <button disabled>Replace World</button>
+        <button class="world-reset-btn" disabled>Replace World</button>
       </div>
       `;
         }
@@ -52,8 +52,7 @@ var worldsPage;
     function showSettings(slot) {
         if (!server)
             return;
-        if (selectedSlot)
-            document.querySelector("#world-" + selectedSlot + " .world-settings-btn").disabled = false;
+        closeAll();
         selectedSlot = slot;
         document.querySelector("#world-" + slot + " .world-settings-btn").disabled = true;
         let slotOptions = server.slots.get(slot);
@@ -105,11 +104,6 @@ var worldsPage;
         showSettings(selectedSlot);
     }
     worldsPage.saveWorldSettings = saveWorldSettings;
-    function closeWorldSettings() {
-        document.getElementById("world-settings-wrapper").classList.add("hidden");
-        document.querySelector("#world-" + selectedSlot + " .world-settings-btn").disabled = false;
-    }
-    worldsPage.closeWorldSettings = closeWorldSettings;
     function switchTo(slot) {
         if (!server)
             return;
@@ -138,6 +132,8 @@ var worldsPage;
     }
     worldsPage.switchTo = switchTo;
     function showMinigames() {
+        closeAll();
+        document.querySelector("#show-minigames-btn").disabled = true;
         templateWrapperDiv.classList.remove("hidden");
         let data = getCredentials();
         data["command"] = "templates";
@@ -235,7 +231,7 @@ var worldsPage;
     function moveSelectedTemplate(e) {
         if (templateWrapperDiv.classList.contains("hidden"))
             return;
-        if (window.innerWidth < 720) {
+        if (window.innerWidth < 795) {
             if (selectedTemplateDiv.style.top != "")
                 selectedTemplateDiv.style.top = "";
             return;
@@ -251,4 +247,18 @@ var worldsPage;
             parseFloat(styles['marginBottom']);
         return Math.ceil(el.offsetHeight + margin);
     }
+    function closeAll() {
+        let buttons = Array.from(document.getElementsByClassName("world-settings-btn"));
+        // buttons = buttons.concat(Array.from(<HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("world-reset-btn")));
+        buttons.push(document.getElementById("show-minigames-btn"));
+        for (let btn of buttons) {
+            btn.disabled = false;
+        }
+        selectedSlot = null;
+        let allDivs = document.getElementsByClassName("settings-div");
+        for (let div of allDivs) {
+            div.classList.add("hidden");
+        }
+    }
+    worldsPage.closeAll = closeAll;
 })(worldsPage || (worldsPage = {}));
