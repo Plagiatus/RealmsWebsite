@@ -9,14 +9,19 @@ namespace worldsPage {
   let templates: Template[];
   let selectedTemplateDiv: HTMLDivElement;
   let templateWrapperDiv: HTMLDivElement;
+  let templateFilter: HTMLInputElement;
+  let templatePlayerFilter: HTMLInputElement;
   function init() {
     // worldid = checkWorldId();
     // checkCredentials();
     // getWorlds();
     switchButtons = <HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("switch-slot-btn");
-    document.getElementById("template-search").addEventListener("input", filterTemplates);
     selectedTemplateDiv = <HTMLDivElement>document.getElementById("selected-template");
     templateWrapperDiv = <HTMLDivElement>document.getElementById("template-wrapper");
+    templateFilter = <HTMLInputElement>document.getElementById("template-search");
+    templateFilter.addEventListener("input", filterTemplates);
+    templatePlayerFilter = <HTMLInputElement>document.getElementById("player-amount");
+    templatePlayerFilter.addEventListener("input", filterTemplates);
     window.addEventListener("scroll", moveSelectedTemplate);
     for (let rep of document.querySelectorAll(".replacement")) {
       rep.addEventListener("click", replacementClick);
@@ -200,16 +205,22 @@ namespace worldsPage {
       `;
       div.addEventListener("click", selectTemplate);
       templateDiv.appendChild(div);
+      let players: [number, number] = getRecommendedPlayerNumbers(temp.recommendedPlayers);
+      temp.playerMin = players[0];
+      temp.playerMax = players[1];
     }
     templateDiv.innerHTML += '<span class="hidden" id="nothing-found">No templates match your search.</span>';
   }
 
   export function filterTemplates(event: Event) {
     if (!templates || templates.length <= 0) return;
-    let searchTerm: string = (<HTMLInputElement>event.target).value.toLowerCase();
+    let searchTerm: string = templateFilter.value;
+    let playerAmount: number = Number(templatePlayerFilter.value);
+    console.log(searchTerm, playerAmount);
     let found: boolean = false;
     for (let temp of templates) {
-      if (searchTerm == "" || temp.name.toLowerCase().includes(searchTerm) || temp.author.toLowerCase().includes(searchTerm)) {
+      if ((searchTerm == "" || temp.name.toLowerCase().includes(searchTerm) || temp.author.toLowerCase().includes(searchTerm))
+      && (playerAmount == 0 || (playerAmount >= temp.playerMin && playerAmount <= temp.playerMax))) {
         document.getElementById("template-" + temp.id).classList.remove("hidden");
         found = true;
       } else {
@@ -254,7 +265,7 @@ namespace worldsPage {
 
   export function activateTemplate(id: number) {
     (<HTMLButtonElement>document.getElementById("template-confirm-button")).disabled = true;
-    if(selectedSlot != 4){
+    if (selectedSlot != 4) {
       switchTo(selectedSlot);
     }
     let data = getCredentials();
@@ -306,11 +317,23 @@ namespace worldsPage {
         btn.disabled = false;
     }
 
-    if(clearSlot) selectedSlot = null;
+    if (clearSlot) selectedSlot = null;
     let allDivs: HTMLCollectionOf<HTMLDivElement> = <HTMLCollectionOf<HTMLDivElement>>document.getElementsByClassName("settings-div");
     for (let div of allDivs) {
       div.classList.add("hidden");
     }
+  }
+
+  function getRecommendedPlayerNumbers(rp: string): [number, number] {
+    let result: [number, number] = [1, 11];
+    let input = rp.trim().split(" ")[0];
+    if (input.includes("+")) {
+      result[0] = Number(input.split("+")[0]);
+    } else {
+      let numbers: string[] = input.split("-");
+      result = [Number(numbers[0]), Number(numbers[1])];
+    }
+    return result;
   }
 
   interface Template {
@@ -321,6 +344,8 @@ namespace worldsPage {
     image: string;
     trailer: string;
     recommendedPlayers: string;
+    playerMin: number;
+    playerMax: number;
     type: string;
     link: string;
   }

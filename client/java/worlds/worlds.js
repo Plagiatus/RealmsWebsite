@@ -9,14 +9,19 @@ var worldsPage;
     let templates;
     let selectedTemplateDiv;
     let templateWrapperDiv;
+    let templateFilter;
+    let templatePlayerFilter;
     function init() {
         // worldid = checkWorldId();
         // checkCredentials();
         // getWorlds();
         switchButtons = document.getElementsByClassName("switch-slot-btn");
-        document.getElementById("template-search").addEventListener("input", filterTemplates);
         selectedTemplateDiv = document.getElementById("selected-template");
         templateWrapperDiv = document.getElementById("template-wrapper");
+        templateFilter = document.getElementById("template-search");
+        templateFilter.addEventListener("input", filterTemplates);
+        templatePlayerFilter = document.getElementById("player-amount");
+        templatePlayerFilter.addEventListener("input", filterTemplates);
         window.addEventListener("scroll", moveSelectedTemplate);
         for (let rep of document.querySelectorAll(".replacement")) {
             rep.addEventListener("click", replacementClick);
@@ -211,16 +216,22 @@ var worldsPage;
       `;
             div.addEventListener("click", selectTemplate);
             templateDiv.appendChild(div);
+            let players = getRecommendedPlayerNumbers(temp.recommendedPlayers);
+            temp.playerMin = players[0];
+            temp.playerMax = players[1];
         }
         templateDiv.innerHTML += '<span class="hidden" id="nothing-found">No templates match your search.</span>';
     }
     function filterTemplates(event) {
         if (!templates || templates.length <= 0)
             return;
-        let searchTerm = event.target.value.toLowerCase();
+        let searchTerm = templateFilter.value;
+        let playerAmount = Number(templatePlayerFilter.value);
+        console.log(searchTerm, playerAmount);
         let found = false;
         for (let temp of templates) {
-            if (searchTerm == "" || temp.name.toLowerCase().includes(searchTerm) || temp.author.toLowerCase().includes(searchTerm)) {
+            if ((searchTerm == "" || temp.name.toLowerCase().includes(searchTerm) || temp.author.toLowerCase().includes(searchTerm))
+                && (playerAmount == 0 || (playerAmount >= temp.playerMin && playerAmount <= temp.playerMax))) {
                 document.getElementById("template-" + temp.id).classList.remove("hidden");
                 found = true;
             }
@@ -326,4 +337,16 @@ var worldsPage;
         }
     }
     worldsPage.closeAll = closeAll;
+    function getRecommendedPlayerNumbers(rp) {
+        let result = [1, 11];
+        let input = rp.trim().split(" ")[0];
+        if (input.includes("+")) {
+            result[0] = Number(input.split("+")[0]);
+        }
+        else {
+            let numbers = input.split("-");
+            result = [Number(numbers[0]), Number(numbers[1])];
+        }
+        return result;
+    }
 })(worldsPage || (worldsPage = {}));

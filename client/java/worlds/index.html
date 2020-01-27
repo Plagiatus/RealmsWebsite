@@ -83,7 +83,7 @@
       <button type="button" onclick="worldsPage.closeAll()">Close</button>
     </form>
   </div>
-  <div class="hidden settings-div" id="template-wrapper">
+  <div class=" settings-div" id="template-wrapper">
     <h2 id="template-type">TYPE
       <button onclick="worldsPage.closeAll()">Close</button>
     </h2>
@@ -93,7 +93,8 @@
     <div id="template-filter-wrapper">
       <div id="template-filter">
         <input type="text" name="template-search" id="template-search" placeholder="🔎 filter...">
-        <!-- TODO: Add filter for player amount -->
+        <label for="player-amount">Playeramount (0=disabled)</label>
+        <input type="number" name="player-amount" id="player-amount" min="0" max="11" step="1" value="0">
       </div>
       <div id="templates-wrapper">
         <span>Loading... (this might take up to 15 seconds)</span>

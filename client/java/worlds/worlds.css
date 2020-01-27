@@ -88,10 +88,22 @@ label {
   display: block;
 }
 
-#template-search{
+#template-filter {
   margin: 10px;
+}
+
+#template-filter > label {
+  display: inline-block;
+}
+
+#player-amount {
+  width: 3em;
+}
+
+#template-search{
+  width: 100%;
+  margin-bottom: 10px;
   font-size: x-large;
-  width: calc(100% - 20px);
 }
 
 #template-type{
