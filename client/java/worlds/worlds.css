@@ -42,6 +42,10 @@ label {
   grid-template-columns: 350px auto;
 }
 
+#template-wrapper > h2 > button {
+  float: right;
+}
+
 #templates-wrapper {
   overflow: hidden;
 }

@@ -84,7 +84,9 @@
     </form>
   </div>
   <div class="hidden settings-div" id="template-wrapper">
-    <h2 id="template-type">TYPE</h2>
+    <h2 id="template-type">TYPE
+      <button onclick="worldsPage.closeAll()">Close</button>
+    </h2>
     <div id="selected-template">
       <span>Nothing selected</span>
     </div>
@@ -98,7 +100,7 @@
       </div>
     </div>
   </div>
-  <div class=" settings-div" id="world-reset">
+  <div class="hidden settings-div" id="world-reset">
     <h2 id="replace-header">Replace Slot X with...</h2>
     <div class="replacement" id="newWorld">
       <img src="../img/new_world.png" alt="">

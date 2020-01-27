@@ -19,7 +19,7 @@ var worldsPage;
         templateWrapperDiv = document.getElementById("template-wrapper");
         window.addEventListener("scroll", moveSelectedTemplate);
         for (let rep of document.querySelectorAll(".replacement")) {
-            rep.addEventListener("click", replacemenetClick);
+            rep.addEventListener("click", replacementClick);
         }
     }
     function getWorlds() {
@@ -140,9 +140,10 @@ var worldsPage;
         document.querySelector(`#world-${slot} > #world-reset-btn`).disabled = true;
         document.getElementById("replace-header").innerText = "Replacing World in " + (server.slots.get(slot).slotName || "World " + slot) + "with...";
         document.getElementById("world-reset").classList.remove("hidden");
+        selectedSlot = slot;
     }
     worldsPage.showReplaceWorld = showReplaceWorld;
-    function replacemenetClick(_e) {
+    function replacementClick(_e) {
         let target = _e.currentTarget;
         if (target.classList.contains("disabled"))
             return;
@@ -155,6 +156,7 @@ var worldsPage;
     }
     function showMinigames() {
         document.querySelector("#show-minigames-btn").disabled = true;
+        selectedSlot = 4;
         getTemplates("MINIGAMES");
     }
     worldsPage.showMinigames = showMinigames;
@@ -175,7 +177,7 @@ var worldsPage;
     }
     worldsPage.showAdventure = showAdventure;
     function getTemplates(type) {
-        closeAll();
+        closeAll(false);
         templateWrapperDiv.classList.remove("hidden");
         document.getElementById("template-type").innerText = type;
         selectedTemplateDiv.innerHTML = "<span>Nothing selected</span>";
@@ -256,7 +258,7 @@ var worldsPage;
         if (selectedTemplate.link && selectedTemplate.link != "") {
             selectedTemplateDiv.innerHTML += `<a class="template-link" href="${selectedTemplate.link}">Creator Website</a>`;
         }
-        selectedTemplateDiv.innerHTML += `<button class="template-confirm-button" id="template-confirm-button" onclick="worldsPage.activateTemplate(${id})">Select Minigame</button>`;
+        selectedTemplateDiv.innerHTML += `<button class="template-confirm-button" id="template-confirm-button" onclick="worldsPage.activateTemplate(${id})">Select</button>`;
         // window.scrollTo(0, selectedTemplateDiv.offsetTop);
         let previousActiveElement = document.getElementById("templates-wrapper").querySelector(".active");
         if (previousActiveElement)
@@ -266,8 +268,11 @@ var worldsPage;
     worldsPage.selectTemplate = selectTemplate;
     function activateTemplate(id) {
         document.getElementById("template-confirm-button").disabled = true;
+        if (selectedSlot != 4) {
+            switchTo(selectedSlot);
+        }
         let data = getCredentials();
-        data["command"] = "setMinigame";
+        data["command"] = selectedSlot == 4 ? "setMinigame" : "setTemplate";
         data["world"] = worldid;
         data["id"] = id;
         let result = sendPOSTRequest(data);
@@ -277,7 +282,8 @@ var worldsPage;
         document.getElementById("worlds").querySelector(".active").classList.remove("active");
         document.getElementById("world-minigame").classList.add("active");
         window.scrollTo(0, 0);
-        templateWrapperDiv.classList.add("hidden");
+        // templateWrapperDiv.classList.add("hidden");
+        closeAll();
         document.getElementById("show-minigames-btn").innerText = "Switch Minigame";
         let minigameContainer = document.getElementById("world-minigame");
         let selectedTemplate = templates.find(tmp => tmp.id == id);
@@ -304,7 +310,7 @@ var worldsPage;
             parseFloat(styles['marginBottom']);
         return Math.ceil(el.offsetHeight + margin);
     }
-    function closeAll() {
+    function closeAll(clearSlot = true) {
         let buttons = Array.from(document.getElementsByClassName("world-settings-btn"));
         buttons = buttons.concat(Array.from(document.getElementsByClassName("world-reset-btn")));
         buttons.push(document.getElementById("show-minigames-btn"));
@@ -312,7 +318,8 @@ var worldsPage;
             if (btn)
                 btn.disabled = false;
         }
-        selectedSlot = null;
+        if (clearSlot)
+            selectedSlot = null;
         let allDivs = document.getElementsByClassName("settings-div");
         for (let div of allDivs) {
             div.classList.add("hidden");

@@ -19,7 +19,7 @@ namespace worldsPage {
     templateWrapperDiv = <HTMLDivElement>document.getElementById("template-wrapper");
     window.addEventListener("scroll", moveSelectedTemplate);
     for (let rep of document.querySelectorAll(".replacement")) {
-      rep.addEventListener("click", replacemenetClick);
+      rep.addEventListener("click", replacementClick);
     }
   }
 
@@ -133,9 +133,10 @@ namespace worldsPage {
     (<HTMLButtonElement>document.querySelector(`#world-${slot} > #world-reset-btn`)).disabled = true;
     (<HTMLDivElement>document.getElementById("replace-header")).innerText = "Replacing World in " + (server.slots.get(slot).slotName || "World " + slot) + "with...";
     document.getElementById("world-reset").classList.remove("hidden");
+    selectedSlot = slot;
   }
 
-  function replacemenetClick(_e: Event) {
+  function replacementClick(_e: Event) {
     let target: HTMLDivElement = <HTMLDivElement>_e.currentTarget;
     if (target.classList.contains("disabled")) return;
     for (let s in worldsPage) {
@@ -148,6 +149,7 @@ namespace worldsPage {
 
   export function showMinigames() {
     (<HTMLButtonElement>document.querySelector("#show-minigames-btn")).disabled = true;
+    selectedSlot = 4;
     getTemplates("MINIGAMES");
   }
   export function showWorldTemplate() {
@@ -164,7 +166,7 @@ namespace worldsPage {
   }
 
   function getTemplates(type: string) {
-    closeAll();
+    closeAll(false);
     templateWrapperDiv.classList.remove("hidden");
     document.getElementById("template-type").innerText = type;
     selectedTemplateDiv.innerHTML = "<span>Nothing selected</span>";
@@ -242,7 +244,7 @@ namespace worldsPage {
     if (selectedTemplate.link && selectedTemplate.link != "") {
       selectedTemplateDiv.innerHTML += `<a class="template-link" href="${selectedTemplate.link}">Creator Website</a>`;
     }
-    selectedTemplateDiv.innerHTML += `<button class="template-confirm-button" id="template-confirm-button" onclick="worldsPage.activateTemplate(${id})">Select Minigame</button>`;
+    selectedTemplateDiv.innerHTML += `<button class="template-confirm-button" id="template-confirm-button" onclick="worldsPage.activateTemplate(${id})">Select</button>`;
     // window.scrollTo(0, selectedTemplateDiv.offsetTop);
     let previousActiveElement: HTMLElement = document.getElementById("templates-wrapper").querySelector(".active");
     if (previousActiveElement)
@@ -252,8 +254,11 @@ namespace worldsPage {
 
   export function activateTemplate(id: number) {
     (<HTMLButtonElement>document.getElementById("template-confirm-button")).disabled = true;
+    if(selectedSlot != 4){
+      switchTo(selectedSlot);
+    }
     let data = getCredentials();
-    data["command"] = "setMinigame";
+    data["command"] = selectedSlot == 4 ? "setMinigame" : "setTemplate";
     data["world"] = worldid;
     data["id"] = id;
     let result = sendPOSTRequest(data);
@@ -262,7 +267,8 @@ namespace worldsPage {
     document.getElementById("worlds").querySelector(".active").classList.remove("active");
     document.getElementById("world-minigame").classList.add("active");
     window.scrollTo(0, 0);
-    templateWrapperDiv.classList.add("hidden");
+    // templateWrapperDiv.classList.add("hidden");
+    closeAll();
     document.getElementById("show-minigames-btn").innerText = "Switch Minigame";
     let minigameContainer: HTMLElement = document.getElementById("world-minigame");
     let selectedTemplate: Template = templates.find(tmp => tmp.id == id);
@@ -291,7 +297,7 @@ namespace worldsPage {
     return Math.ceil(el.offsetHeight + margin);
   }
 
-  export function closeAll() {
+  export function closeAll(clearSlot: boolean = true) {
     let buttons: HTMLButtonElement[] = Array.from(<HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("world-settings-btn"));
     buttons = buttons.concat(Array.from(<HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("world-reset-btn")));
     buttons.push(<HTMLButtonElement>document.getElementById("show-minigames-btn"));
@@ -300,7 +306,7 @@ namespace worldsPage {
         btn.disabled = false;
     }
 
-    selectedSlot = null;
+    if(clearSlot) selectedSlot = null;
     let allDivs: HTMLCollectionOf<HTMLDivElement> = <HTMLCollectionOf<HTMLDivElement>>document.getElementsByClassName("settings-div");
     for (let div of allDivs) {
       div.classList.add("hidden");
