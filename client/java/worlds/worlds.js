@@ -1,6 +1,7 @@
 var worldsPage;
 (function (worldsPage) {
     window.addEventListener("load", init);
+    //TODO: save server and templates in cookies and use those on reload. #functionalcookies
     let worldid;
     let server;
     let selectedSlot;
@@ -177,6 +178,7 @@ var worldsPage;
         closeAll();
         templateWrapperDiv.classList.remove("hidden");
         document.getElementById("template-type").innerText = type;
+        selectedTemplateDiv.innerHTML = "<span>Nothing selected</span>";
         let data = getCredentials();
         data["command"] = "templates";
         data["type"] = type;
@@ -186,11 +188,14 @@ var worldsPage;
         displayTemplates(result);
     }
     function displayTemplates(_templates) {
-        if (!_templates || _templates.length <= 0)
+        let templateDiv = document.getElementById("templates-wrapper");
+        if (!_templates || _templates.length <= 0) {
+            templateDiv.innerHTML = "<span>There are no templates in this category.</span>";
+            templates = [];
             return;
+        }
         templates = _templates;
         document.getElementById("template-type").innerText = _templates[0].type;
-        let templateDiv = document.getElementById("templates-wrapper");
         templateDiv.innerHTML = "";
         for (let temp of _templates) {
             let div = document.createElement("div");
@@ -205,16 +210,27 @@ var worldsPage;
             div.addEventListener("click", selectTemplate);
             templateDiv.appendChild(div);
         }
+        templateDiv.innerHTML += '<span class="hidden" id="nothing-found">No templates match your search.</span>';
     }
     function filterTemplates(event) {
+        if (!templates || templates.length <= 0)
+            return;
         let searchTerm = event.target.value.toLowerCase();
+        let found = false;
         for (let temp of templates) {
             if (searchTerm == "" || temp.name.toLowerCase().includes(searchTerm) || temp.author.toLowerCase().includes(searchTerm)) {
                 document.getElementById("template-" + temp.id).classList.remove("hidden");
+                found = true;
             }
             else {
                 document.getElementById("template-" + temp.id).classList.add("hidden");
             }
+        }
+        if (found) {
+            document.getElementById("nothing-found").classList.add("hidden");
+        }
+        else {
+            document.getElementById("nothing-found").classList.remove("hidden");
         }
     }
     worldsPage.filterTemplates = filterTemplates;
