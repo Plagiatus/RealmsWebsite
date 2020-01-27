@@ -12,7 +12,7 @@ var TEMPLATES;
     TEMPLATES["INSPIRATION"] = "INSPIRATION";
 })(TEMPLATES = exports.TEMPLATES || (exports.TEMPLATES = {}));
 let templateMap = new Map();
-let lastCheck = 0;
+let lastCheck = new Map();
 async function templates(_input, _response) {
     let email = _input.email;
     let token = _input.token;
@@ -25,14 +25,12 @@ async function templates(_input, _response) {
     if (!TEMPLATES[type]) {
         throw new Error("This type of WorldTemplate doesn't exist.");
     }
-    if (lastCheck + 1000 * 60 * 60 < Date.now()) {
+    if (!lastCheck.has(TEMPLATES[type]) || lastCheck.get(TEMPLATES[type]) + 1000 * 60 * 60 < Date.now()) {
         let p = new auth_1.Player(email, token, uuid, name);
         let c = new minecraft_realms_1.Client(p.getAuthToken(), main_1.latestVersion, p.name);
-        for (let t in TEMPLATES) {
-            let total = c.templates(TEMPLATES[t], 0, 1).total;
-            templateMap.set(TEMPLATES[t], c.templates(TEMPLATES[t], 0, total).templates);
-        }
-        lastCheck = Date.now();
+        let total = c.templates(TEMPLATES[type], 0, 1).total;
+        templateMap.set(TEMPLATES[type], c.templates(TEMPLATES[type], 0, total).templates);
+        lastCheck.set(TEMPLATES[type], Date.now());
     }
     if (templateMap.has(TEMPLATES[type])) {
         _response.write(JSON.stringify(templateMap.get(TEMPLATES[type])));

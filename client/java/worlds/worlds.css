@@ -94,6 +94,34 @@ label {
   grid-column: 1 / span 2;
 }
 
+.replacement {
+  float: left;
+  width: 160px;
+  height: 200px;
+  margin: 8px;
+  padding: 5px;
+  border: 1px solid black;
+  text-align: center;
+}
+
+.replacement > img {
+  width: 160px;
+  height: 160px;
+}
+
+#world-reset {
+  overflow: hidden;
+}
+
+.replacement.disabled {
+  background-color: lightgray;
+  color: gray;
+}
+
+.replacement.disabled > img{
+  filter: grayscale(100%);
+}
+
 @media screen and (max-width: 795px){
   #template-type {
     grid-column: 1;
@@ -118,5 +146,8 @@ label {
   .template > img {
     width: 110px;
     height: 110px;
+  }
+  .replacement {
+  margin: 4px;
   }
 }

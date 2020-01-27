@@ -9,14 +9,17 @@ var worldsPage;
     let selectedTemplateDiv;
     let templateWrapperDiv;
     function init() {
-        worldid = checkWorldId();
-        checkCredentials();
-        getWorlds();
+        // worldid = checkWorldId();
+        // checkCredentials();
+        // getWorlds();
         switchButtons = document.getElementsByClassName("switch-slot-btn");
         document.getElementById("template-search").addEventListener("input", filterTemplates);
         selectedTemplateDiv = document.getElementById("selected-template");
         templateWrapperDiv = document.getElementById("template-wrapper");
         window.addEventListener("scroll", moveSelectedTemplate);
+        for (let rep of document.querySelectorAll(".replacement")) {
+            rep.addEventListener("click", replacemenetClick);
+        }
     }
     function getWorlds() {
         let data = getCredentials();
@@ -36,8 +39,8 @@ var worldsPage;
         <img src="${slots.get(i).templateImage ? "data:image/png;base64, " + slots.get(i).templateImage : "../img/placeholder.png"}" alt="" class="world-image">
         <span class="world-name">${slots.get(i).slotName || `World ${i}`}</span>
         <button class="switch-slot-btn" onclick="worldsPage.switchTo(${i})" ${i == result.activeSlot && !result.minigameId ? "disabled" : ""}>Switch</button>
-        <button class="world-settings-btn" onclick="worldsPage.showSettings(${i})" >World Settings</button>
-        <button class="world-reset-btn" disabled>Replace World</button>
+        <button class="world-settings-btn" onclick="worldsPage.showSettings(${i})">World Settings</button>
+        <button class="world-reset-btn" onclick="worldsPage.showReplaceWorld(${i})">Replace World</button>
       </div>
       `;
         }
@@ -131,19 +134,57 @@ var worldsPage;
         document.getElementById("show-minigames-btn").innerText = "Switch to temporary Minigame";
     }
     worldsPage.switchTo = switchTo;
-    function showMinigames() {
+    function showReplaceWorld(slot) {
         closeAll();
+        document.querySelector(`#world-${slot} > #world-reset-btn`).disabled = true;
+        document.getElementById("replace-header").innerText = "Replacing World in " + (server.slots.get(slot).slotName || "World " + slot) + "with...";
+        document.getElementById("world-reset").classList.remove("hidden");
+    }
+    worldsPage.showReplaceWorld = showReplaceWorld;
+    function replacemenetClick(_e) {
+        let target = _e.currentTarget;
+        if (target.classList.contains("disabled"))
+            return;
+        for (let s in worldsPage) {
+            if (s == target.id) {
+                worldsPage[s]();
+                return;
+            }
+        }
+    }
+    function showMinigames() {
         document.querySelector("#show-minigames-btn").disabled = true;
+        getTemplates("MINIGAMES");
+    }
+    worldsPage.showMinigames = showMinigames;
+    function showWorldTemplate() {
+        getTemplates("WORLD_TEMPLATES");
+    }
+    worldsPage.showWorldTemplate = showWorldTemplate;
+    function showInspiration() {
+        getTemplates("INSPIRATIONS");
+    }
+    worldsPage.showInspiration = showInspiration;
+    function showExperience() {
+        getTemplates("EXPERIENCES");
+    }
+    worldsPage.showExperience = showExperience;
+    function showAdventure() {
+        getTemplates("ADVENTURES");
+    }
+    worldsPage.showAdventure = showAdventure;
+    function getTemplates(type) {
+        closeAll();
         templateWrapperDiv.classList.remove("hidden");
+        document.getElementById("template-type").innerText = type;
         let data = getCredentials();
         data["command"] = "templates";
-        data["type"] = "MINIGAMES";
+        data["type"] = type;
         let result = sendPOSTRequest(data);
         if (result.error)
             return;
         displayTemplates(result);
     }
-    worldsPage.showMinigames = showMinigames;
     function displayTemplates(_templates) {
         if (!_templates || _templates.length <= 0)
             return;
@@ -249,10 +290,11 @@ var worldsPage;
     }
     function closeAll() {
         let buttons = Array.from(document.getElementsByClassName("world-settings-btn"));
-        // buttons = buttons.concat(Array.from(<HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("world-reset-btn")));
+        buttons = buttons.concat(Array.from(document.getElementsByClassName("world-reset-btn")));
         buttons.push(document.getElementById("show-minigames-btn"));
         for (let btn of buttons) {
-            btn.disabled = false;
+            if (btn)
+                btn.disabled = false;
         }
         selectedSlot = null;
         let allDivs = document.getElementsByClassName("settings-div");

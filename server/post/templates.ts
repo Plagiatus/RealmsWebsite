@@ -12,7 +12,7 @@ export enum TEMPLATES {
 }
 
 let templateMap: Map<string, WorldTemplate[]> = new Map<string, WorldTemplate[]>();
-let lastCheck: number = 0;
+let lastCheck: Map<string, number> = new Map<string, number>();
 export async function templates(_input, _response: Http.OutgoingMessage) {
   let email: string = _input.email;
   let token: string = _input.token;
@@ -25,14 +25,12 @@ export async function templates(_input, _response: Http.OutgoingMessage) {
   if (!TEMPLATES[type]) {
     throw new Error("This type of WorldTemplate doesn't exist.");
   }
-  if (lastCheck + 1000 * 60 * 60 < Date.now()) {
+  if (!lastCheck.has(TEMPLATES[type]) || lastCheck.get(TEMPLATES[type]) + 1000 * 60 * 60 < Date.now()) {
     let p: Player = new Player(email, token, uuid, name);
     let c: Client = new Client(p.getAuthToken(), latestVersion, p.name);
-    for(let t in TEMPLATES){
-      let total: number = c.templates(TEMPLATES[t],0,1).total;
-      templateMap.set(TEMPLATES[t], c.templates(TEMPLATES[t], 0, total).templates);
-    }
-    lastCheck = Date.now();
+    let total: number = c.templates(TEMPLATES[type], 0, 1).total;
+    templateMap.set(TEMPLATES[type], c.templates(TEMPLATES[type], 0, total).templates);
+    lastCheck.set(TEMPLATES[type], Date.now());
   }
   if (templateMap.has(TEMPLATES[type])) {
     _response.write(JSON.stringify(templateMap.get(TEMPLATES[type])));

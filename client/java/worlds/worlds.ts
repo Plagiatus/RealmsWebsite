@@ -9,14 +9,17 @@ namespace worldsPage {
   let selectedTemplateDiv: HTMLDivElement;
   let templateWrapperDiv: HTMLDivElement;
   function init() {
-    worldid = checkWorldId();
-    checkCredentials();
-    getWorlds();
+    // worldid = checkWorldId();
+    // checkCredentials();
+    // getWorlds();
     switchButtons = <HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("switch-slot-btn");
     document.getElementById("template-search").addEventListener("input", filterTemplates);
     selectedTemplateDiv = <HTMLDivElement>document.getElementById("selected-template");
     templateWrapperDiv = <HTMLDivElement>document.getElementById("template-wrapper");
     window.addEventListener("scroll", moveSelectedTemplate);
+    for (let rep of document.querySelectorAll(".replacement")) {
+      rep.addEventListener("click", replacemenetClick);
+    }
   }
 
   function getWorlds() {
@@ -36,8 +39,8 @@ namespace worldsPage {
         <img src="${slots.get(i).templateImage ? "data:image/png;base64, " + slots.get(i).templateImage : "../img/placeholder.png"}" alt="" class="world-image">
         <span class="world-name">${slots.get(i).slotName || `World ${i}`}</span>
         <button class="switch-slot-btn" onclick="worldsPage.switchTo(${i})" ${i == result.activeSlot && !result.minigameId ? "disabled" : ""}>Switch</button>
-        <button class="world-settings-btn" onclick="worldsPage.showSettings(${i})" >World Settings</button>
-        <button class="world-reset-btn" disabled>Replace World</button>
+        <button class="world-settings-btn" onclick="worldsPage.showSettings(${i})">World Settings</button>
+        <button class="world-reset-btn" onclick="worldsPage.showReplaceWorld(${i})">Replace World</button>
       </div>
       `;
     }
@@ -124,13 +127,48 @@ namespace worldsPage {
     document.getElementById("show-minigames-btn").innerText = "Switch to temporary Minigame";
   }
 
-  export function showMinigames() {
+  export function showReplaceWorld(slot: number) {
     closeAll();
-    (<HTMLButtonElement>document.querySelector("#show-minigames-btn")).disabled=true;
+    (<HTMLButtonElement>document.querySelector(`#world-${slot} > #world-reset-btn`)).disabled = true;
+    (<HTMLDivElement>document.getElementById("replace-header")).innerText = "Replacing World in " + (server.slots.get(slot).slotName || "World " + slot) + "with...";
+    document.getElementById("world-reset").classList.remove("hidden");
+  }
+
+  function replacemenetClick(_e: Event) {
+    let target: HTMLDivElement = <HTMLDivElement>_e.currentTarget;
+    if (target.classList.contains("disabled")) return;
+    for (let s in worldsPage) {
+      if (s == target.id) {
+        worldsPage[s]();
+        return;
+      }
+    }
+  }
+
+  export function showMinigames() {
+    (<HTMLButtonElement>document.querySelector("#show-minigames-btn")).disabled = true;
+    getTemplates("MINIGAMES");
+  }
+  export function showWorldTemplate() {
+    getTemplates("WORLD_TEMPLATES");
+  }
+  export function showInspiration() {
+    getTemplates("INSPIRATIONS");
+  }
+  export function showExperience() {
+    getTemplates("EXPERIENCES");
+  }
+  export function showAdventure() {
+    getTemplates("ADVENTURES");
+  }
+
+  function getTemplates(type: string) {
+    closeAll();
     templateWrapperDiv.classList.remove("hidden");
+    document.getElementById("template-type").innerText = type;
     let data = getCredentials();
     data["command"] = "templates";
-    data["type"] = "MINIGAMES";
+    data["type"] = type;
     let result = sendPOSTRequest(data);
     if (result.error) return;
     displayTemplates(result);
@@ -240,12 +278,13 @@ namespace worldsPage {
 
   export function closeAll() {
     let buttons: HTMLButtonElement[] = Array.from(<HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("world-settings-btn"));
-    // buttons = buttons.concat(Array.from(<HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("world-reset-btn")));
+    buttons = buttons.concat(Array.from(<HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("world-reset-btn")));
     buttons.push(<HTMLButtonElement>document.getElementById("show-minigames-btn"));
-    for(let btn of buttons){
-      btn.disabled = false;
+    for (let btn of buttons) {
+      if (btn)
+        btn.disabled = false;
     }
-    
+
     selectedSlot = null;
     let allDivs: HTMLCollectionOf<HTMLDivElement> = <HTMLCollectionOf<HTMLDivElement>>document.getElementsByClassName("settings-div");
     for (let div of allDivs) {
