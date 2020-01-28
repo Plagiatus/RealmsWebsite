@@ -284,7 +284,6 @@ var worldsPage;
     worldsPage.selectTemplate = selectTemplate;
     function activateTemplate(id) {
         document.getElementById("template-confirm-button").disabled = true;
-        console.log(selectedSlot);
         if (selectedSlot != 4 && selectedSlot != server.activeSlot) {
             switchTo(selectedSlot);
         }
@@ -296,16 +295,20 @@ var worldsPage;
         document.getElementById("template-confirm-button").disabled = false;
         if (result.error)
             return;
-        document.getElementById("worlds").querySelector(".active").classList.remove("active");
-        document.getElementById("world-minigame").classList.add("active");
-        window.scrollTo(0, 0);
-        // templateWrapperDiv.classList.add("hidden");
-        closeAll();
-        document.getElementById("show-minigames-btn").innerText = "Switch Minigame";
-        let minigameContainer = document.getElementById("world-minigame");
         let selectedTemplate = templates.find(tmp => tmp.id == id);
-        minigameContainer.querySelector(".world-name").innerText = selectedTemplate.name;
-        minigameContainer.querySelector("img").src = "data:image/png;base64, " + selectedTemplate.image;
+        if (selectedSlot == 4) {
+            document.getElementById("worlds").querySelector(".active").classList.remove("active");
+            document.getElementById("world-minigame").classList.add("active");
+            document.getElementById("show-minigames-btn").innerText = "Switch Minigame";
+            let minigameContainer = document.getElementById("world-minigame");
+            minigameContainer.querySelector(".world-name").innerText = selectedTemplate.name;
+            minigameContainer.querySelector("img").src = "data:image/png;base64, " + selectedTemplate.image;
+        }
+        else {
+            document.getElementById("world-" + selectedSlot).querySelector("img").src = "data:image/png;base64, " + selectedTemplate.image;
+        }
+        window.scrollTo(0, 0);
+        closeAll();
     }
     worldsPage.activateTemplate = activateTemplate;
     function moveSelectedTemplate(e) {

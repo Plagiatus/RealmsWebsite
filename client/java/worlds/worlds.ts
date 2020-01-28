@@ -270,7 +270,6 @@ namespace worldsPage {
 
   export function activateTemplate(id: number) {
     (<HTMLButtonElement>document.getElementById("template-confirm-button")).disabled = true;
-    console.log(selectedSlot);
     if (selectedSlot != 4 && selectedSlot != server.activeSlot) {
       switchTo(selectedSlot);
     }
@@ -281,16 +280,19 @@ namespace worldsPage {
     let result = sendPOSTRequest(data);
     (<HTMLButtonElement>document.getElementById("template-confirm-button")).disabled = false;
     if (result.error) return;
-    document.getElementById("worlds").querySelector(".active").classList.remove("active");
-    document.getElementById("world-minigame").classList.add("active");
-    window.scrollTo(0, 0);
-    // templateWrapperDiv.classList.add("hidden");
-    closeAll();
-    document.getElementById("show-minigames-btn").innerText = "Switch Minigame";
-    let minigameContainer: HTMLElement = document.getElementById("world-minigame");
     let selectedTemplate: Template = templates.find(tmp => tmp.id == id);
-    (<HTMLSpanElement>minigameContainer.querySelector(".world-name")).innerText = selectedTemplate.name;
-    (<HTMLImageElement>minigameContainer.querySelector("img")).src = "data:image/png;base64, " + selectedTemplate.image;
+    if(selectedSlot == 4) {
+      document.getElementById("worlds").querySelector(".active").classList.remove("active");
+      document.getElementById("world-minigame").classList.add("active");
+      document.getElementById("show-minigames-btn").innerText = "Switch Minigame";
+      let minigameContainer: HTMLElement = document.getElementById("world-minigame");
+      (<HTMLSpanElement>minigameContainer.querySelector(".world-name")).innerText = selectedTemplate.name;
+      (<HTMLImageElement>minigameContainer.querySelector("img")).src = "data:image/png;base64, " + selectedTemplate.image;
+    } else {
+      document.getElementById("world-"+selectedSlot).querySelector("img").src = "data:image/png;base64, " + selectedTemplate.image;
+    }
+    window.scrollTo(0, 0);
+    closeAll();
   }
 
   function moveSelectedTemplate(e: Event) {
