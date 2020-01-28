@@ -336,9 +336,11 @@ namespace worldsPage {
     let input = rp.trim().split(" ")[0];
     if (input.includes("+")) {
       result[0] = Number(input.split("+")[0]);
-    } else {
+    } else if (input.includes("-")) {
       let numbers: string[] = input.split("-");
       result = [Number(numbers[0]), Number(numbers[1])];
+    } else {
+      result = [Number(input),Number(input)]
     }
     return result;
   }
