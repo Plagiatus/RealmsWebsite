@@ -143,7 +143,7 @@ var worldsPage;
     function showReplaceWorld(slot) {
         closeAll();
         document.querySelector(`#world-${slot} > .world-reset-btn`).disabled = true;
-        document.getElementById("replace-header").innerText = "Replacing World in " + (server.slots.get(slot).slotName || "World " + slot) + " with...";
+        document.getElementById("replace-header").innerText = "Replacing World in \"" + (server.slots.get(slot).slotName || "World " + slot) + "\" with...";
         document.getElementById("world-reset").classList.remove("hidden");
         selectedSlot = slot;
     }
@@ -160,7 +160,6 @@ var worldsPage;
         }
     }
     function showMinigames() {
-        document.querySelector("#show-minigames-btn").disabled = true;
         selectedSlot = 4;
         getTemplates("MINIGAMES");
     }
@@ -183,6 +182,8 @@ var worldsPage;
     worldsPage.showAdventure = showAdventure;
     function getTemplates(type) {
         closeAll(false);
+        if (selectedSlot == 4)
+            document.querySelector("#show-minigames-btn").disabled = true;
         templateWrapperDiv.classList.remove("hidden");
         document.getElementById("template-type").innerText = type;
         selectedTemplateDiv.innerHTML = "<span>Nothing selected</span>";

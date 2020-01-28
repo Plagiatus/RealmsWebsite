@@ -136,7 +136,7 @@ namespace worldsPage {
   export function showReplaceWorld(slot: number) {
     closeAll();
     (<HTMLButtonElement>document.querySelector(`#world-${slot} > .world-reset-btn`)).disabled = true;
-    (<HTMLDivElement>document.getElementById("replace-header")).innerText = "Replacing World in " + (server.slots.get(slot).slotName || "World " + slot) + " with...";
+    (<HTMLDivElement>document.getElementById("replace-header")).innerText = "Replacing World in \"" + (server.slots.get(slot).slotName || "World " + slot) + "\" with...";
     document.getElementById("world-reset").classList.remove("hidden");
     selectedSlot = slot;
   }
@@ -153,7 +153,6 @@ namespace worldsPage {
   }
 
   export function showMinigames() {
-    (<HTMLButtonElement>document.querySelector("#show-minigames-btn")).disabled = true;
     selectedSlot = 4;
     getTemplates("MINIGAMES");
   }
@@ -172,6 +171,8 @@ namespace worldsPage {
 
   function getTemplates(type: string) {
     closeAll(false);
+    if (selectedSlot == 4)
+      (<HTMLButtonElement>document.querySelector("#show-minigames-btn")).disabled = true;
     templateWrapperDiv.classList.remove("hidden");
     document.getElementById("template-type").innerText = type;
     selectedTemplateDiv.innerHTML = "<span>Nothing selected</span>";
@@ -213,7 +214,7 @@ namespace worldsPage {
     let span: HTMLSpanElement = document.createElement("span");
     span.innerText = "No templates match your search.";
     span.classList.add("hidden");
-    span.id="nothing-found";
+    span.id = "nothing-found";
     templateDiv.appendChild(span);
   }
 
@@ -224,7 +225,7 @@ namespace worldsPage {
     let found: boolean = false;
     for (let temp of templates) {
       if ((searchTerm == "" || temp.name.toLowerCase().includes(searchTerm) || temp.author.toLowerCase().includes(searchTerm))
-      && (playerAmount == 0 || (playerAmount >= temp.playerMin && playerAmount <= temp.playerMax))) {
+        && (playerAmount == 0 || (playerAmount >= temp.playerMin && playerAmount <= temp.playerMax))) {
         document.getElementById("template-" + temp.id).classList.remove("hidden");
         found = true;
       } else {
@@ -331,7 +332,7 @@ namespace worldsPage {
 
   function getRecommendedPlayerNumbers(rp: string): [number, number] {
     let result: [number, number] = [1, 11];
-    if(!rp) return result;
+    if (!rp) return result;
     let input = rp.trim().split(" ")[0];
     if (input.includes("+")) {
       result[0] = Number(input.split("+")[0]);
