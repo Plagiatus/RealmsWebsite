@@ -12,9 +12,9 @@ var worldsPage;
     let templateFilter;
     let templatePlayerFilter;
     function init() {
-        // worldid = checkWorldId();
-        // checkCredentials();
-        // getWorlds();
+        worldid = checkWorldId();
+        checkCredentials();
+        getWorlds();
         switchButtons = document.getElementsByClassName("switch-slot-btn");
         selectedTemplateDiv = document.getElementById("selected-template");
         templateWrapperDiv = document.getElementById("template-wrapper");
@@ -142,8 +142,8 @@ var worldsPage;
     worldsPage.switchTo = switchTo;
     function showReplaceWorld(slot) {
         closeAll();
-        document.querySelector(`#world-${slot} > #world-reset-btn`).disabled = true;
-        document.getElementById("replace-header").innerText = "Replacing World in " + (server.slots.get(slot).slotName || "World " + slot) + "with...";
+        document.querySelector(`#world-${slot} > .world-reset-btn`).disabled = true;
+        document.getElementById("replace-header").innerText = "Replacing World in " + (server.slots.get(slot).slotName || "World " + slot) + " with...";
         document.getElementById("world-reset").classList.remove("hidden");
         selectedSlot = slot;
     }
@@ -170,7 +170,7 @@ var worldsPage;
     }
     worldsPage.showWorldTemplate = showWorldTemplate;
     function showInspiration() {
-        getTemplates("INSPIRATIONS");
+        getTemplates("INSPIRATION");
     }
     worldsPage.showInspiration = showInspiration;
     function showExperience() {
@@ -186,6 +186,7 @@ var worldsPage;
         templateWrapperDiv.classList.remove("hidden");
         document.getElementById("template-type").innerText = type;
         selectedTemplateDiv.innerHTML = "<span>Nothing selected</span>";
+        document.getElementById("templates-wrapper").innerHTML = "<span>Loading...</span>";
         let data = getCredentials();
         data["command"] = "templates";
         data["type"] = type;
@@ -212,22 +213,25 @@ var worldsPage;
         <img src="data:image/png;base64, ${temp.image}" alt="">
         <span class="template-name">${temp.name}</span>
         <span class="template-author">By ${temp.author}</span>
-        <span class="template-players">${temp.recommendedPlayers}</span>
+        ${temp.recommendedPlayers ? `<span class="template-players">${temp.recommendedPlayers}</span>` : ""}
       `;
-            div.addEventListener("click", selectTemplate);
             templateDiv.appendChild(div);
+            div.addEventListener("click", selectTemplate);
             let players = getRecommendedPlayerNumbers(temp.recommendedPlayers);
             temp.playerMin = players[0];
             temp.playerMax = players[1];
         }
-        templateDiv.innerHTML += '<span class="hidden" id="nothing-found">No templates match your search.</span>';
+        let span = document.createElement("span");
+        span.innerText = "No templates match your search.";
+        span.classList.add("hidden");
+        span.id = "nothing-found";
+        templateDiv.appendChild(span);
     }
     function filterTemplates(event) {
         if (!templates || templates.length <= 0)
             return;
         let searchTerm = templateFilter.value;
         let playerAmount = Number(templatePlayerFilter.value);
-        console.log(searchTerm, playerAmount);
         let found = false;
         for (let temp of templates) {
             if ((searchTerm == "" || temp.name.toLowerCase().includes(searchTerm) || temp.author.toLowerCase().includes(searchTerm))
@@ -262,7 +266,7 @@ var worldsPage;
       <span class="template-version">${selectedTemplate.version}</span>
       <span class="template-name">${selectedTemplate.name}</span>
       <span class="template-author">By ${selectedTemplate.author}</span>
-      <span class="template-players">${selectedTemplate.recommendedPlayers}</span>`;
+      ${selectedTemplate.recommendedPlayers ? `<span class="template-players">${selectedTemplate.recommendedPlayers}</span>` : ""}`;
         if (selectedTemplate && selectedTemplate.trailer != "") {
             selectedTemplateDiv.innerHTML += `<iframe class="template-trailer" src="https://www.youtube.com/embed/${youtubeID}"></iframe>`;
         }
@@ -279,7 +283,8 @@ var worldsPage;
     worldsPage.selectTemplate = selectTemplate;
     function activateTemplate(id) {
         document.getElementById("template-confirm-button").disabled = true;
-        if (selectedSlot != 4) {
+        console.log(selectedSlot);
+        if (selectedSlot != 4 && selectedSlot != server.activeSlot) {
             switchTo(selectedSlot);
         }
         let data = getCredentials();
@@ -339,6 +344,8 @@ var worldsPage;
     worldsPage.closeAll = closeAll;
     function getRecommendedPlayerNumbers(rp) {
         let result = [1, 11];
+        if (!rp)
+            return result;
         let input = rp.trim().split(" ")[0];
         if (input.includes("+")) {
             result[0] = Number(input.split("+")[0]);
