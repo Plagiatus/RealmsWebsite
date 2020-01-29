@@ -3,7 +3,6 @@ var login;
     window.addEventListener("load", init);
     headerFooter.loadHeader = false;
     function init() {
-        // console.log(window.location);
         if (checkCredentials(false)) {
             console.log("already logged in");
             window.location.replace("../realms");
@@ -16,6 +15,7 @@ var login;
         let emailElement = document.getElementById("email");
         if (!emailElement.checkValidity()) {
             emailElement.reportValidity();
+            loginError("Please provide a valid email");
             return;
         }
         let password = String(formData.get("password"));

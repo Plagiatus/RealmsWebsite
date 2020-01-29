@@ -3,7 +3,6 @@ namespace login {
   headerFooter.loadHeader = false;
 
   function init() {
-    // console.log(window.location);
     if (checkCredentials(false)) {
       console.log("already logged in")
       window.location.replace("../realms");
@@ -17,6 +16,7 @@ namespace login {
     let emailElement: HTMLInputElement = <HTMLInputElement>document.getElementById("email");
     if (!emailElement.checkValidity()) {
       emailElement.reportValidity();
+      loginError("Please provide a valid email");
       return;
     }
     let password: string = String(formData.get("password"));
