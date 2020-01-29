@@ -1,0 +1,25 @@
+h1 {
+  text-align: center;
+}
+
+fieldset {
+  padding: 1px;
+  margin-bottom: 5px;
+}
+
+fieldset > input {
+  width: calc(100% - 4px);
+  border: none;
+}
+
+.border-center{
+  margin: 10px auto;
+  padding: 5px;
+  width: 300px;
+  outline: 1px solid black;
+}
+
+#explanation {
+  margin: 10px;
+  text-align: center;
+}

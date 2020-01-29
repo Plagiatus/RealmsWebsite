@@ -10,55 +10,92 @@
   <script src="../headerFooter.js"></script>
   <script src="login.js"></script>
   <link rel="stylesheet" href="../main.css">
+  <link rel="stylesheet" href="login.css">
 </head>
 
 <body>
   <main>
+    <h1><img src="../img/icon.png" alt=""> Realms Admin/Manager</h1>
     <form id="login">
-      <div id="credentials">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" placeholder="you@example.com" autofocus>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" placeholder="password">
+      <div id="credentials" class="border-center">
+        <label for="email">
+          <fieldset>
+            <legend>Email</legend>
+            <input type="email" name="email" id="email" placeholder="you@example.com" autofocus>
+          </fieldset>
+        </label>
+        <label for="password">
+          <fieldset>
+            <legend>Password</legend>
+            <input type="password" name="password" id="password" placeholder="password">
+          </fieldset>
+        </label>
         <button type="button" onclick="login.loginWithEmail()">Login using Email/Password</button>
       </div>
-      <div id="tokenCredentials">
-        <label for="email2">Email</label>
-        <input type="email" name="email2" id="email2" placeholder="you@example.com" autofocus>
-        <label for="playername">Playername</label>
-        <input type="text" name="playername" id="playername" placeholder="Notch">
-        <label for="uuid">UUID</label>
-        <input type="text" name="uuid" id="uuid" placeholder="069a79f444e94726a5befca90e38aaf5">
-        <label for="token">Token</label>
-        <input type="password" name="token" id="token" placeholder="AVeryLongTokenThatTakesAllTheSpaceHere">
-        <a href="./tokeninfo.html">What is a token and where can i find mine?</a>
+      <div id="tokenCredentials" class="border-center">
+        <label for="email2">
+          <fieldset>
+            <legend>Email</legend>
+            <input type="email" name="email2" id="email2" placeholder="you@example.com" autofocus>
+          </fieldset>
+        </label>
+        <label for="playername">
+          <fieldset>
+            <legend>Playername</legend>
+            <input type="text" name="playername" id="playername" placeholder="Notch">
+          </fieldset>
+        </label>
+        <label for="uuid">
+          <fieldset>
+            <legend>UUID</legend>
+            <input type="text" name="uuid" id="uuid" placeholder="069a79f444e94726a5befca90e38aaf5">
+          </fieldset>
+        </label>
+        <label for="token">
+          <fieldset>
+            <legend>
+              Token
+            </legend>
+            <input type="password" name="token" id="token" placeholder="AVeryLongTokenThatTakesAllTheSpaceHereAndProbablyEvenMoreSoItsNotProperlyVisible">
+          </fieldset>
+        </label>
+        <a href="./tokeninfo.html">What is a token and where can i find mine?</a><br>
+
         <button type="button" onclick="login.loginWithToken()">Login using Email/Token/UUID/Playername</button>
       </div>
-      <div id="rememberContainer">
-        <span>Stay logged in for</span>
-        <input type="radio" name="remember" id="remember1h" value="1">
-        <label for="remember1h">an hour</label>
-        <input type="radio" name="remember" id="remember1d" value="24">
-        <label for="remember1d">a day</label>
-        <input type="radio" name="remember" id="remember7d" value="168">
-        <label for="remember7d">a week</label>
-        <input type="radio" name="remember" id="remember30d" value="720" checked>
-        <label for="remember30d">a month</label>
-      </div>
-      <div id="refreshContainer">
-        <input type="checkbox" name="refresh" id="refresh" value="true">
-        <label for="refresh">Refresh</label>
-        <a title="Refresh the login whenever you use the site">(?)</a>
+      <div class="border-center">
+        <div id="rememberContainer">
+          <span>Stay logged in for</span><br>
+          <input type="radio" name="remember" id="remember1h" value="1">
+          <label for="remember1h">an hour</label><br>
+          <input type="radio" name="remember" id="remember1d" value="24">
+          <label for="remember1d">a day</label><br>
+          <input type="radio" name="remember" id="remember7d" value="168">
+          <label for="remember7d">a week</label><br>
+          <input type="radio" name="remember" id="remember30d" value="720" checked>
+          <label for="remember30d">a month</label><br>
+        </div>
+
+        <div id="refreshContainer">
+          <input type="checkbox" name="refresh" id="refresh" value="true">
+          <label for="refresh">Refresh</label>
+          <a title="Refresh the login whenever you use the site">(?)</a>
+        </div>
+        <span id="errormessage" style="color: red;"></span>
       </div>
       <div id="error">
-        <span id="errormessage" style="color: red;"></span>
       </div>
     </form>
     <div id="explanation">
       <h3>This is an early alpha version</h3>
-      <span>It's laggy, it's slow, it looks ugly and occasionally throws an error. I'm aware and working on that.
-        :D</span>
-
+      <span>
+        It's laggy, it's slow, it looks ugly and occasionally throws an error. I'm aware and working on that. :D
+      </span>
+      <h3>Join us?</h3>
+      <span>
+        If you haven't already, you can join the discord server for more active news about the development of this
+        website: <a href="https://discord.gg/upVpFQD">https://discord.gg/upVpFQD</a>
+      </span>
       <h3>Why should I trust you with my login data?</h3>
       <span>
         Good question, thanks for asking. <br>
