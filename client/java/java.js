@@ -90,6 +90,9 @@ function setCookie(_key, _value, _expires = 0) {
 function removeCookie(_key) {
     setCookie(_key, "", -10);
 }
+function isPerformanceCookieSet() {
+    return getCookie("performance") == "true";
+}
 //#endregion
 //#region Credentials
 function checkCredentials(andRedirect = true) {

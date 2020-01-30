@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Cookie-Settings</title>
+  <link rel="stylesheet" href="../main.css">
+  <link rel="stylesheet" href="cookies.css">
+  <script src="../java.js"></script>
+  <script src="../headerFooter.js"></script>
+  <script src="cookies.js"></script>
+</head>
+
+<body>
+  <div class="main">
+    <h1>Cookies</h1>
+    <p>We're using cookies, as you probably have guessed. Please review your settings and turn off the cookies you don't
+      want us to use.</p>
+    <p class="bold">This page doesn't work without cookies! So if you proceed to use this page, you agree to us using
+      the cookies you've chosen!</p>
+    <div id="cookie-settings">
+      <label for="necessaryCookies">
+        <fieldset>
+          <legend>Necessary Cookies</legend>
+          <table>
+            <tr>
+              <td><span>These cookies are necessary and include things such as storing your session token so we know
+                  when
+                  you switch a page that it's still you.</span>
+                <span class="bold">Without these, the page wouldn't work at all, that's why you cannot turn them
+                  off.</span>
+              </td>
+              <td class="input"><input type="checkbox" name="necessaryCookies" id="necessaryCookies" disabled checked>
+              </td>
+            </tr>
+          </table>
+        </fieldset>
+      </label>
+      <label for="performanceCookies">
+        <fieldset>
+          <legend>Performance Improving Cookies</legend>
+          <table>
+            <tr>
+              <td><span>
+                  These cookies allow us to store some of the information we need to frequently request from the server
+                  on
+                  your device.
+                  Turning these off will drastically worsen your experience, as every page will load much longer. The
+                  site
+                  will also use much more data overall.</span><br>
+                <span class="bold">It is highly recommended that you keep these enabled.</span>
+              </td>
+              <td class="input"><input type="checkbox" name="performanceCookies" id="performanceCookies" checked></td>
+            </tr>
+          </table>
+        </fieldset>
+      </label>
+      <p>These settings are saved automatically.</p>
+    </div>
+    <a href="../login"><button>Back to login</button></a>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+.main {
+  margin: 10px;
+}
+
+#cookie-settings {
+  margin: 10px;
+  padding: 5px;
+  max-width: 720px;
+  border: 1px solid black;
+}
+
+table {
+  width: 100%;
+}
+
+td.input {
+  transform: scale(2);
+}

@@ -97,6 +97,10 @@ function setCookie(_key: string, _value: string, _expires: number = 0) {
 function removeCookie(_key: string) {
   setCookie(_key, "", -10);
 }
+
+function isPerformanceCookieSet(): boolean {
+  return getCookie("performance") == "true";
+}
 //#endregion
 
 //#region Credentials

@@ -1,7 +1,9 @@
 var login;
 (function (login) {
     window.addEventListener("load", init);
-    headerFooter.loadHeader = false;
+    headerFooter.loadLoginHeader = true;
+    if (!getCookie("performance"))
+        window.location.replace("../cookies");
     function init() {
         if (checkCredentials(false)) {
             console.log("already logged in");
