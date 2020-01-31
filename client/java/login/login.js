@@ -10,6 +10,7 @@ var login;
             window.location.replace("../realms");
             return;
         }
+        removePerformanceCookies();
     }
     function loginWithEmail() {
         loginError("");

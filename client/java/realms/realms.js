@@ -2,7 +2,7 @@ var realmsList;
 (function (realmsList_1) {
     window.addEventListener("load", init);
     let realmsList;
-    let servers = [];
+    let realms = [];
     function init() {
         document.getElementsByTagName("h1")[0].innerText = "Welcome " + getCookie("name");
         if (!checkCredentials()) {
@@ -16,20 +16,29 @@ var realmsList;
         document.getElementById("search").addEventListener("input", search);
     }
     function createRealmsDisplay() {
-        let data = getCredentials();
-        data["command"] = "getWorlds";
-        let result = sendPOSTRequest(data);
-        if (result.servers && result.servers.length > 0) {
-            result.servers = result.servers.sort(sortRealms);
-            servers = result.servers;
+        if (getCookie("realms")) {
+            realms = JSON.parse(getPerformanceCookie("realms"));
+        }
+        else {
+            let data = getCredentials();
+            data["command"] = "getWorlds";
+            let result = sendPOSTRequest(data);
+            if (result.servers && result.servers.length > 0) {
+                realms = result.servers;
+                setPerformanceCookie("realms", JSON.stringify(realms), false);
+            }
+        }
+        if (realms && realms.length > 0) {
+            realms = realms.sort(sortRealms);
             realmsList.innerHTML = "";
-            for (let s of result.servers) {
+            let ownerName = getCookie("name");
+            for (let s of realms) {
                 // console.log(s);
-                createOneRealm(s, data.name);
+                createOneRealm(s, ownerName);
             }
         }
         else {
-            realmsList.innerHTML = "Nothing to see here. You don't seem to have";
+            realmsList.innerHTML = "<span>No Realm found.</span>";
         }
     }
     function createOneRealm(_server, ownerName) {
@@ -62,7 +71,11 @@ var realmsList;
             return 1;
         if (!a.expired && b.expired)
             return -1;
-        return a.owner > b.owner;
+        if (a.owner > b.owner)
+            return -1;
+        if (a.owner < b.owner)
+            return 1;
+        return 0;
     }
     function toggleVisibility(_e) {
         let hideOthers = _e.target.checked;
@@ -88,7 +101,7 @@ var realmsList;
     realmsList_1.leaveRealm = leaveRealm;
     function search(_e) {
         let searchterm = _e.target.value.toLowerCase();
-        for (let s of servers) {
+        for (let s of realms) {
             let shouldBeDisplayed = false;
             if (s.properties.description)
                 if (s.properties.description.toLowerCase().includes(searchterm))

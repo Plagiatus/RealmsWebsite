@@ -6,6 +6,7 @@ namespace overview {
   let playersDiv: HTMLDivElement;
   let worldsDiv: HTMLDivElement;
   let playerListDiv: HTMLDivElement;
+  let realm: RealmsServer;
 
   function init() {
     checkWorldId();
@@ -23,14 +24,19 @@ namespace overview {
   }
 
   function createOverview() {
-    //TODO save/load using cookies to make it display faster
-    let data = getCredentials();
-    data["command"] = "detail";
-    data["world"] = getCookie("worldid");
-    let result: RealmsServer = sendPOSTRequest(data);
-    generalOverview(result);
-    worldOverview(result);
-    playerOverview(result.players);
+    if (getCookie(worldName())) {
+      realm = JSON.parse(getPerformanceCookie(worldName()));
+    } else {
+      let data = getCredentials();
+      data["command"] = "detail";
+      data["world"] = getCookie("worldid");
+      let result: RealmsServer = sendPOSTRequest(data);
+      realm = result;
+      setPerformanceCookie(worldName(), JSON.stringify(realm));
+    }
+    generalOverview(realm);
+    worldOverview(realm);
+    playerOverview(realm.players);
     setInterval(updatePlayers, 1000 * 15);
   }
 
@@ -69,9 +75,7 @@ namespace overview {
   }
 
   function worldOverview(r: RealmsServer) {
-    console.log(r);
-    r.slots = new Map(r.slots);
-    let active: RealmsWorldOptions = r.slots.get(r.activeSlot);
+    let active: RealmsWorldOptions = r.slots[r.activeSlot];
     worldsDiv.innerHTML = "";
     if (r.minigameId) {
       worldsDiv.innerHTML += `

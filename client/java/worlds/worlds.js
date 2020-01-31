@@ -1,8 +1,6 @@
 var worldsPage;
 (function (worldsPage) {
     window.addEventListener("load", init);
-    //TODO: save server and templates in cookies and use those on reload. #functionalcookies
-    let worldid;
     let server;
     let selectedSlot;
     let switchButtons;
@@ -12,7 +10,7 @@ var worldsPage;
     let templateFilter;
     let templatePlayerFilter;
     function init() {
-        worldid = checkWorldId();
+        checkWorldId();
         checkCredentials();
         getWorlds();
         switchButtons = document.getElementsByClassName("switch-slot-btn");
@@ -28,33 +26,44 @@ var worldsPage;
         }
     }
     function getWorlds() {
-        let data = getCredentials();
-        data["command"] = "detail";
-        data["world"] = worldid;
-        let result = sendPOSTRequest(data);
-        if (result.error)
-            return;
-        console.log(result);
-        server = fixSlots(result);
-        let slots = result.slots;
+        if (getCookie(worldName())) {
+            server = JSON.parse(getPerformanceCookie(worldName()));
+        }
+        else {
+            let data = getCredentials();
+            data["command"] = "detail";
+            data["world"] = worldid;
+            let result = sendPOSTRequest(data);
+            if (result.error)
+                return;
+            console.log(result);
+            server = result;
+            setPerformanceCookie(worldName(), JSON.stringify(server));
+        }
+        let slots = server.slots;
         let worlds = document.getElementById("worlds");
         worlds.innerHTML = "";
-        for (let i = 1; i < slots.size + 1; i++) {
+        for (let slot in slots) {
+            let slotNumber = Number(slot);
+            if (slotNumber == 4)
+                continue;
             worlds.innerHTML += `
-      <div class="world-wrapper ${i == result.activeSlot && !result.minigameId ? "active" : ""}" id="world-${i}">
-        <img src="${slots.get(i).templateImage ? "data:image/png;base64, " + slots.get(i).templateImage : "../img/placeholder.png"}" alt="" class="world-image">
-        <span class="world-name">${slots.get(i).slotName || `World ${i}`}</span>
-        <button class="switch-slot-btn" onclick="worldsPage.switchTo(${i})" ${i == result.activeSlot && !result.minigameId ? "disabled" : ""}>Switch</button>
-        <button class="world-settings-btn" onclick="worldsPage.showSettings(${i})">World Settings</button>
-        <button class="world-reset-btn" onclick="worldsPage.showReplaceWorld(${i})">Replace World</button>
-      </div>
-      `;
+    <div class="world-wrapper ${slotNumber == server.activeSlot && !server.minigameId ? "active" : ""}" id="world-${slotNumber}">
+      <img src="${slots[slot].templateImage ? "data:image/png;base64, " + slots[slot].templateImage : "../img/placeholder.png"}" alt="" class="world-image">
+      <span class="world-name">${slots[slot].slotName || `World ${slotNumber}`}</span>
+      <button class="switch-slot-btn" onclick="worldsPage.switchTo(${slotNumber})" ${slotNumber == server.activeSlot && !server.minigameId ? "disabled" : ""}>Switch</button>
+      <button class="world-settings-btn" onclick="worldsPage.showSettings(${slotNumber})">World Settings</button>
+      <button class="world-reset-btn" onclick="worldsPage.showReplaceWorld(${slotNumber})">Replace World</button>
+    </div>
+    `;
         }
+        // for (let i: number = 1; i < slots.size + 1; i++) {
+        //   }
         worlds.innerHTML += `
-    <div class="world-wrapper ${result.minigameId ? "active" : ""}" id="world-minigame">
-      <img src="${result.minigameImage ? "data:image/png;base64, " + result.minigameImage : "../img/placeholder.png"}" alt="" class="world-image">
-      <span class="world-name">${result.minigameName || "Minigame"}</span>
-      <button id="show-minigames-btn" onclick="worldsPage.showMinigames()">${result.minigameId ? "Switch Minigame" : "Switch to temporary Minigame"}</button>
+    <div class="world-wrapper ${server.minigameId ? "active" : ""}" id="world-minigame">
+      <img src="${server.minigameImage ? "data:image/png;base64, " + server.minigameImage : "../img/placeholder.png"}" alt="" class="world-image">
+      <span class="world-name">${server.minigameName || "Minigame"}</span>
+      <button id="show-minigames-btn" onclick="worldsPage.showMinigames()">${server.minigameId ? "Switch Minigame" : "Switch to temporary Minigame"}</button>
     </div>
     `;
     }
@@ -64,7 +73,7 @@ var worldsPage;
         closeAll();
         selectedSlot = slot;
         document.querySelector("#world-" + slot + " .world-settings-btn").disabled = true;
-        let slotOptions = server.slots.get(slot);
+        let slotOptions = server.slots[slot];
         document.getElementById("world-settings-wrapper").classList.remove("hidden");
         for (let setting in slotOptions) {
             let input = document.getElementById(setting);
@@ -104,13 +113,14 @@ var worldsPage;
         if (result.error)
             return;
         // update saved server and html display
-        let slotOptions = server.slots.get(selectedSlot);
+        let slotOptions = server.slots[selectedSlot];
         let settings = JSON.parse(data.newSettings);
         for (let setting in settings) {
             slotOptions[setting] = settings[setting];
         }
         document.getElementById("world-" + selectedSlot).querySelector(".world-name").innerText = slotOptions.slotName != "" ? slotOptions.slotName : `World ${selectedSlot}`;
         showSettings(selectedSlot);
+        setPerformanceCookie(worldName(), JSON.stringify(server));
     }
     worldsPage.saveWorldSettings = saveWorldSettings;
     function switchTo(slot) {
@@ -133,17 +143,21 @@ var worldsPage;
             document.querySelector("#world-" + server.activeSlot + " .switch-slot-btn").disabled = true;
             return;
         }
-        server = fixSlots(result);
-        document.querySelector("#world-" + server.activeSlot + " .switch-slot-btn").disabled = true;
+        server = result;
+        if (slot != 4)
+            document.querySelector("#world-" + slot + " .switch-slot-btn").disabled = true;
+        document.getElementById("world-minigame").querySelector(".world-name").innerText = "Minigame";
+        document.getElementById("world-minigame").querySelector("img").src = "data:image/png;base64, " + server.minigameImage;
         document.getElementById("worlds").querySelector(".active").classList.remove("active");
         document.getElementById("world-" + slot).classList.add("active");
         document.getElementById("show-minigames-btn").innerText = "Switch to temporary Minigame";
+        setPerformanceCookie(worldName(), JSON.stringify(server));
     }
     worldsPage.switchTo = switchTo;
     function showReplaceWorld(slot) {
         closeAll();
         document.querySelector(`#world-${slot} > .world-reset-btn`).disabled = true;
-        document.getElementById("replace-header").innerText = "Replacing World in \"" + (server.slots.get(slot).slotName || "World " + slot) + "\" with...";
+        document.getElementById("replace-header").innerText = "Replacing World in \"" + (server.slots[slot].slotName || "World " + slot) + "\" with...";
         document.getElementById("world-reset").classList.remove("hidden");
         selectedSlot = slot;
     }
@@ -303,10 +317,21 @@ var worldsPage;
             let minigameContainer = document.getElementById("world-minigame");
             minigameContainer.querySelector(".world-name").innerText = selectedTemplate.name;
             minigameContainer.querySelector("img").src = "data:image/png;base64, " + selectedTemplate.image;
+            server.minigameImage = selectedTemplate.image;
+            server.minigameName = selectedTemplate.name;
+            server.minigameId = id;
+            for (let btn of switchButtons) {
+                btn.disabled = false;
+                btn.innerText = "Switch";
+            }
         }
         else {
             document.getElementById("world-" + selectedSlot).querySelector("img").src = "data:image/png;base64, " + selectedTemplate.image;
+            server.slots[selectedSlot].templateImage = selectedTemplate.image;
+            server.minigameName = null;
+            server.minigameId = null;
         }
+        setPerformanceCookie(worldName(), JSON.stringify(server));
         window.scrollTo(0, 0);
         closeAll();
     }

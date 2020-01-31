@@ -66,8 +66,8 @@ function dismissError() {
 
 enum ERRINFO {
   EMAIL = "If this problem persists, <a href=\"mailto:bugs@plagiatus.net\">please let us know.</a>",
-  NETWORK = "Either your internet or our server is broken. Please make sure your internet is working and retry again in a minute."
-
+  NETWORK = "Either your internet or our server is broken. Please make sure your internet is working and retry again in a minute.",
+  LOGOUT = "We couldn't validate you against the servers. Please <a href=\"../login\">login</a> again."
 }
 //#endregion
 
@@ -86,20 +86,65 @@ function getCookie(_key: string): string {
   }
 }
 
-function setCookie(_key: string, _value: string, _expires: number = 0) {
+function setCookie(_key: string, _value: string, _expires: number = 0, root: boolean = true) {
   if (_expires == 0) _expires = 24 * 365 * 10;
   let d: Date = new Date();
   d.setTime(Date.now() + _expires * 60 * 60 * 1000);
   let expires: string = "expires=" + d.toUTCString();
-  document.cookie = _key + "=" + _value + ";" + expires + "; path=/";
+  document.cookie = _key + "=" + _value + ";" + expires + (root ? "; path=/" : "");
 }
 
-function removeCookie(_key: string) {
-  setCookie(_key, "", -10);
+function removeCookie(_key: string, root:boolean = true) {
+  setCookie(_key, "", -10, root); 
 }
 
 function isPerformanceCookieSet(): boolean {
   return getCookie("performance") == "true";
+}
+
+function setPerformanceCookie(_key: string, _value: string, root: boolean = true) {
+  if (!isPerformanceCookieSet()) return;
+  let i: number = 0;
+  let maxCookieLength: number = 2000;
+  while (_value.length > maxCookieLength) {
+    let v: string = _value.substr(0, maxCookieLength);
+    _value = _value.substring(maxCookieLength);
+    setCookie(_key + "-" + i, v, 0.25, root);
+    i++;
+  }
+  if(getCookie(_key + "-" + i)){
+    removeCookie(_key + "-" + i)
+  }
+  setCookie(_key, _value, 0.25, root);
+  console.log(_key, i);
+}
+
+function getPerformanceCookie(_key: string){
+  try {
+    JSON.parse(getCookie(_key));
+    return getCookie(_key)
+  } catch (error) {
+    let value: string = "";
+    let i: number = 0;
+    while(getCookie(_key + "-" + i)){
+      value += getCookie(_key + "-" + i);
+      i++;
+    }
+    value += getCookie(_key);
+    return value;
+  }
+}
+
+function removePerformanceCookies() {
+  removeCookie("realms")
+  let decCookie = decodeURIComponent(document.cookie);
+  let cookies: string[] = decCookie.split(";");
+  for (let cookie of cookies) {
+    let key = cookie.trim().split("=")[0];
+    if (key.includes("world-")) {
+      removeCookie(key);
+    }
+  }
 }
 //#endregion
 
@@ -200,12 +245,17 @@ function removeCredentials() {
   removeCookie("name");
 }
 
+let worldid: number;
 function checkWorldId() {
   let wid: number = Number(getCookie("worldid"));
   if (!getCookie("worldid")) {
     window.location.replace("../realms");
   }
+  worldid = wid;
   return wid;
+}
+function worldName(): string {
+  return "world-" + worldid;
 }
 
 //#endregion
@@ -306,10 +356,10 @@ function prepareObfuscation(elements: HTMLCollectionOf<Element>): Text[] {
   return texts;
 }
 
-function fixSlots(server: any): RealmsServer {
-  server.slots = new Map(server.slots);
-  return server;
-}
+// function fixSlots(server: any): RealmsServer {
+//   server.slots = new Map(server.slots);
+//   return server;
+// }
 
 // Usage:
 // let wic: WorldIDChecker = new WorldIDChecker();
@@ -350,9 +400,12 @@ interface RealmsServer {
   minigameId: number;
   minigameImage: string;
   activeSlot: number;
-  slots: Map<number, RealmsWorldOptions>;
+  slots: Slot;
   member: boolean;
   clubId: number;
+}
+interface Slot {
+  [item: number]: RealmsWorldOptions;
 }
 interface Player {
   name: string;

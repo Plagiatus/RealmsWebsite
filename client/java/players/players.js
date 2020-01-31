@@ -26,10 +26,15 @@ function init() {
     setupSettings();
 }
 function getPlayers() {
+    if (getCookie(worldName())) {
+        return JSON.parse(getPerformanceCookie(worldName())).players;
+    }
     let data = getCredentials();
-    data["command"] = "getPlayers";
-    data["world"] = getCookie("worldid");
-    return sendPOSTRequest(data);
+    data["command"] = "detail";
+    data["world"] = worldid;
+    let result = sendPOSTRequest(data);
+    setPerformanceCookie(worldName(), JSON.stringify(result));
+    return result.players;
 }
 function updatePlayerDisplay(players) {
     playerListDiv.innerHTML = players.length > 0 ? "" : "There doesn't seem to be anyone here. Start by inviting someone.";
@@ -39,15 +44,26 @@ function updatePlayerDisplay(players) {
     }
 }
 function createOnePlayer(p) {
-    playerListDiv.innerHTML +=
-        `<div class="player ${p.accepted ? "accepted" : "notAccepted"}" id="${p.uuid}">
-      <img class="onlinestatus" src="${p.accepted ? (p.online ? "../img/online_icon.png" : "../img/offline_icon.png") : "../img/not_accepted_icon.png"}" alt="${p.accepted ? (p.online ? "on" : "off") : "off"}">
-      <img class="avatar" src="https://crafatar.com/avatars/${p.uuid}?size=48&overlay" alt="">
-      <img class="crown ${p.operator ? "" : "hidden"}" src="../img/op_icon.png" alt="">
-      <span class="playername"><img class="crown2 ${p.operator ? "" : "hidden"}" src="../img/op_icon.png" alt="">${escapeHtml(p.name) || ""}</span>
-      <button class="opBtn" onclick="toggleOP('${p.uuid}', ${!p.operator})">${p.operator ? "deop" : "op"}</button>
-      <button class="kick" onclick="kick('${p.uuid}')">Kick</button>
-    </div>`;
+    let div = document.createElement("div");
+    div.innerHTML = `<img class="onlinestatus" src="${p.accepted ? (p.online ? "../img/online_icon.png" : "../img/offline_icon.png") : "../img/not_accepted_icon.png"}" alt="${p.accepted ? (p.online ? "on" : "off") : "off"}">
+  <img class="avatar" src="https://crafatar.com/avatars/${p.uuid}?size=48&overlay" alt="">
+  <img class="crown ${p.operator ? "" : "hidden"}" src="../img/op_icon.png" alt="">
+  <span class="playername"><img class="crown2 ${p.operator ? "" : "hidden"}" src="../img/op_icon.png" alt="">${escapeHtml(p.name) || ""}</span>
+  <button class="opBtn" onclick="toggleOP('${p.uuid}', ${!p.operator})">${p.operator ? "deop" : "op"}</button>
+  <button class="kick" onclick="kick('${p.uuid}')">Kick</button>`;
+    div.classList.add("player");
+    div.classList.add(p.accepted ? "accepted" : "notAccepted");
+    div.id = p.uuid;
+    playerListDiv.appendChild(div);
+    // playerListDiv.innerHTML +=
+    //   `<div class="player ${p.accepted ? "accepted" : "notAccepted"}" id="${p.uuid}">
+    //     <img class="onlinestatus" src="${p.accepted ? (p.online ? "../img/online_icon.png" : "../img/offline_icon.png") : "../img/not_accepted_icon.png"}" alt="${p.accepted ? (p.online ? "on" : "off") : "off"}">
+    //     <img class="avatar" src="https://crafatar.com/avatars/${p.uuid}?size=48&overlay" alt="">
+    //     <img class="crown ${p.operator ? "" : "hidden"}" src="../img/op_icon.png" alt="">
+    //     <span class="playername"><img class="crown2 ${p.operator ? "" : "hidden"}" src="../img/op_icon.png" alt="">${escapeHtml(p.name) || ""}</span>
+    //     <button class="opBtn" onclick="toggleOP('${p.uuid}', ${!p.operator})">${p.operator ? "deop" : "op"}</button>
+    //     <button class="kick" onclick="kick('${p.uuid}')">Kick</button>
+    //   </div>`;
 }
 function sortPlayers(a, b) {
     if (a.online && !b.online)
@@ -72,7 +88,7 @@ function toggleOP(_uuid, toggle) {
     btn.disabled = true;
     let data = getCredentials();
     data["command"] = "toggleOP";
-    data["world"] = getCookie("worldid");
+    data["world"] = worldid;
     data["playeruuid"] = _uuid;
     data["toggle"] = toggle;
     let result = sendPOSTRequest(data);
@@ -127,10 +143,11 @@ function invite() {
     let playername = inviteInput.value.trim();
     let data = getCredentials();
     data["command"] = "invite";
-    data["world"] = getCookie("worldid");
+    data["world"] = worldid;
     data["playername"] = playername;
     let result = sendPOSTRequest(data);
     updatePlayerDisplay(result.players);
+    setPerformanceCookie(worldName(), JSON.stringify(result));
     //TODO: add new player to the list. it should hopefully be in the response.
     // or just update the player list altogether if it's the server that's being sent back.
     inviteInput.disabled = false;
@@ -142,13 +159,16 @@ function kick(uuid) {
     btn.disabled = true;
     let data = getCredentials();
     data["command"] = "kick";
-    data["world"] = getCookie("worldid");
+    data["world"] = worldid;
     data["playeruuid"] = uuid;
     let result = sendPOSTRequest(data);
     if (result.error) {
         btn.disabled = false;
         return;
     }
+    let realm = JSON.parse(getCookie(worldName()));
+    realm.players.splice(realm.players.findIndex((p) => { return p.uuid == uuid; }), 1);
+    setPerformanceCookie(worldName(), JSON.stringify(realm));
     div.parentElement.removeChild(div);
     players.splice(players.findIndex(p => p.uuid == uuid), 1);
 }

@@ -13,8 +13,8 @@ namespace settings {
   let daysLeft: number;
 
   function init() {
-    checkCredentials();
     checkWorldId();
+    checkCredentials();
     statusImg = <HTMLImageElement>document.getElementById("openCloseImg");
     openButton = <HTMLButtonElement>document.getElementById("toggleOpen");
     openText = <HTMLSpanElement>document.getElementById("openCloseTxt");
@@ -26,14 +26,20 @@ namespace settings {
   }
 
   function getServer() {
+    if (getCookie(worldName())) {
+      let realm = JSON.parse(getPerformanceCookie(worldName()));
+      initDisplay(realm);
+      return;
+    }
     let data = getCredentials();
     data["command"] = "detail";
-    data["world"] = getCookie("worldid");
+    data["world"] = worldid;
     let request = sendPOSTRequest(data);
+    setPerformanceCookie(worldName(), JSON.stringify(request));
     initDisplay(request);
   }
 
-  function initDisplay(server) {
+  function initDisplay(server: RealmsServer) {
     nameInput.value = server.properties.name;
     descInput.value = server.properties.description;
     serverIsOpen = server.state == "OPEN";
@@ -49,21 +55,21 @@ namespace settings {
   export function toggleOpen() {
     if (serverIsOpen == undefined) return;
     let data = getCredentials();
-    data["world"] = getCookie("worldid");
+    data["world"] = worldid;
     if (serverIsOpen)
-    data["command"] = "close"
+      data["command"] = "close"
     else
-    data["command"] = "open"
+      data["command"] = "open"
     let request = sendPOSTRequest(data);
     if (request.error) return;
     serverIsOpen = !serverIsOpen;
     updateOpenText();
   }
-  
+
   function updateOpenText() {
     openText.innerHTML = "Your Realm is currently " + (serverIsOpen ? "<span class='dark_green'>OPEN" : "<span class='red'>CLOSED") + "</span>";
     openButton.innerText = serverIsOpen ? "close" : "open";
-    if(serverIsOpen){
+    if (serverIsOpen) {
       statusImg.src = daysLeft > 15 ? "../img/on_icon.png" : "../img/expires_soon_icon.png";
     } else {
       statusImg.src = daysLeft > 0 ? "../img/off_icon.png" : "../img/expired_icon.png";
@@ -73,7 +79,7 @@ namespace settings {
   export function updateNameDesc() {
     let data = getCredentials();
     data["command"] = "updateProperties";
-    data["world"] = getCookie("worldid");
+    data["world"] = worldid;
     data["worldName"] = nameInput.value;
     data["worldDescription"] = descInput.value;
     let request = sendPOSTRequest(data);
@@ -100,7 +106,7 @@ namespace settings {
     return `${year > 0 ? year + (year == 1 ? " year, " : " years, ") : ""}${months > 0 ? months + (months == 1 ? " month" : " months") + " and " : ""}${days} ${days == 1 ? "day" : "days"} remaining`;
   }
 
-  export function updatePreview(_e: Event){
+  export function updatePreview(_e: Event) {
     preview.innerHTML = `
     ${applyFormatingCodes(escapeHtml(nameInput.value))}<br>
     ${applyFormatingCodes(escapeHtml(descInput.value))}

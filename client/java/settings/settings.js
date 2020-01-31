@@ -11,8 +11,8 @@ var settings;
     let serverIsOpen;
     let daysLeft;
     function init() {
-        checkCredentials();
         checkWorldId();
+        checkCredentials();
         statusImg = document.getElementById("openCloseImg");
         openButton = document.getElementById("toggleOpen");
         openText = document.getElementById("openCloseTxt");
@@ -23,10 +23,16 @@ var settings;
         getServer();
     }
     function getServer() {
+        if (getCookie(worldName())) {
+            let realm = JSON.parse(getPerformanceCookie(worldName()));
+            initDisplay(realm);
+            return;
+        }
         let data = getCredentials();
         data["command"] = "detail";
-        data["world"] = getCookie("worldid");
+        data["world"] = worldid;
         let request = sendPOSTRequest(data);
+        setPerformanceCookie(worldName(), JSON.stringify(request));
         initDisplay(request);
     }
     function initDisplay(server) {
@@ -46,7 +52,7 @@ var settings;
         if (serverIsOpen == undefined)
             return;
         let data = getCredentials();
-        data["world"] = getCookie("worldid");
+        data["world"] = worldid;
         if (serverIsOpen)
             data["command"] = "close";
         else
@@ -71,7 +77,7 @@ var settings;
     function updateNameDesc() {
         let data = getCredentials();
         data["command"] = "updateProperties";
-        data["world"] = getCookie("worldid");
+        data["world"] = worldid;
         data["worldName"] = nameInput.value;
         data["worldDescription"] = descInput.value;
         let request = sendPOSTRequest(data);

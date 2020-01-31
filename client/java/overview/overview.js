@@ -5,6 +5,7 @@ var overview;
     let playersDiv;
     let worldsDiv;
     let playerListDiv;
+    let realm;
     function init() {
         checkWorldId();
         checkCredentials();
@@ -19,14 +20,20 @@ var overview;
         playerListDiv = document.getElementById("playerList");
     }
     function createOverview() {
-        //TODO save/load using cookies to make it display faster
-        let data = getCredentials();
-        data["command"] = "detail";
-        data["world"] = getCookie("worldid");
-        let result = sendPOSTRequest(data);
-        generalOverview(result);
-        worldOverview(result);
-        playerOverview(result.players);
+        if (getCookie(worldName())) {
+            realm = JSON.parse(getPerformanceCookie(worldName()));
+        }
+        else {
+            let data = getCredentials();
+            data["command"] = "detail";
+            data["world"] = getCookie("worldid");
+            let result = sendPOSTRequest(data);
+            realm = result;
+            setPerformanceCookie(worldName(), JSON.stringify(realm));
+        }
+        generalOverview(realm);
+        worldOverview(realm);
+        playerOverview(realm.players);
         setInterval(updatePlayers, 1000 * 15);
     }
     function generalOverview(r) {
@@ -65,9 +72,7 @@ var overview;
         return `${year > 0 ? year + (year == 1 ? " year, " : " years, ") : ""}${months > 0 ? months + (months == 1 ? " month" : " months") + " and " : ""}${days} ${days == 1 ? "day" : "days"} remaining`;
     }
     function worldOverview(r) {
-        console.log(r);
-        r.slots = new Map(r.slots);
-        let active = r.slots.get(r.activeSlot);
+        let active = r.slots[r.activeSlot];
         worldsDiv.innerHTML = "";
         if (r.minigameId) {
             worldsDiv.innerHTML += `

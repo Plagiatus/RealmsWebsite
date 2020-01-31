@@ -63,6 +63,7 @@ var ERRINFO;
 (function (ERRINFO) {
     ERRINFO["EMAIL"] = "If this problem persists, <a href=\"mailto:bugs@plagiatus.net\">please let us know.</a>";
     ERRINFO["NETWORK"] = "Either your internet or our server is broken. Please make sure your internet is working and retry again in a minute.";
+    ERRINFO["LOGOUT"] = "We couldn't validate you against the servers. Please <a href=\"../login\">login</a> again.";
 })(ERRINFO || (ERRINFO = {}));
 //#endregion
 //#region Cookies
@@ -79,19 +80,63 @@ function getCookie(_key) {
         }
     }
 }
-function setCookie(_key, _value, _expires = 0) {
+function setCookie(_key, _value, _expires = 0, root = true) {
     if (_expires == 0)
         _expires = 24 * 365 * 10;
     let d = new Date();
     d.setTime(Date.now() + _expires * 60 * 60 * 1000);
     let expires = "expires=" + d.toUTCString();
-    document.cookie = _key + "=" + _value + ";" + expires + "; path=/";
+    document.cookie = _key + "=" + _value + ";" + expires + (root ? "; path=/" : "");
 }
-function removeCookie(_key) {
-    setCookie(_key, "", -10);
+function removeCookie(_key, root = true) {
+    setCookie(_key, "", -10, root);
 }
 function isPerformanceCookieSet() {
     return getCookie("performance") == "true";
+}
+function setPerformanceCookie(_key, _value, root = true) {
+    if (!isPerformanceCookieSet())
+        return;
+    let i = 0;
+    let maxCookieLength = 2000;
+    while (_value.length > maxCookieLength) {
+        let v = _value.substr(0, maxCookieLength);
+        _value = _value.substring(maxCookieLength);
+        setCookie(_key + "-" + i, v, 0.25, root);
+        i++;
+    }
+    if (getCookie(_key + "-" + i)) {
+        removeCookie(_key + "-" + i);
+    }
+    setCookie(_key, _value, 0.25, root);
+    console.log(_key, i);
+}
+function getPerformanceCookie(_key) {
+    try {
+        JSON.parse(getCookie(_key));
+        return getCookie(_key);
+    }
+    catch (error) {
+        let value = "";
+        let i = 0;
+        while (getCookie(_key + "-" + i)) {
+            value += getCookie(_key + "-" + i);
+            i++;
+        }
+        value += getCookie(_key);
+        return value;
+    }
+}
+function removePerformanceCookies() {
+    removeCookie("realms");
+    let decCookie = decodeURIComponent(document.cookie);
+    let cookies = decCookie.split(";");
+    for (let cookie of cookies) {
+        let key = cookie.trim().split("=")[0];
+        if (key.includes("world-")) {
+            removeCookie(key);
+        }
+    }
 }
 //#endregion
 //#region Credentials
@@ -189,12 +234,17 @@ function removeCredentials() {
     removeCookie("uuid");
     removeCookie("name");
 }
+let worldid;
 function checkWorldId() {
     let wid = Number(getCookie("worldid"));
     if (!getCookie("worldid")) {
         window.location.replace("../realms");
     }
+    worldid = wid;
     return wid;
+}
+function worldName() {
+    return "world-" + worldid;
 }
 //#endregion
 function sendPOSTRequest(data) {
@@ -289,10 +339,10 @@ function prepareObfuscation(elements) {
     }
     return texts;
 }
-function fixSlots(server) {
-    server.slots = new Map(server.slots);
-    return server;
-}
+// function fixSlots(server: any): RealmsServer {
+//   server.slots = new Map(server.slots);
+//   return server;
+// }
 // Usage:
 // let wic: WorldIDChecker = new WorldIDChecker();
 // wic.addEventListener("worldIDChange",yourFunction);

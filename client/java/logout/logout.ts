@@ -8,5 +8,6 @@ function logout() {
   if (result.error) return;
 
   removeCredentials();
+  removePerformanceCookies();
   window.location.replace("../login");
 }

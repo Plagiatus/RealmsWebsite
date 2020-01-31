@@ -1,7 +1,7 @@
 namespace login {
   window.addEventListener("load", init);
   headerFooter.loadLoginHeader = true;
-  if(!getCookie("performance")) window.location.replace("../cookies")
+  if (!getCookie("performance")) window.location.replace("../cookies")
 
   function init() {
     if (checkCredentials(false)) {
@@ -9,6 +9,7 @@ namespace login {
       window.location.replace("../realms");
       return;
     }
+    removePerformanceCookies();
   }
 
   export function loginWithEmail() {

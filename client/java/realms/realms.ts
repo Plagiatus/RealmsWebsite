@@ -2,7 +2,7 @@ namespace realmsList {
 
   window.addEventListener("load", init);
   let realmsList: HTMLDivElement;
-  let servers: Server[] = [];
+  let realms: Server[] = [];
 
   function init() {
     document.getElementsByTagName("h1")[0].innerText = "Welcome " + getCookie("name");
@@ -18,19 +18,28 @@ namespace realmsList {
   }
 
   function createRealmsDisplay() {
-    let data = getCredentials();
-    data["command"] = "getWorlds";
-    let result = sendPOSTRequest(data);
-    if (result.servers && result.servers.length > 0) {
-      result.servers = result.servers.sort(sortRealms);
-      servers = result.servers;
-      realmsList.innerHTML = "";
-      for (let s of result.servers) {
-        // console.log(s);
-        createOneRealm(s, data.name);
-      }
+    if (getCookie("realms")) {
+      realms = JSON.parse(getPerformanceCookie("realms"));
     } else {
-      realmsList.innerHTML = "Nothing to see here. You don't seem to have";
+      let data = getCredentials();
+      data["command"] = "getWorlds";
+      let result = sendPOSTRequest(data);
+      if (result.servers && result.servers.length > 0) {
+        realms = result.servers;
+        setPerformanceCookie("realms",JSON.stringify(realms),false);
+      }
+    }
+    if (realms && realms.length > 0) {
+      realms = realms.sort(sortRealms);
+      realmsList.innerHTML = "";
+      let ownerName: string = getCookie("name");
+      for (let s of realms) {
+        // console.log(s);
+        createOneRealm(s, ownerName);
+      }
+    }
+    else {
+      realmsList.innerHTML = "<span>No Realm found.</span>";
     }
   }
 
@@ -58,7 +67,9 @@ namespace realmsList {
     if (a.owner != owner && b.owner == owner) return 1;
     if (a.expired && !b.expired) return 1;
     if (!a.expired && b.expired) return -1;
-    return a.owner > b.owner;
+    if (a.owner > b.owner) return -1;
+    if (a.owner < b.owner) return 1;
+    return 0;
   }
 
   function toggleVisibility(_e: Event) {
@@ -83,19 +94,19 @@ namespace realmsList {
     let result = sendPOSTRequest(data);
   }
 
-  export function search(_e: Event){
+  export function search(_e: Event) {
     let searchterm: string = (<HTMLInputElement>_e.target).value.toLowerCase();
-    for(let s of servers){
+    for (let s of realms) {
       let shouldBeDisplayed: boolean = false;
-      if(s.properties.description) if(s.properties.description.toLowerCase().includes(searchterm)) shouldBeDisplayed = true;
-      if(s.properties.name) if(s.properties.name.toLowerCase().includes(searchterm)) shouldBeDisplayed = true;
-      if(searchterm == "" || s.owner.toLowerCase().includes(searchterm) || shouldBeDisplayed){
+      if (s.properties.description) if (s.properties.description.toLowerCase().includes(searchterm)) shouldBeDisplayed = true;
+      if (s.properties.name) if (s.properties.name.toLowerCase().includes(searchterm)) shouldBeDisplayed = true;
+      if (searchterm == "" || s.owner.toLowerCase().includes(searchterm) || shouldBeDisplayed) {
         document.getElementById(s.id.toString()).classList.remove("hidden");
       } else {
         document.getElementById(s.id.toString()).classList.add("hidden");
       }
     }
-  } 
+  }
 
   interface Server {
     id: number,
