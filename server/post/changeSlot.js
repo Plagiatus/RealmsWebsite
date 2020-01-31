@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const auth_1 = require("../auth");
 const main_1 = require("../main");
-const minecraft_realms_1 = require("minecraft-realms");
+const realmsapi_1 = require("../../realmsapi");
 async function changeSlot(_input, _response) {
     let email = _input.email;
     let token = _input.token;
@@ -15,9 +15,9 @@ async function changeSlot(_input, _response) {
     }
     else {
         let p = new auth_1.Player(email, token, uuid, name);
-        let c = new minecraft_realms_1.Client(p.getAuthToken(), main_1.latestVersion, p.name);
+        let c = new realmsapi_1.Client(p.getAuthToken(), main_1.latestVersion, p.name);
         let rs = c.worlds.getWorld(world).detailInformation().changeSlot(slot);
-        rs.slots = main_1.mapToArray(rs.slots);
+        rs.slots = main_1.mapToObj(rs.slots);
         _response.write(JSON.stringify(rs));
     }
 }

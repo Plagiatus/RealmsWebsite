@@ -12,6 +12,7 @@ class WorldTemplate extends ValueObject{
             this.trailer = parsedJSON.trailer;
             this.recommendedPlayers = parsedJSON.recommendedPlayers;
             this.type = parsedJSON.type;
+            this.link = parsedJSON.link;
         }catch(e){
             console.error("Could not parse WorldTemplate: "+e);
         }

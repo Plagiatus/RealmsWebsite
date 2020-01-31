@@ -187,7 +187,7 @@ class RealmsServer extends ValueObject{
      * @param {number} slot 
      */
     changeSlot(slot){
-        if (slot == this.activeSlot){
+        if (slot == this.activeSlot && !this.minigameId){
             console.error("Slot is already set");
         }else{
             this.client.setSlot(this.id,slot);

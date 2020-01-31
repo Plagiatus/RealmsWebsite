@@ -1,7 +1,7 @@
 import { Player } from "../auth";
 import * as Http from "http";
-import { latestVersion, mapToArray } from "../main";
-import { Client, SlotNumber } from "minecraft-realms";
+import { latestVersion, mapToObj } from "../main";
+import { Client, SlotNumber } from "../../realmsapi";
 
 export async function changeSlot(_input, _response: Http.OutgoingMessage) {
   let email: string = _input.email;
@@ -16,7 +16,7 @@ export async function changeSlot(_input, _response: Http.OutgoingMessage) {
     let p: Player = new Player(email, token, uuid, name);
     let c: Client = new Client(p.getAuthToken(), latestVersion, p.name);
     let rs: any = c.worlds.getWorld(world).detailInformation().changeSlot(<SlotNumber>slot);
-    rs.slots = mapToArray(rs.slots);
+    rs.slots = mapToObj(rs.slots);
     _response.write(JSON.stringify(rs));
   }
 }
