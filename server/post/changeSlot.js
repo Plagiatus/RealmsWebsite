@@ -17,7 +17,7 @@ async function changeSlot(_input, _response) {
         let p = new auth_1.Player(email, token, uuid, name);
         let c = new minecraft_realms_1.Client(p.getAuthToken(), main_1.latestVersion, p.name);
         let rs = c.worlds.getWorld(world).detailInformation().changeSlot(slot);
-        rs.slots = Array.from(rs.slots);
+        rs.slots = main_1.mapToArray(rs.slots);
         _response.write(JSON.stringify(rs));
     }
 }

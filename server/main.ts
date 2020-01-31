@@ -1,4 +1,4 @@
-import { Client } from "minecraft-realms";
+import { Client, SlotNumber } from "minecraft-realms";
 import { Player, Auth } from "./auth";
 import * as Http from "http";
 import * as Request from "request-promise-native/";
@@ -47,7 +47,7 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Out
       } catch (e) {
         _response.write(JSON.stringify({ error: "Failed to parse post request." }));
       }
-      
+
       if (post && post.command && postRequests.has(post.command)) {
         try {
           await postRequests.get(post.command)(post, _response);
@@ -81,4 +81,12 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Out
     _response.write(JSON.stringify({ error: "You shouldn't be sending me this requests" }));
     _response.end();
   }
+}
+
+export function mapToArray(_map) {
+  let newMap = {};
+  for (let e of _map.keys()) {
+    newMap[e] = _map.get(e);
+  }
+  return newMap;
 }

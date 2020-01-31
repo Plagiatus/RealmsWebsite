@@ -81,3 +81,11 @@ async function handleRequest(_request, _response) {
         _response.end();
     }
 }
+function mapToArray(_map) {
+    let newMap = {};
+    for (let e of _map.keys()) {
+        newMap[e] = _map.get(e);
+    }
+    return newMap;
+}
+exports.mapToArray = mapToArray;
