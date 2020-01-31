@@ -77,15 +77,15 @@ async function handleRequest(_request, _response) {
         _response.end();
     }
     else {
-        _response.write(JSON.stringify({ error: "You shouldn't be sending me this requests" }));
+        _response.write(JSON.stringify({ error: "You shouldn't be sending me this request." }));
         _response.end();
     }
 }
-function mapToArray(_map) {
+function mapToObj(_map) {
     let newMap = {};
     for (let e of _map.keys()) {
         newMap[e] = _map.get(e);
     }
     return newMap;
 }
-exports.mapToArray = mapToArray;
+exports.mapToObj = mapToObj;

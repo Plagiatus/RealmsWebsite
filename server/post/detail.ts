@@ -1,7 +1,7 @@
 import { Player } from "../auth";
 import * as Http from "http";
 import { Client, RealmsServer } from "minecraft-realms";
-import { latestVersion, mapToArray } from "../main";
+import { latestVersion, mapToObj } from "../main";
 
 export async function detail(_input, _response: Http.OutgoingMessage) {
   let email: string = _input.email;
@@ -15,7 +15,7 @@ export async function detail(_input, _response: Http.OutgoingMessage) {
     let p: Player = new Player(email, token, uuid, name);
     let c: Client = new Client(p.getAuthToken(), latestVersion, p.name);
     let rs: RealmsServer = c.worlds.getWorld(world).detailInformation();
-    (<any>rs.slots) = mapToArray(rs.slots);
+    (<any>rs.slots) = mapToObj(rs.slots);
     _response.write(JSON.stringify(rs));
   }
 }

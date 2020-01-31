@@ -78,12 +78,12 @@ async function handleRequest(_request: Http.IncomingMessage, _response: Http.Out
     _response.end();
   }
   else {
-    _response.write(JSON.stringify({ error: "You shouldn't be sending me this requests" }));
+    _response.write(JSON.stringify({ error: "You shouldn't be sending me this request." }));
     _response.end();
   }
 }
 
-export function mapToArray(_map) {
+export function mapToObj(_map) {
   let newMap = {};
   for (let e of _map.keys()) {
     newMap[e] = _map.get(e);
