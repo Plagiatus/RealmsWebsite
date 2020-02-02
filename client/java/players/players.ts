@@ -177,7 +177,7 @@ function kick(uuid: string) {
     btn.disabled = false;
     return;
   }
-  let realm: RealmsServer = JSON.parse(getCookie(worldName()));
+  let realm: RealmsServer = JSON.parse(getPerformanceCookie(worldName()));
   realm.players.splice(realm.players.findIndex((p) => { return p.uuid == uuid }), 1);
   setPerformanceCookie(worldName(), JSON.stringify(realm));
   div.parentElement.removeChild(div);
