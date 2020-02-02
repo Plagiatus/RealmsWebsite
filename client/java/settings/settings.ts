@@ -112,4 +112,22 @@ namespace settings {
     ${applyFormatingCodes(escapeHtml(descInput.value))}
     `
   }
+  export function getIP() {
+    let btn: HTMLButtonElement = <HTMLButtonElement> document.getElementById("ip-btn");
+    btn.disabled = true;
+    let data = getCredentials();
+    data["command"] = "getIP";
+    data["world"] = getCookie("worldid");
+    let result = sendPOSTRequest(data);
+    btn.disabled = false;
+    try {
+      result = JSON.parse(result);
+    } catch (error) {
+      
+    }
+    if(result.error) return;
+    let output = document.getElementById("ip-display");
+    output.innerText = result.address || result;
+    output.classList.remove("hidden");
+  }
 }

@@ -110,4 +110,24 @@ var settings;
     `;
     }
     settings.updatePreview = updatePreview;
+    function getIP() {
+        let btn = document.getElementById("ip-btn");
+        btn.disabled = true;
+        let data = getCredentials();
+        data["command"] = "getIP";
+        data["world"] = getCookie("worldid");
+        let result = sendPOSTRequest(data);
+        btn.disabled = false;
+        try {
+            result = JSON.parse(result);
+        }
+        catch (error) {
+        }
+        if (result.error)
+            return;
+        let output = document.getElementById("ip-display");
+        output.innerText = result.address || result;
+        output.classList.remove("hidden");
+    }
+    settings.getIP = getIP;
 })(settings || (settings = {}));
