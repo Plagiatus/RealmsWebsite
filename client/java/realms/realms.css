@@ -9,28 +9,47 @@ input[type=text] {
   padding: 2px;
 }
 
+.invite,
 .realm {
   overflow: hidden;
   border: 1px solid black;
   margin: 10px;
   padding: 5px;
   position: relative;
-  height: 55px;
   width: 350px;
   overflow: visible;
 }
 
+.invite {
+  height: 76px;
+}
+
+.realm{
+  height: 55px;
+}
+
+.invite > span,
 .realm > span {
   display: block;
   margin-left: 80px;
 }
 
+.invite > span {
+  margin-left: 60px;
+}
+
+.invite > button,
 .realm > button {
   position: absolute;
   right: 5px;
   bottom: 5px;
 }
+button.join {
+  right: 55px;
+}
 
+
+.invite img,
 .realm img {
   position: absolute;
   top: 8px;
@@ -42,7 +61,41 @@ input[type=text] {
   left: 30px;
 }
 
+.invite .avatar {
+  left: initial;
+}
+
 .status {
   width: 17px;
   height: 48px;
+}
+
+#invites {
+  max-width: 400px;
+  min-width: 200px;
+  position: absolute;
+  right: 10px;
+  padding: 5px;
+  /* border: 1px solid black; */
+}
+
+#invites > h2 {
+  margin-left: 35px;
+  margin-top: 0;
+}
+
+#inviteStatus {
+  position: absolute; 
+}
+
+@media screen and (max-width: 800px){
+  #invites {
+    position: relative;
+    right: initial;
+    max-width: 360px;
+  }
+  .invite{
+    margin: 10px 0;
+    width: calc(100% - 10px);
+  }
 }

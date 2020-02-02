@@ -15,14 +15,22 @@
 
 <body>
   <h1>Welcome</h1>
-  <div>
+  <div id="invites" class="">
+    <img src="../img/invites_icon.png" alt="" id="inviteStatus" title="No new invitations">
+    <h2>Invites</h2>
+    <div id="invitesList">
+      <span>Loading...</span>
+    </div>
+  </div>
+  <div id="realms">
+    <h2>Realms</h2>
     <div id="options">
       <input type="text" name="search" id="search" placeholder="🔎 filter..">
       <input type="checkbox" name="showAll" id="showAll" value="true">
       <label for="showAll">show only realms I own</label>
     </div>
     <div id="realmsList">
-      <span>Loading...</span>
+      <span style="margin-left: 10px">Loading...</span>
     </div>
     <!-- TODO Add invitations overview -->
   </div>

@@ -13,8 +13,9 @@ namespace realmsList {
     realmsList = <HTMLDivElement>document.getElementById("realmsList");
     createRealmsDisplay();
     document.getElementById("showAll").dispatchEvent(new Event("change"));
-    obfuscate();
     document.getElementById("search").addEventListener("input", search);
+    getInvites();
+    obfuscate();
   }
 
   function createRealmsDisplay() {
@@ -26,7 +27,7 @@ namespace realmsList {
       let result = sendPOSTRequest(data);
       if (result.servers && result.servers.length > 0) {
         realms = result.servers;
-        setPerformanceCookie("realms",JSON.stringify(realms),false);
+        setPerformanceCookie("realms", JSON.stringify(realms));
       }
     }
     if (realms && realms.length > 0) {
@@ -39,7 +40,7 @@ namespace realmsList {
       }
     }
     else {
-      realmsList.innerHTML = "<span>No Realm found.</span>";
+      realmsList.innerHTML = "<span style='margin-left: 10px'>No Realm found.</span>";
     }
   }
 
@@ -108,6 +109,39 @@ namespace realmsList {
     }
   }
 
+  function getInvites() {
+    let img: HTMLImageElement = <HTMLImageElement>document.getElementById("inviteStatus");
+    let data = getCredentials();
+    data["command"] = "getInvites";
+    let result = sendPOSTRequest(data);
+    if (result.error) return;
+    if (result.invites.length <= 0) {
+      document.getElementById("invitesList").querySelector("span").innerText = "No invitations."
+      return;
+    }
+    img.src = "../img/invites_pending.gif";
+    img.title = `You have ${result.invites.length} new invite${result.invites.length != 1 ? "s" : ""}.`;
+    displayInvites(result.invites);
+  }
+
+  function displayInvites(invites: Invite[]) {
+    let invitesList = document.getElementById("invitesList");
+    invitesList.innerHTML = "";
+    document.getElementById("invites").classList.remove("hidden");
+    for (let invite of invites) {
+      invitesList.innerHTML +=
+        `<div class="invite" id="${invite.invitationId}">
+          <img class="avatar" src="https://crafatar.com/avatars/${invite.worldOwnerUuid}?size=48&overlay" alt="">
+          <span>${applyFormatingCodes(escapeHtml(invite.worldName || "\u00A0"))}</span>
+          <span>${applyFormatingCodes(escapeHtml(invite.worldDescription || "\u00A0"))}</span>
+          <span>${escapeHtml(invite.worldOwnerName) || "\u00A0"}</span>
+          <span>${new Date(invite.date).toLocaleString()}</span>
+          <button class="join" onclick="realmsList.acceptInvite(${invite.invitationId})" disabled>Accept</button>
+          <button class="deny" onclick="realmsList.denyInvite(${invite.invitationId})" disabled>Deny</button>
+        </div>`;
+    }
+  }
+
   interface Server {
     id: number,
     owner: string,
@@ -121,5 +155,14 @@ namespace realmsList {
     }
     state: string;
     worldType: string;
+  }
+
+  interface Invite {
+    invitationId: number;
+    worldName: string,
+    worldDescription: string,
+    worldOwnerName: string,
+    worldOwnerUuid: string,
+    date: number
   }
 }
