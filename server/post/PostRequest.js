@@ -17,6 +17,7 @@ const templates_1 = require("./templates");
 const setMinigame_1 = require("./setMinigame");
 const worldSettings_1 = require("./worldSettings");
 const setTemplate_1 = require("./setTemplate");
+const resetWorld_1 = require("./resetWorld");
 class PostRequest {
     constructor() {
         this.requests = new Map();
@@ -37,6 +38,7 @@ class PostRequest {
         this.requests.set(setMinigame_1.setMinigame.name, setMinigame_1.setMinigame);
         this.requests.set(worldSettings_1.worldSettings.name, worldSettings_1.worldSettings);
         this.requests.set(setTemplate_1.setTemplate.name, setTemplate_1.setTemplate);
+        this.requests.set(resetWorld_1.resetWorld.name, resetWorld_1.resetWorld);
     }
     get(name) {
         if (!this.requests.has(name)) {

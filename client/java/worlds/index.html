@@ -104,7 +104,7 @@
   </div>
   <div class="hidden settings-div" id="world-reset">
     <h2 id="replace-header">Replace Slot X with...</h2>
-    <div class="replacement disabled" id="newWorld">
+    <div class="replacement" id="newWorld">
       <img src="../img/new_world.png" alt="">
       <span>New World</span>
     </div>
@@ -128,6 +128,28 @@
       <img src="../img/inspiration.png" alt="">
       <span>Inspiration</span>
     </div>
+  </div>
+  <div class="hidden settings-div" id="new-world">
+    <table>
+      <tr>
+        <td><label for="seed">Seed</label></td>
+        <td><input type="text" name="seed" id="seed" maxlength="32"></td>
+      </tr>
+      <tr>
+        <td><label for="leveltype">Level Type</label></td>
+        <td><select name="leveltype" id="leveltype">
+          <option value="0">Default</option>
+          <option value="1">Superflat</option>
+          <option value="2">Large Biomes</option>
+          <option value="3">AMPLIFIED</option></td>
+      </tr>
+      <tr>
+        <td><label for="genStructures">Generate Structures</label></td>
+        <td><input type="checkbox" name="genStructures" id="genStructures" checked></td>
+      </tr>
+    </table>
+    <button id="make-new-world-btn" onclick="worldsPage.makeNewWorld()">Generate New World</button>
+    <button onclick="worldsPage.closeAll()">Close</button>
   </div>
   <div style="height: 1px; clear: both;"></div>
 </body>

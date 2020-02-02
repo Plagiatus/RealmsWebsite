@@ -15,6 +15,7 @@ import { templates } from "./templates";
 import { setMinigame } from "./setMinigame";
 import { worldSettings } from "./worldSettings";
 import { setTemplate } from "./setTemplate";
+import { resetWorld } from "./resetWorld";
 
 export class PostRequest {
   requests: Map<string, Function> = new Map<string, Function>();
@@ -36,6 +37,7 @@ export class PostRequest {
     this.requests.set(setMinigame.name, setMinigame);
     this.requests.set(worldSettings.name, worldSettings);
     this.requests.set(setTemplate.name, setTemplate);
+    this.requests.set(resetWorld.name, resetWorld);
   }
   
   get(name: string): Function {

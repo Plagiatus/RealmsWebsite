@@ -388,4 +388,32 @@ var worldsPage;
         }
         return result;
     }
+    function newWorld() {
+        closeAll(false);
+        document.getElementById("new-world").classList.remove("hidden");
+    }
+    worldsPage.newWorld = newWorld;
+    function makeNewWorld() {
+        let btn = document.getElementById("make-new-world-btn");
+        let seed = document.getElementById("seed").value;
+        let levelType = document.getElementById("leveltype").value;
+        let genStructures = document.getElementById("genStructures").checked;
+        if (seed == "") {
+            seed = Math.floor(Math.random() * Math.pow(2, 31) - 1).toString();
+        }
+        btn.disabled = true;
+        let data = getCredentials();
+        data["command"] = "resetWorld";
+        data["world"] = worldid;
+        data["slot"] = selectedSlot;
+        data["seed"] = seed;
+        data["levelType"] = levelType;
+        data["genStruct"] = genStructures;
+        let result = sendPOSTRequest(data);
+        btn.disabled = false;
+        if (result.error)
+            return;
+        closeAll();
+    }
+    worldsPage.makeNewWorld = makeNewWorld;
 })(worldsPage || (worldsPage = {}));

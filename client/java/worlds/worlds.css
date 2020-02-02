@@ -132,6 +132,13 @@ label {
   overflow: hidden;
 }
 
+#new-world {
+  margin: 10px;
+  padding: 5px;
+  border: 1px solid black;
+  width: 350px;
+}
+
 .replacement.disabled {
   background-color: lightgray;
   color: gray;
