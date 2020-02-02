@@ -17,6 +17,7 @@ import { worldSettings } from "./worldSettings";
 import { setTemplate } from "./setTemplate";
 import { resetWorld } from "./resetWorld";
 import { getIP } from "./getIP";
+import { getInvites } from "./getInvites";
 
 export class PostRequest {
   requests: Map<string, Function> = new Map<string, Function>();
@@ -40,6 +41,7 @@ export class PostRequest {
     this.requests.set(setTemplate.name, setTemplate);
     this.requests.set(resetWorld.name, resetWorld);
     this.requests.set(getIP.name, getIP);
+    this.requests.set(getInvites.name, getInvites);
   }
   
   get(name: string): Function {

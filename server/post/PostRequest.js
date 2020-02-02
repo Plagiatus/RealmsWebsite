@@ -19,6 +19,7 @@ const worldSettings_1 = require("./worldSettings");
 const setTemplate_1 = require("./setTemplate");
 const resetWorld_1 = require("./resetWorld");
 const getIP_1 = require("./getIP");
+const getInvites_1 = require("./getInvites");
 class PostRequest {
     constructor() {
         this.requests = new Map();
@@ -41,6 +42,7 @@ class PostRequest {
         this.requests.set(setTemplate_1.setTemplate.name, setTemplate_1.setTemplate);
         this.requests.set(resetWorld_1.resetWorld.name, resetWorld_1.resetWorld);
         this.requests.set(getIP_1.getIP.name, getIP_1.getIP);
+        this.requests.set(getInvites_1.getInvites.name, getInvites_1.getInvites);
     }
     get(name) {
         if (!this.requests.has(name)) {
