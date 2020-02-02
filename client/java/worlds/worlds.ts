@@ -4,7 +4,8 @@ namespace worldsPage {
   let server: RealmsServer;
   let selectedSlot: number;
   let switchButtons: HTMLCollectionOf<HTMLButtonElement>;
-  let templates: Template[];
+  let templates: Map<string, Template[]> = new Map<string, Template[]>();
+  let currentTemplates: Template[];
   let selectedTemplateDiv: HTMLDivElement;
   let templateWrapperDiv: HTMLDivElement;
   let templateFilter: HTMLInputElement;
@@ -188,23 +189,26 @@ namespace worldsPage {
     templateWrapperDiv.classList.remove("hidden");
     document.getElementById("template-type").innerText = type;
     selectedTemplateDiv.innerHTML = "<span>Nothing selected</span>";
-    document.getElementById("templates-wrapper").innerHTML = "<span>Loading...</span>"
-    let data = getCredentials();
-    data["command"] = "templates";
-    data["type"] = type;
-    let result = sendPOSTRequest(data);
-    if (result.error) return;
-    displayTemplates(result);
+    document.getElementById("templates-wrapper").innerHTML = "<span>Loading...</span>";
+    if(!templates.has(type)){
+      let data = getCredentials();
+      data["command"] = "templates";
+      data["type"] = type;
+      let result = sendPOSTRequest(data);
+      if (result.error) return;
+      templates.set(type, result);
+    }
+    displayTemplates(templates.get(type));
   }
 
   function displayTemplates(_templates: Template[]) {
     let templateDiv: HTMLDivElement = <HTMLDivElement>document.getElementById("templates-wrapper");
     if (!_templates || _templates.length <= 0) {
       templateDiv.innerHTML = "<span>There are no templates in this category.</span>";
-      templates = [];
+      currentTemplates = [];
       return;
     }
-    templates = _templates;
+    currentTemplates = _templates;
     document.getElementById("template-type").innerText = _templates[0].type;
     templateDiv.innerHTML = "";
     for (let temp of _templates) {
@@ -231,11 +235,11 @@ namespace worldsPage {
   }
 
   export function filterTemplates(event: Event) {
-    if (!templates || templates.length <= 0) return;
+    if (!currentTemplates || currentTemplates.length <= 0) return;
     let searchTerm: string = templateFilter.value;
     let playerAmount: number = Number(templatePlayerFilter.value);
     let found: boolean = false;
-    for (let temp of templates) {
+    for (let temp of currentTemplates) {
       if ((searchTerm == "" || temp.name.toLowerCase().includes(searchTerm) || temp.author.toLowerCase().includes(searchTerm))
         && (playerAmount == 0 || (playerAmount >= temp.playerMin && playerAmount <= temp.playerMax))) {
         document.getElementById("template-" + temp.id).classList.remove("hidden");
@@ -253,7 +257,7 @@ namespace worldsPage {
 
   export function selectTemplate(event: Event) {
     let id: number = Number((<HTMLDivElement>event.currentTarget).id.split("-")[1]);
-    let selectedTemplate: Template = templates.find(tmp => tmp.id == id);
+    let selectedTemplate: Template = currentTemplates.find(tmp => tmp.id == id);
     let youtubeID: string = "";
     if (selectedTemplate.trailer.includes("youtube.com")) {
       youtubeID = selectedTemplate.trailer.split("v=")[1];
@@ -292,7 +296,7 @@ namespace worldsPage {
     let result = sendPOSTRequest(data);
     (<HTMLButtonElement>document.getElementById("template-confirm-button")).disabled = false;
     if (result.error) return;
-    let selectedTemplate: Template = templates.find(tmp => tmp.id == id);
+    let selectedTemplate: Template = currentTemplates.find(tmp => tmp.id == id);
     if (selectedSlot == 4) {
       document.getElementById("worlds").querySelector(".active").classList.remove("active");
       document.getElementById("world-minigame").classList.add("active");
@@ -382,7 +386,7 @@ namespace worldsPage {
     let genStructures: boolean = (<HTMLInputElement>document.getElementById("genStructures")).checked;
     if (seed == "") { seed = Math.floor(Math.random() * Math.pow(2, 31) - 1).toString() }
     btn.disabled = true;
-    
+
     let data = getCredentials();
     data["command"] = "resetWorld";
     data["world"] = worldid;
@@ -392,7 +396,7 @@ namespace worldsPage {
     data["genStruct"] = genStructures;
     let result = sendPOSTRequest(data);
     btn.disabled = false;
-    if(result.error) return;
+    if (result.error) return;
     closeAll();
   }
 

@@ -4,7 +4,8 @@ var worldsPage;
     let server;
     let selectedSlot;
     let switchButtons;
-    let templates;
+    let templates = new Map();
+    let currentTemplates;
     let selectedTemplateDiv;
     let templateWrapperDiv;
     let templateFilter;
@@ -202,22 +203,25 @@ var worldsPage;
         document.getElementById("template-type").innerText = type;
         selectedTemplateDiv.innerHTML = "<span>Nothing selected</span>";
         document.getElementById("templates-wrapper").innerHTML = "<span>Loading...</span>";
-        let data = getCredentials();
-        data["command"] = "templates";
-        data["type"] = type;
-        let result = sendPOSTRequest(data);
-        if (result.error)
-            return;
-        displayTemplates(result);
+        if (!templates.has(type)) {
+            let data = getCredentials();
+            data["command"] = "templates";
+            data["type"] = type;
+            let result = sendPOSTRequest(data);
+            if (result.error)
+                return;
+            templates.set(type, result);
+        }
+        displayTemplates(templates.get(type));
     }
     function displayTemplates(_templates) {
         let templateDiv = document.getElementById("templates-wrapper");
         if (!_templates || _templates.length <= 0) {
             templateDiv.innerHTML = "<span>There are no templates in this category.</span>";
-            templates = [];
+            currentTemplates = [];
             return;
         }
-        templates = _templates;
+        currentTemplates = _templates;
         document.getElementById("template-type").innerText = _templates[0].type;
         templateDiv.innerHTML = "";
         for (let temp of _templates) {
@@ -243,12 +247,12 @@ var worldsPage;
         templateDiv.appendChild(span);
     }
     function filterTemplates(event) {
-        if (!templates || templates.length <= 0)
+        if (!currentTemplates || currentTemplates.length <= 0)
             return;
         let searchTerm = templateFilter.value;
         let playerAmount = Number(templatePlayerFilter.value);
         let found = false;
-        for (let temp of templates) {
+        for (let temp of currentTemplates) {
             if ((searchTerm == "" || temp.name.toLowerCase().includes(searchTerm) || temp.author.toLowerCase().includes(searchTerm))
                 && (playerAmount == 0 || (playerAmount >= temp.playerMin && playerAmount <= temp.playerMax))) {
                 document.getElementById("template-" + temp.id).classList.remove("hidden");
@@ -268,7 +272,7 @@ var worldsPage;
     worldsPage.filterTemplates = filterTemplates;
     function selectTemplate(event) {
         let id = Number(event.currentTarget.id.split("-")[1]);
-        let selectedTemplate = templates.find(tmp => tmp.id == id);
+        let selectedTemplate = currentTemplates.find(tmp => tmp.id == id);
         let youtubeID = "";
         if (selectedTemplate.trailer.includes("youtube.com")) {
             youtubeID = selectedTemplate.trailer.split("v=")[1];
@@ -309,7 +313,7 @@ var worldsPage;
         document.getElementById("template-confirm-button").disabled = false;
         if (result.error)
             return;
-        let selectedTemplate = templates.find(tmp => tmp.id == id);
+        let selectedTemplate = currentTemplates.find(tmp => tmp.id == id);
         if (selectedSlot == 4) {
             document.getElementById("worlds").querySelector(".active").classList.remove("active");
             document.getElementById("world-minigame").classList.add("active");
