@@ -36,8 +36,8 @@ namespace overview {
     }
     generalOverview(realm);
     worldOverview(realm);
-    playerOverview(realm.players);
     setInterval(updatePlayers, 1000 * 15);
+    playerOverview(realm.players);
   }
 
   function generalOverview(r: RealmsServer) {
@@ -86,7 +86,7 @@ namespace overview {
     } else {
       worldsDiv.innerHTML += `
       <span>Selected Slot</span>
-      <img src=${active.templateImage ? "data:image/png;base64, " + active.templateImage : ("../img/placeholder.png")} alt="">
+      <img src="${active.templateImage ? "data:image/png;base64, " + active.templateImage : ("../img/placeholder.png")}" alt="">
       <span>${active.slotName || "World " + r.activeSlot}</span>
       `;
     }
