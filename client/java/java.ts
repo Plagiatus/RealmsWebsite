@@ -55,6 +55,7 @@ function setupError() {
 }
 
 function showError(_message: string, _further: string = "No further information.") {
+  console.error(_message);
   document.getElementById("errorMessage").innerText = _message;
   document.getElementById("errorInfo").innerHTML = _further;
   errorUnderlay.style.display = "flex";
@@ -136,7 +137,7 @@ function getPerformanceCookie(_key: string){
 }
 
 function removePerformanceCookies() {
-  removeCookie("realms")
+  removeCookie("realms");
   let decCookie = decodeURIComponent(document.cookie);
   let cookies: string[] = decCookie.split(";");
   for (let cookie of cookies) {
@@ -305,6 +306,7 @@ function applyFormatingCodes(text: string): string {
     let char: string = textArray[i].substr(0, 1);
     if (char == "r") {
       resetDepth();
+      result += textArray[i].substring(1);
       continue;
     }
     if (!classes[char]) {
@@ -330,12 +332,12 @@ function obfuscate() {
 }
 
 function obfuscateThis(texts: Text[]) {
-  let chars: string = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZöäüÖÄÜ+-#@$%&/(\\()[]{}";
+  let chars: string = "abcdeghjmnopqrsuvwxyz1234567890ABCDEFGHJKLMNOPQRSTUVWXYZöäüÖÄÜ+-#$%&/\\";
   for (let txt of texts) {
     let length: number = txt.data.length;
     let newText: string = "";
     for (let i: number = 0; i < length; i++) {
-      newText += chars[Math.floor(Math.random() * chars.length)];
+      newText += txt.data[i] == " " ? " " : chars[Math.floor(Math.random() * chars.length)];
     }
     txt.data = newText;
   }
