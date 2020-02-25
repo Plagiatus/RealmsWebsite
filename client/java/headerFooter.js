@@ -13,43 +13,53 @@ var headerFooter;
         let pathnameRaw = window.location.pathname.split("/");
         let pathname = pathnameRaw[pathnameRaw.length - 1].includes(".html") || pathnameRaw[pathnameRaw.length - 1].length == 0 ? pathnameRaw[pathnameRaw.length - 2] : pathnameRaw[pathnameRaw.length - 1];
         let worldid = getCookie("worldid");
-        let newBodyContent = headerFooter.loadLoginHeader ? `
-    <main>
+        let newBodyContent;
+        if (headerFooter.loadLoginHeader) {
+            newBodyContent = `
+      <main>
       <header>
-        <div style="height: 1px;"></div>
-        <nav id="mainmenu">
-          <ul>
-            <li><img src="../img/icon.png" alt="" height="30px" style="padding: 0 5px">Realms Admin/Manager</li>
-            <li class="floatRight"><a class="${pathname == "login" ? "activePage" : ""}" href="../login">Login</a></li>
-          </ul>
+      <div style="height: 1px;"></div>
+      <nav id="mainmenu">
+      <ul>
+      <li><img src="../img/icon.png" alt="" height="30px" style="padding: 0 5px">Realms Admin/Manager</li>
+      <li class="floatRight"><a class="${pathname == "login" ? "activePage" : ""}" href="../login">Login</a></li>
+      </ul>
         </nav>
         <div id="RealmDisplayInHeader">
-          <!-- RealmName -->
+        <!-- RealmName -->
         </div>
         </header>
         ${document.body.innerHTML}
-      </main>
-    ` : `
-    <main>
-      <header>
-        <div style="height: 1px;"></div>
-        <nav id="mainmenu">
-          <ul>
-            <li><img src="../img/icon.png" alt="" height="30px" style="padding: 0 5px"></li>
-            <li><a class="${pathname == "realms" ? "activePage" : ""}" href="../realms">Realms</a></li>
-            <li><a class="${pathname == "overview" ? "activePage" : ""}${worldid ? "" : "disabled"}" ${worldid ? 'href="../overview"' : ""}>Overview</a></li>
-            <li><a class="${pathname == "players" ? "activePage" : ""} ${worldid ? "" : "disabled"}" ${worldid ? 'href="../players"' : ""}>Players</a></li>
-            <li><a class="${pathname == "worlds" ? "activePage" : ""} ${worldid ? "" : "disabled"}" ${worldid ? 'href="../worlds"' : ""}>Worlds</a></li>
-            <li><a class="${pathname == "settings" ? "activePage" : ""} ${worldid ? "" : "disabled"}" ${worldid ? 'href="../settings"' : ""}>Settings</a></li>
-            <li class="floatRight"><a class="${pathname == "logout" ? "activePage" : ""}" href="../logout">Logout</a></li>
-          </ul>
-        </nav>
-        <div id="RealmDisplayInHeader">
-          <!-- RealmName -->
+        </main>
+        `;
+        }
+        else {
+            newBodyContent = `
+      <main>
+        <header>
+          <div style="height: 1px;"></div>
+          <nav id="mainmenu">
+            <ul>
+              <li><img src="../img/icon.png" alt="" height="30px" style="padding: 0 5px"></li>
+              <li><a class="${pathname == "realms" ? "activePage" : ""}" href="../realms">Realms</a></li>`;
+            if (worldid) {
+                newBodyContent += `
+        <li><a class="${pathname == "overview" ? "activePage" : ""}" ${worldid ? 'href="../overview"' : ""}>Overview</a></li>
+        <li><a class="${pathname == "players" ? "activePage" : ""}" ${worldid ? 'href="../players"' : ""}>Players</a></li>
+        <li><a class="${pathname == "worlds" ? "activePage" : ""}" ${worldid ? 'href="../worlds"' : ""}>Worlds</a></li>
+        <li><a class="${pathname == "settings" ? "activePage" : ""}" ${worldid ? 'href="../settings"' : ""}>Settings</a></li>`;
+            }
+            newBodyContent += `
+            <li class="floatRight"> <a class="${pathname == "logout" ? "activePage" : ""}" href = "../logout" > Logout </a></li >
+            </ul>
+          </nav>
+        <div id = "RealmDisplayInHeader" >
+          <!--RealmName -->
         </div>
-        </header>
-        ${document.body.innerHTML}
+      </header>
+      ${document.body.innerHTML}
       </main>`;
+        }
         document.body.innerHTML = newBodyContent;
     }
     function footer() {
