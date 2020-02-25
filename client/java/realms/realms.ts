@@ -136,10 +136,19 @@ namespace realmsList {
           <span>${applyFormatingCodes(escapeHtml(invite.worldDescription || "\u00A0"))}</span>
           <span>${escapeHtml(invite.worldOwnerName) || "\u00A0"}</span>
           <span>${new Date(invite.date).toLocaleString()}</span>
-          <button class="join" onclick="realmsList.acceptInvite(${invite.invitationId})" disabled>Accept</button>
-          <button class="deny" onclick="realmsList.denyInvite(${invite.invitationId})" disabled>Deny</button>
+          <button class="join" onclick="realmsList.changeInvite(${invite.invitationId},true)">Accept</button>
+          <button class="deny" onclick="realmsList.changeInvite(${invite.invitationId},false)">Deny</button>
         </div>`;
     }
+  }
+
+  export function changeInvite(id: number, accept: boolean){
+    let data = getCredentials();
+    data["command"] = "changeInvite";
+    data["invite"] = id;
+    data["accept"] = accept;
+    let result = sendPOSTRequest(data);
+    console.log(result);
   }
 
   interface Server {
