@@ -190,7 +190,7 @@ namespace worldsPage {
     document.getElementById("template-type").innerText = type;
     selectedTemplateDiv.innerHTML = "<span>Nothing selected</span>";
     document.getElementById("templates-wrapper").innerHTML = "<span>Loading...</span>";
-    if(!templates.has(type)){
+    if (!templates.has(type)) {
       let data = getCredentials();
       data["command"] = "templates";
       data["type"] = type;

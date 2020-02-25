@@ -362,3 +362,5 @@ class WorldIDChecker extends EventTarget {
         this.dispatchEvent(new Event("worldIDChange"));
     }
 }
+//TODO: remove this temporary blocking of performance cookies!
+setCookie("performance", "false");

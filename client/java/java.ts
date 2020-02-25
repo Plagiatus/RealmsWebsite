@@ -432,3 +432,6 @@ interface RealmsWorldOptions {
   spawnNPCs: boolean;
   spawnProtection: boolean;
 }
+
+//TODO: remove this temporary blocking of performance cookies!
+setCookie("performance","false");
