@@ -26,8 +26,9 @@ namespace settings {
   }
 
   function getServer() {
-    if (getCookie(worldName())) {
-      let realm = JSON.parse(getPerformanceCookie(worldName()));
+    let tmp = getPerformanceCookie(worldName());
+    if (tmp) {
+      let realm = JSON.parse(tmp);
       initDisplay(realm);
       return;
     }
@@ -67,6 +68,7 @@ namespace settings {
   }
 
   function updateOpenText() {
+    //TODO: wrong image (yellow instead of off) when subscription ran out.
     openText.innerHTML = "Your Realm is currently " + (serverIsOpen ? "<span class='dark_green'>OPEN" : "<span class='red'>CLOSED") + "</span>";
     openButton.innerText = serverIsOpen ? "close" : "open";
     if (serverIsOpen) {
@@ -117,7 +119,7 @@ namespace settings {
     btn.disabled = true;
     let data = getCredentials();
     data["command"] = "getIP";
-    data["world"] = getCookie("worldid");
+    data["world"] = localStorage.getItem("worldid");
     let result = sendPOSTRequest(data);
     btn.disabled = false;
     try {

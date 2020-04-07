@@ -37,8 +37,9 @@ function init() {
 }
 
 function getPlayers(): Player[] {
-  if (getCookie(worldName())) {
-    return JSON.parse(getPerformanceCookie(worldName())).players;
+  let tmp = getPerformanceCookie(worldName());
+  if (tmp) {
+    return JSON.parse(tmp).players;
   }
   let data = getCredentials();
   data["command"] = "detail";

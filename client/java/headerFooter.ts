@@ -10,7 +10,7 @@ namespace headerFooter {
     if (!loadHeader) return;
     let pathnameRaw: string[] = window.location.pathname.split("/");
     let pathname: string = pathnameRaw[pathnameRaw.length - 1].includes(".html") || pathnameRaw[pathnameRaw.length - 1].length == 0 ? pathnameRaw[pathnameRaw.length - 2] : pathnameRaw[pathnameRaw.length - 1];
-    let worldid = getCookie("worldid");
+    let worldid = localStorage.getItem("worldid");
     let newBodyContent: string;
     if (loadLoginHeader) {
       newBodyContent = `

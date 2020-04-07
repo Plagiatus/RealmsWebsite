@@ -12,7 +12,7 @@ var headerFooter;
             return;
         let pathnameRaw = window.location.pathname.split("/");
         let pathname = pathnameRaw[pathnameRaw.length - 1].includes(".html") || pathnameRaw[pathnameRaw.length - 1].length == 0 ? pathnameRaw[pathnameRaw.length - 2] : pathnameRaw[pathnameRaw.length - 1];
-        let worldid = getCookie("worldid");
+        let worldid = localStorage.getItem("worldid");
         let newBodyContent;
         if (headerFooter.loadLoginHeader) {
             newBodyContent = `

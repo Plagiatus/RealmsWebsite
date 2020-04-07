@@ -15,6 +15,7 @@ export async function detail(_input, _response: Http.OutgoingMessage) {
     let p: Player = new Player(email, token, uuid, name);
     let c: Client = new Client(p.getAuthToken(), latestVersion, p.name);
     let rs: RealmsServer = c.worlds.getWorld(world).detailInformation();
+    //TODO: This produces an error sometimes, see underminermans video
     (<any>rs.slots) = mapToObj(rs.slots);
     _response.write(JSON.stringify(rs));
   }

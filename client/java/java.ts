@@ -73,89 +73,83 @@ enum ERRINFO {
 //#endregion
 
 //#region Cookies
-function getCookie(_key: string): string {
-  let decCookie = decodeURIComponent(document.cookie);
-  let cookies: string[] = decCookie.split(";");
-  // console.log(cookies);
-  for (let cookie of cookies) {
-    while (cookie.charAt(0) == " ") {
-      cookie = cookie.substring(1);
-    }
-    if (cookie.indexOf(_key + "=") == 0) {
-      return cookie.substring(_key.length + 1);
-    }
-  }
-}
+// function getCookie(_key: string): string {
+//   let decCookie = decodeURIComponent(document.cookie);
+//   let cookies: string[] = decCookie.split(";");
+//   // console.log(cookies);
+//   for (let cookie of cookies) {
+//     while (cookie.charAt(0) == " ") {
+//       cookie = cookie.substring(1);
+//     }
+//     if (cookie.indexOf(_key + "=") == 0) {
+//       return cookie.substring(_key.length + 1);
+//     }
+//   }
+// }
 
-function setCookie(_key: string, _value: string, _expires: number = 0, root: boolean = true) {
-  if (_expires == 0) _expires = 24 * 365 * 10;
-  let d: Date = new Date();
-  d.setTime(Date.now() + _expires * 60 * 60 * 1000);
-  let expires: string = "expires=" + d.toUTCString();
-  document.cookie = _key + "=" + _value + ";" + expires + (root ? "; path=/" : "");
-}
+// function setCookie(_key: string, _value: string, _expires: number = 0, root: boolean = true) {
+//   if (_expires == 0) _expires = 24 * 365 * 10;
+//   let d: Date = new Date();
+//   d.setTime(Date.now() + _expires * 60 * 60 * 1000);
+//   let expires: string = "expires=" + d.toUTCString();
+//   document.cookie = _key + "=" + _value + ";" + expires + (root ? "; path=/" : "");
+// }
 
-function removeCookie(_key: string, root:boolean = true) {
-  setCookie(_key, "", -10, root); 
-}
+// function removeCookie(_key: string, root:boolean = true) {
+//   setCookie(_key, "", -10, root); 
+// }
 
 function isPerformanceCookieSet(): boolean {
-  return getCookie("performance") == "true";
+  return localStorage.getItem("performance") == "true";
 }
+// function isPerformanceCookieSet(): boolean {
+//   return getCookie("performance") == "true";
+// }
 
-function setPerformanceCookie(_key: string, _value: string, root: boolean = true) {
+function setPerformanceCookie(_key: string, _value: string) {
   if (!isPerformanceCookieSet()) return;
-  let i: number = 0;
-  let maxCookieLength: number = 2000;
-  while (_value.length > maxCookieLength) {
-    let v: string = _value.substr(0, maxCookieLength);
-    _value = _value.substring(maxCookieLength);
-    setCookie(_key + "-" + i, v, 0.25, root);
-    i++;
-  }
-  if(getCookie(_key + "-" + i)){
-    removeCookie(_key + "-" + i)
-  }
-  setCookie(_key, _value, 0.25, root);
-  console.log(_key, i);
+  let performanceCookieExpiration: number = 10;
+  localStorage.setItem(_key, _value);
+  localStorage.setItem(_key + "-exp", (Date.now() + 1000 * 60 * performanceCookieExpiration).toString())
 }
 
-function getPerformanceCookie(_key: string){
-  try {
-    JSON.parse(getCookie(_key));
-    return getCookie(_key)
-  } catch (error) {
-    let value: string = "";
-    let i: number = 0;
-    while(getCookie(_key + "-" + i)){
-      value += getCookie(_key + "-" + i);
-      i++;
-    }
-    value += getCookie(_key);
-    return value;
+function getPerformanceCookie(_key: string, _cb?: Function) {
+  if (localStorage.getItem(_key) && Number(localStorage.getItem(_key + "-exp")) < Date.now()) {
+    return localStorage.getItem(_key);
+  } else {
+    if (_cb) { _cb() }
+    return null;
   }
 }
 
 function removePerformanceCookies() {
-  removeCookie("realms");
-  let decCookie = decodeURIComponent(document.cookie);
-  let cookies: string[] = decCookie.split(";");
-  for (let cookie of cookies) {
-    let key = cookie.trim().split("=")[0];
+  localStorage.removeItem("realms");
+  for (let i: number = 0; i < localStorage.length; i++) {
+    let key: string = localStorage.key(i);
     if (key.includes("world-")) {
-      removeCookie(key);
+      localStorage.removeItem(key);
     }
   }
 }
+// function removePerformanceCookies() {
+//   removeCookie("realms");
+//   let decCookie = decodeURIComponent(document.cookie);
+//   let cookies: string[] = decCookie.split(";");
+//   for (let cookie of cookies) {
+//     let key = cookie.trim().split("=")[0];
+//     if (key.includes("world-")) {
+//       removeCookie(key);
+//     }
+//   }
+// }
 //#endregion
 
 //#region Credentials
 function checkCredentials(andRedirect: boolean = true): boolean {
-  let email: string = getCookie("email");
-  let token: string = getCookie("token");
-  let uuid: string = getCookie("uuid");
-  let name: string = getCookie("name");
-  let refresh: string = getCookie("refresh");
+  let email: string = localStorage.getItem("email");
+  let token: string = localStorage.getItem("token");
+  let uuid: string = localStorage.getItem("uuid");
+  let name: string = localStorage.getItem("name");
   if (!email || !token || !uuid || !name) {
     console.log("CREDENTIALS NOT THERE ANYMORE")
     if (andRedirect) window.location.replace("../login");
@@ -166,13 +160,10 @@ function checkCredentials(andRedirect: boolean = true): boolean {
     if (andRedirect) window.location.replace("../login");
     return false;
   }
-  if (refresh == "true") {
-    refreshCredentials();
-  }
   return true;
 }
 
-function setCredentials(_input, time: number) {
+function setCredentials(_input) {
   let email: string = _input.email;
   let token: string = _input.token;
   let uuid: string = _input.uuid;
@@ -181,36 +172,36 @@ function setCredentials(_input, time: number) {
     throw new Error("Not all parameters given");
   }
   // console.log(email, token, uuid, name);
-  setCookie("email", email, time);
-  setCookie("token", token, time);
-  setCookie("uuid", uuid, time);
-  setCookie("name", name, time);
+  localStorage.setItem("email", email);
+  localStorage.setItem("token", token);
+  localStorage.setItem("uuid", uuid);
+  localStorage.setItem("name", name);
 }
 
-function refreshCredentials() {
-  let logintime: string = getCookie("logintime");
-  let time: number = Number(logintime);
-  if (isNaN(time)) {
-    return false;
-  }
-  setCookie("email", getCookie("email"), time);
-  setCookie("token", getCookie("token"), time);
-  setCookie("uuid", getCookie("uuid"), time);
-  setCookie("name", getCookie("name"), time);
-}
+// function refreshCredentials() {
+//   let logintime: string = localStorage.getItem("logintime");
+//   let time: number = Number(logintime);
+//   if (isNaN(time)) {
+//     return false;
+//   }
+//   localStorage.setItem("email", localStorage.getItem("email"), time);
+//   localStorage.setItem("token", localStorage.getItem("token"), time);
+//   localStorage.setItem("uuid", localStorage.getItem("uuid"), time);
+//   localStorage.setItem("name", localStorage.getItem("name"), time);
+// }
 
 function getCredentials() {
   return {
-    email: getCookie("email"),
-    token: getCookie("token"),
-    uuid: getCookie("uuid"),
-    name: getCookie("name")
+    email: localStorage.getItem("email"),
+    token: localStorage.getItem("token"),
+    uuid: localStorage.getItem("uuid"),
+    name: localStorage.getItem("name")
   }
 }
 
 function confirmCredentials(email, uuid, name, token): boolean {
   //TODO might need to check the timeout on this, it might be too long. Or even remove it after all
-  if (getCookie("credentialsConfirmed")) {
+  if (localStorage.getItem("credentialsConfirmed")) {
     return true;
   }
   let data = {
@@ -229,7 +220,7 @@ function confirmCredentials(email, uuid, name, token): boolean {
       if (result.error) {
         return false;
       } else {
-        // setCookie("credentialsConfirmed", "true", 0.5);
+        // localStorage.setItem("credentialsConfirmed", "true", 0.5);
         return true;
       }
     }
@@ -240,16 +231,16 @@ function confirmCredentials(email, uuid, name, token): boolean {
 }
 
 function removeCredentials() {
-  removeCookie("email");
-  removeCookie("token");
-  removeCookie("uuid");
-  removeCookie("name");
+  localStorage.removeItem("email");
+  localStorage.removeItem("token");
+  localStorage.removeItem("uuid");
+  localStorage.removeItem("name");
 }
 
 let worldid: number;
 function checkWorldId() {
-  let wid: number = Number(getCookie("worldid"));
-  if (!getCookie("worldid")) {
+  let wid: number = Number(localStorage.getItem("worldid"));
+  if (!localStorage.getItem("worldid")) {
     window.location.replace("../realms");
   }
   worldid = wid;
@@ -370,14 +361,14 @@ class WorldIDChecker extends EventTarget {
   private id: number;
   constructor() {
     super();
-    this.id = Number(getCookie("worldid"));
+    this.id = Number(localStorage.getItem("worldid"));
     setInterval(this.checkID.bind(this), 1000)
   }
   checkID() {
-    if (this.id == Number(getCookie("worldid"))) {
+    if (this.id == Number(localStorage.getItem("worldid"))) {
       return;
     }
-    this.id = Number(getCookie("worldid"));
+    this.id = Number(localStorage.getItem("worldid"));
     this.dispatchEvent(new Event("worldIDChange"));
   }
 }
@@ -434,4 +425,4 @@ interface RealmsWorldOptions {
 }
 
 //TODO: remove this temporary blocking of performance cookies!
-setCookie("performance","false");
+// localStorage.setItem("performance","false");

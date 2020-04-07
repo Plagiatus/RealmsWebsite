@@ -20,13 +20,14 @@ var overview;
         playerListDiv = document.getElementById("playerList");
     }
     function createOverview() {
-        if (getCookie(worldName())) {
-            realm = JSON.parse(getPerformanceCookie(worldName()));
+        let tmp = getPerformanceCookie(worldName());
+        if (tmp) {
+            realm = JSON.parse(tmp);
         }
         else {
             let data = getCredentials();
             data["command"] = "detail";
-            data["world"] = getCookie("worldid");
+            data["world"] = localStorage.getItem("worldid");
             let result = sendPOSTRequest(data);
             realm = result;
             setPerformanceCookie(worldName(), JSON.stringify(realm));
@@ -108,7 +109,7 @@ var overview;
     function updatePlayers() {
         let data = getCredentials();
         data["command"] = "getPlayers";
-        data["world"] = getCookie("worldid");
+        data["world"] = localStorage.getItem("worldid");
         let result = sendPOSTRequest(data);
         playerOverview(result);
     }

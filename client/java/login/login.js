@@ -2,14 +2,14 @@ var login;
 (function (login) {
     window.addEventListener("load", init);
     headerFooter.loadLoginHeader = true;
-    if (!getCookie("performance"))
-        window.location.replace("../cookies");
+    // if (!localStorage.getItem("performance")) window.location.replace("../cookies")
     function init() {
         if (checkCredentials(false)) {
             console.log("already logged in");
             window.location.replace("../realms");
             return;
         }
+        removeCredentials();
         removePerformanceCookies();
     }
     function loginWithEmail() {
@@ -27,13 +27,10 @@ var login;
             return;
         }
         let email = emailElement.value;
-        let remember = Number(formData.get("remember"));
-        let refresh = Boolean(formData.get("refresh"));
         // console.log(email, password, remember, refresh);
         let player = authenticate(email, password);
         if (player) {
-            setCredentials(player, remember);
-            setCookie("refresh", refresh.toString(), remember);
+            setCredentials(player);
             window.location.replace("..");
         }
     }
@@ -78,8 +75,8 @@ var login;
         let player = { name: playername, uuid: uuid, token: token, email: email };
         let remember = Number(formData.get("remember"));
         let refresh = Boolean(formData.get("refresh"));
-        setCredentials(player, remember);
-        setCookie("refresh", refresh.toString(), remember);
+        setCredentials(player);
+        localStorage.setItem("refresh", refresh.toString());
         window.location.replace("..");
     }
     login.loginWithToken = loginWithToken;

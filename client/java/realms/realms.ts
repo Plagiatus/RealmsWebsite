@@ -5,7 +5,7 @@ namespace realmsList {
   let realms: Server[] = [];
 
   function init() {
-    document.getElementsByTagName("h1")[0].innerText = "Welcome " + getCookie("name");
+    document.getElementsByTagName("h1")[0].innerText = "Welcome " + localStorage.getItem("name");
     if (!checkCredentials()) {
       return;
     }
@@ -19,8 +19,9 @@ namespace realmsList {
   }
 
   function createRealmsDisplay() {
-    if (getCookie("realms")) {
-      realms = JSON.parse(getPerformanceCookie("realms"));
+    let tmp = getPerformanceCookie("realms")
+    if (tmp) {
+      realms = JSON.parse(tmp);
     } else {
       let data = getCredentials();
       data["command"] = "getWorlds";
@@ -33,7 +34,7 @@ namespace realmsList {
     if (realms && realms.length > 0) {
       realms = realms.sort(sortRealms);
       realmsList.innerHTML = "";
-      let ownerName: string = getCookie("name");
+      let ownerName: string = localStorage.getItem("name");
       for (let s of realms) {
         // console.log(s);
         createOneRealm(s, ownerName);
@@ -63,7 +64,7 @@ namespace realmsList {
   }
 
   function sortRealms(a: Server, b: Server) {
-    let owner: string = getCookie("name");
+    let owner: string = localStorage.getItem("name");
     if (a.owner == owner && b.owner != owner) return -1;
     if (a.owner != owner && b.owner == owner) return 1;
     if (a.expired && !b.expired) return 1;
@@ -81,7 +82,7 @@ namespace realmsList {
   }
 
   export function selectRealm(id: number) {
-    setCookie("worldid", id.toString());
+    localStorage.setItem("worldid", id.toString());
     window.location.replace("../overview");
   }
 

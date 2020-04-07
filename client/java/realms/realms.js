@@ -4,7 +4,7 @@ var realmsList;
     let realmsList;
     let realms = [];
     function init() {
-        document.getElementsByTagName("h1")[0].innerText = "Welcome " + getCookie("name");
+        document.getElementsByTagName("h1")[0].innerText = "Welcome " + localStorage.getItem("name");
         if (!checkCredentials()) {
             return;
         }
@@ -17,8 +17,9 @@ var realmsList;
         obfuscate();
     }
     function createRealmsDisplay() {
-        if (getCookie("realms")) {
-            realms = JSON.parse(getPerformanceCookie("realms"));
+        let tmp = getPerformanceCookie("realms");
+        if (tmp) {
+            realms = JSON.parse(tmp);
         }
         else {
             let data = getCredentials();
@@ -32,7 +33,7 @@ var realmsList;
         if (realms && realms.length > 0) {
             realms = realms.sort(sortRealms);
             realmsList.innerHTML = "";
-            let ownerName = getCookie("name");
+            let ownerName = localStorage.getItem("name");
             for (let s of realms) {
                 // console.log(s);
                 createOneRealm(s, ownerName);
@@ -63,7 +64,7 @@ var realmsList;
         //TODO add status of realm
     }
     function sortRealms(a, b) {
-        let owner = getCookie("name");
+        let owner = localStorage.getItem("name");
         if (a.owner == owner && b.owner != owner)
             return -1;
         if (a.owner != owner && b.owner == owner)
@@ -85,7 +86,7 @@ var realmsList;
         }
     }
     function selectRealm(id) {
-        setCookie("worldid", id.toString());
+        localStorage.setItem("worldid", id.toString());
         window.location.replace("../overview");
     }
     realmsList_1.selectRealm = selectRealm;

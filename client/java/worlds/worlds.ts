@@ -28,8 +28,9 @@ namespace worldsPage {
   }
 
   function getWorlds() {
-    if (getCookie(worldName())) {
-      server = JSON.parse(getPerformanceCookie(worldName()));
+    let tmp = getPerformanceCookie(worldName());
+    if (tmp) {
+      server = JSON.parse(tmp);
     } else {
       let data = getCredentials();
       data["command"] = "detail";

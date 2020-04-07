@@ -2,7 +2,7 @@ logout();
 function logout() {
     let data = {
         command: "invalidate",
-        token: getCookie("token")
+        token: localStorage.getItem("token")
     };
     let result = sendPOSTRequest(data);
     if (result.error)
