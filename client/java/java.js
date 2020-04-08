@@ -105,7 +105,7 @@ function setPerformanceCookie(_key, _value) {
     localStorage.setItem(_key + "-exp", (Date.now() + 1000 * 60 * performanceCookieExpiration).toString());
 }
 function getPerformanceCookie(_key, _cb) {
-    if (localStorage.getItem(_key) && Number(localStorage.getItem(_key + "-exp")) < Date.now()) {
+    if (localStorage.getItem(_key) && Number(localStorage.getItem(_key + "-exp")) > Date.now()) {
         return localStorage.getItem(_key);
     }
     else {

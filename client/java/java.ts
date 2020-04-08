@@ -114,7 +114,7 @@ function setPerformanceCookie(_key: string, _value: string) {
 }
 
 function getPerformanceCookie(_key: string, _cb?: Function) {
-  if (localStorage.getItem(_key) && Number(localStorage.getItem(_key + "-exp")) < Date.now()) {
+  if (localStorage.getItem(_key) && Number(localStorage.getItem(_key + "-exp")) > Date.now()) {
     return localStorage.getItem(_key);
   } else {
     if (_cb) { _cb() }
