@@ -1,7 +1,7 @@
 namespace login {
   window.addEventListener("load", init);
   headerFooter.loadLoginHeader = true;
-  // if (!localStorage.getItem("performance")) window.location.replace("../cookies")
+  if (!localStorage.getItem("performance")) window.location.replace("../cookies");
 
   function init() {
     if (checkCredentials(false)) {
