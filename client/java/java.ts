@@ -227,6 +227,7 @@ async function confirmCredentials(email, uuid, name, token): Promise<boolean> {
     // return false;
   } catch (error) {
     displayError(error);
+    return false;
   }
 }
 

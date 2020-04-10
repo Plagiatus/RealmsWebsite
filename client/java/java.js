@@ -219,6 +219,7 @@ async function confirmCredentials(email, uuid, name, token) {
     }
     catch (error) {
         displayError(error);
+        return false;
     }
 }
 function removeCredentials() {
