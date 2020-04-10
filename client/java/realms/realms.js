@@ -3,9 +3,9 @@ var realmsList;
     window.addEventListener("load", init);
     let realmsList;
     let realms = [];
-    function init() {
+    async function init() {
         document.getElementsByTagName("h1")[0].innerText = "Welcome " + localStorage.getItem("name");
-        if (!checkCredentials()) {
+        if (!await checkCredentials()) {
             return;
         }
         document.getElementById("showAll").addEventListener("change", toggleVisibility);
@@ -22,13 +22,12 @@ var realmsList;
             realms = JSON.parse(tmp);
         }
         else {
-            let data = getCredentials();
-            data["command"] = "getWorlds";
-            let result = sendPOSTRequest(data);
-            if (result.servers && result.servers.length > 0) {
-                realms = result.servers;
-                setPerformanceCookie("realms", JSON.stringify(realms));
-            }
+            detailRequest((result) => {
+                if (result.servers && result.servers.length > 0) {
+                    realms = result.servers;
+                    setPerformanceCookie("realms", JSON.stringify(realms));
+                }
+            });
         }
         if (realms && realms.length > 0) {
             realms = realms.sort(sortRealms);
@@ -98,7 +97,8 @@ var realmsList;
         let data = getCredentials();
         data["command"] = "leaveRealm";
         data["world"] = id;
-        let result = sendPOSTRequest(data);
+        sendPOSTRequest(data, null);
+        //TODO: remove realm from list
     }
     realmsList_1.leaveRealm = leaveRealm;
     function search(_e) {
@@ -124,16 +124,15 @@ var realmsList;
         let img = document.getElementById("inviteStatus");
         let data = getCredentials();
         data["command"] = "getInvites";
-        let result = sendPOSTRequest(data);
-        if (result.error)
-            return;
-        if (result.invites.length <= 0) {
-            document.getElementById("invitesList").querySelector("span").innerText = "No invitations.";
-            return;
-        }
-        img.src = "../img/invites_pending.gif";
-        img.title = `You have ${result.invites.length} new invite${result.invites.length != 1 ? "s" : ""}.`;
-        displayInvites(result.invites);
+        sendPOSTRequest(data, (result) => {
+            if (result.invites.length <= 0) {
+                document.getElementById("invitesList").querySelector("span").innerText = "No invitations.";
+                return;
+            }
+            img.src = "../img/invites_pending.gif";
+            img.title = `You have ${result.invites.length} new invite${result.invites.length != 1 ? "s" : ""}.`;
+            displayInvites(result.invites);
+        });
     }
     function displayInvites(invites) {
         let invitesList = document.getElementById("invitesList");
@@ -157,8 +156,9 @@ var realmsList;
         data["command"] = "changeInvite";
         data["invite"] = id;
         data["accept"] = accept;
-        let result = sendPOSTRequest(data);
-        console.log(result);
+        sendPOSTRequest(data, (res) => {
+            console.log(res);
+        });
     }
     realmsList_1.changeInvite = changeInvite;
 })(realmsList || (realmsList = {}));

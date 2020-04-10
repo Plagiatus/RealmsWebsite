@@ -10,10 +10,10 @@ namespace worldsPage {
   let templateWrapperDiv: HTMLDivElement;
   let templateFilter: HTMLInputElement;
   let templatePlayerFilter: HTMLInputElement;
-  function init() {
+  async function init() {
     checkWorldId();
     checkCredentials();
-    getWorlds();
+    await getWorlds();
     switchButtons = <HTMLCollectionOf<HTMLButtonElement>>document.getElementsByClassName("switch-slot-btn");
     selectedTemplateDiv = <HTMLDivElement>document.getElementById("selected-template");
     templateWrapperDiv = <HTMLDivElement>document.getElementById("template-wrapper");
@@ -27,19 +27,12 @@ namespace worldsPage {
     }
   }
 
-  function getWorlds() {
+  async function getWorlds() {
     let tmp = getPerformanceCookie(worldName());
     if (tmp) {
       server = JSON.parse(tmp);
     } else {
-      let data = getCredentials();
-      data["command"] = "detail";
-      data["world"] = worldid;
-      let result: RealmsServer = sendPOSTRequest(data);
-      if (result.error) return;
-      console.log(result);
-      server = result;
-      setPerformanceCookie(worldName(), JSON.stringify(server));
+      server = await detailRequest(null);
     }
     let slots = server.slots;
     let worlds: HTMLDivElement = <HTMLDivElement>document.getElementById("worlds");
@@ -107,17 +100,17 @@ namespace worldsPage {
       }
     }
     data.newSettings = JSON.stringify(data.newSettings);
-    let result = sendPOSTRequest(data);
-    if (result.error) return;
-    // update saved server and html display
-    let slotOptions: RealmsWorldOptions = server.slots[selectedSlot];
-    let settings = JSON.parse(data.newSettings);
-    for (let setting in settings) {
-      slotOptions[setting] = settings[setting];
-    }
-    (<HTMLSpanElement>document.getElementById("world-" + selectedSlot).querySelector(".world-name")).innerText = slotOptions.slotName != "" ? slotOptions.slotName : `World ${selectedSlot}`;
-    showSettings(selectedSlot);
-    setPerformanceCookie(worldName(), JSON.stringify(server));
+    sendPOSTRequest(data, () => {
+      // update saved server and html display
+      let slotOptions: RealmsWorldOptions = server.slots[selectedSlot];
+      let settings = JSON.parse(data.newSettings);
+      for (let setting in settings) {
+        slotOptions[setting] = settings[setting];
+      }
+      (<HTMLSpanElement>document.getElementById("world-" + selectedSlot).querySelector(".world-name")).innerText = slotOptions.slotName != "" ? slotOptions.slotName : `World ${selectedSlot}`;
+      showSettings(selectedSlot);
+      setPerformanceCookie(worldName(), JSON.stringify(server));
+    })
   }
 
   export function switchTo(slot: number) {
@@ -127,24 +120,27 @@ namespace worldsPage {
     data["command"] = "changeSlot";
     data["world"] = worldid;
     data["slot"] = slot;
-    let result = sendPOSTRequest(data);
-    for (let btn of switchButtons) {
-      btn.disabled = false;
-      btn.innerText = "Switch";
-    }
-    if (result.error) {
-      (<HTMLButtonElement>document.querySelector("#world-" + server.activeSlot + " .switch-slot-btn")).disabled = true;
-      return;
-    }
-    server = result;
-    if (slot != 4)
-      (<HTMLButtonElement>document.querySelector("#world-" + slot + " .switch-slot-btn")).disabled = true;
-    (<HTMLSpanElement>document.getElementById("world-minigame").querySelector(".world-name")).innerText = "Minigame";
-    (<HTMLImageElement>document.getElementById("world-minigame").querySelector("img")).src = "data:image/png;base64, " + server.minigameImage;
-    document.getElementById("worlds").querySelector(".active").classList.remove("active");
-    document.getElementById("world-" + slot).classList.add("active");
-    document.getElementById("show-minigames-btn").innerText = "Switch to temporary Minigame";
-    setPerformanceCookie(worldName(), JSON.stringify(server));
+    sendPOSTRequest(data, null)
+      .then((result) => {
+        server = result;
+        if (slot != 4)
+          (<HTMLButtonElement>document.querySelector("#world-" + slot + " .switch-slot-btn")).disabled = true;
+        (<HTMLSpanElement>document.getElementById("world-minigame").querySelector(".world-name")).innerText = "Minigame";
+        (<HTMLImageElement>document.getElementById("world-minigame").querySelector("img")).src = "data:image/png;base64, " + server.minigameImage;
+        document.getElementById("worlds").querySelector(".active").classList.remove("active");
+        document.getElementById("world-" + slot).classList.add("active");
+        document.getElementById("show-minigames-btn").innerText = "Switch to temporary Minigame";
+        setPerformanceCookie(worldName(), JSON.stringify(server));
+      })
+      .catch(() => {
+        (<HTMLButtonElement>document.querySelector("#world-" + server.activeSlot + " .switch-slot-btn")).disabled = true;
+      })
+      .finally(() => {
+        for (let btn of switchButtons) {
+          btn.disabled = false;
+          btn.innerText = "Switch";
+        }
+      })
   }
 
   export function showReplaceWorld(slot: number) {
@@ -195,11 +191,13 @@ namespace worldsPage {
       let data = getCredentials();
       data["command"] = "templates";
       data["type"] = type;
-      let result = sendPOSTRequest(data);
-      if (result.error) return;
-      templates.set(type, result);
+      sendPOSTRequest(data, (result) => {
+        templates.set(type, result);
+        displayTemplates(templates.get(type));
+      });
+    } else {
+      displayTemplates(templates.get(type));
     }
-    displayTemplates(templates.get(type));
   }
 
   function displayTemplates(_templates: Template[]) {
@@ -294,33 +292,36 @@ namespace worldsPage {
     data["command"] = selectedSlot == 4 ? "setMinigame" : "setTemplate";
     data["world"] = worldid;
     data["id"] = id;
-    let result = sendPOSTRequest(data);
-    (<HTMLButtonElement>document.getElementById("template-confirm-button")).disabled = false;
-    if (result.error) return;
-    let selectedTemplate: Template = currentTemplates.find(tmp => tmp.id == id);
-    if (selectedSlot == 4) {
-      document.getElementById("worlds").querySelector(".active").classList.remove("active");
-      document.getElementById("world-minigame").classList.add("active");
-      document.getElementById("show-minigames-btn").innerText = "Switch Minigame";
-      let minigameContainer: HTMLElement = document.getElementById("world-minigame");
-      (<HTMLSpanElement>minigameContainer.querySelector(".world-name")).innerText = selectedTemplate.name;
-      (<HTMLImageElement>minigameContainer.querySelector("img")).src = "data:image/png;base64, " + selectedTemplate.image;
-      server.minigameImage = selectedTemplate.image;
-      server.minigameName = selectedTemplate.name;
-      server.minigameId = id;
-      for (let btn of switchButtons) {
-        btn.disabled = false;
-        btn.innerText = "Switch";
-      }
-    } else {
-      document.getElementById("world-" + selectedSlot).querySelector("img").src = "data:image/png;base64, " + selectedTemplate.image;
-      server.slots[selectedSlot].templateImage = selectedTemplate.image;
-      server.minigameName = null;
-      server.minigameId = null;
-    }
-    setPerformanceCookie(worldName(), JSON.stringify(server));
-    window.scrollTo(0, 0);
-    closeAll();
+    sendPOSTRequest(data, null)
+      .then(() => {
+        let selectedTemplate: Template = currentTemplates.find(tmp => tmp.id == id);
+        if (selectedSlot == 4) {
+          document.getElementById("worlds").querySelector(".active").classList.remove("active");
+          document.getElementById("world-minigame").classList.add("active");
+          document.getElementById("show-minigames-btn").innerText = "Switch Minigame";
+          let minigameContainer: HTMLElement = document.getElementById("world-minigame");
+          (<HTMLSpanElement>minigameContainer.querySelector(".world-name")).innerText = selectedTemplate.name;
+          (<HTMLImageElement>minigameContainer.querySelector("img")).src = "data:image/png;base64, " + selectedTemplate.image;
+          server.minigameImage = selectedTemplate.image;
+          server.minigameName = selectedTemplate.name;
+          server.minigameId = id;
+          for (let btn of switchButtons) {
+            btn.disabled = false;
+            btn.innerText = "Switch";
+          }
+        } else {
+          document.getElementById("world-" + selectedSlot).querySelector("img").src = "data:image/png;base64, " + selectedTemplate.image;
+          server.slots[selectedSlot].templateImage = selectedTemplate.image;
+          server.minigameName = null;
+          server.minigameId = null;
+        }
+        setPerformanceCookie(worldName(), JSON.stringify(server));
+        window.scrollTo(0, 0);
+        closeAll();
+      })
+      .finally(() => {
+        (<HTMLButtonElement>document.getElementById("template-confirm-button")).disabled = false;
+      })
   }
 
   function moveSelectedTemplate(e: Event) {
@@ -395,10 +396,13 @@ namespace worldsPage {
     data["seed"] = seed;
     data["levelType"] = levelType;
     data["genStruct"] = genStructures;
-    let result = sendPOSTRequest(data);
-    btn.disabled = false;
-    if (result.error) return;
-    closeAll();
+    sendPOSTRequest(data, null)
+    .then(()=>{
+      closeAll();
+    })
+    .finally(() => {
+      btn.disabled = false;
+    })
   }
 
   interface Template {

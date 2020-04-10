@@ -20,7 +20,7 @@ let includeOfflineInput: HTMLInputElement;
 let includeInvitedInput: HTMLInputElement;
 let excludeNonOpInput: HTMLInputElement;
 
-function init() {
+async function init() {
   //TODO save/load using cookies to make it load faster
   checkWorldId();
   checkCredentials();
@@ -31,12 +31,12 @@ function init() {
   searchInput.value = "";
   inviteInput.value = "";
   searchInput.addEventListener("input", searchBtn);
-  players = getPlayers();
+  players = await getPlayers();
   updatePlayerDisplay(players);
   setupSettings();
 }
 
-function getPlayers(): Player[] {
+async function getPlayers(): Promise<Player[]> {
   let tmp = getPerformanceCookie(worldName());
   if (tmp) {
     return JSON.parse(tmp).players;
@@ -44,8 +44,8 @@ function getPlayers(): Player[] {
   let data = getCredentials();
   data["command"] = "detail";
   data["world"] = worldid;
-  let result = sendPOSTRequest(data);
-  setPerformanceCookie(worldName(),JSON.stringify(result));
+  let result = await sendPOSTRequest(data, null);
+  setPerformanceCookie(worldName(), JSON.stringify(result));
   return result.players;
 }
 
@@ -103,20 +103,21 @@ function toggleOP(_uuid: string, toggle: boolean) {
   data["world"] = worldid;
   data["playeruuid"] = _uuid;
   data["toggle"] = toggle;
-  let result = sendPOSTRequest(data);
-  if (result.error) return;
-  btn.setAttribute("onclick", `toggleOP("${_uuid}", ${!toggle})`);
-  btn.innerText = toggle ? "deop" : "op";
-  btn.disabled = false;
-  if (toggle) {
-    div.querySelector(".crown").classList.remove("hidden");
-    div.querySelector(".crown2").classList.remove("hidden");
-  } else {
-    div.querySelector(".crown").classList.add("hidden");
-    div.querySelector(".crown2").classList.add("hidden");
-  }
-  players.find(p => p.uuid == _uuid).operator = toggle;
-  search(searchInput.value);
+  sendPOSTRequest(data, null)
+    .then(() => {
+      btn.setAttribute("onclick", `toggleOP("${_uuid}", ${!toggle})`);
+      btn.innerText = toggle ? "deop" : "op";
+      btn.disabled = false;
+      if (toggle) {
+        div.querySelector(".crown").classList.remove("hidden");
+        div.querySelector(".crown2").classList.remove("hidden");
+      } else {
+        div.querySelector(".crown").classList.add("hidden");
+        div.querySelector(".crown2").classList.add("hidden");
+      }
+      players.find(p => p.uuid == _uuid).operator = toggle;
+      search(searchInput.value);
+    });
 }
 
 function searchBtn(_e: Event) {
@@ -152,16 +153,18 @@ function invite() {
   data["world"] = worldid;
   data["playername"] = playername;
 
-  let result = sendPOSTRequest(data);
+  sendPOSTRequest(data, null)
+    .then((result) => {
+      updatePlayerDisplay(result.players);
+      setPerformanceCookie(worldName(), JSON.stringify(result));
+      //TODO: add new player to the list. it should hopefully be in the response.
+      // or just update the player list altogether if it's the server that's being sent back.
+    })
+    .finally(() => {
+      inviteInput.disabled = false;
+      inviteButton.disabled = false;
+    })
 
-  updatePlayerDisplay(result.players);
-  setPerformanceCookie(worldName(), JSON.stringify(result));
-
-  //TODO: add new player to the list. it should hopefully be in the response.
-  // or just update the player list altogether if it's the server that's being sent back.
-
-  inviteInput.disabled = false;
-  inviteButton.disabled = false;
 }
 
 function kick(uuid: string) {
@@ -172,17 +175,17 @@ function kick(uuid: string) {
   data["command"] = "kick";
   data["world"] = worldid;
   data["playeruuid"] = uuid;
-  let result = sendPOSTRequest(data);
-
-  if (result.error) {
-    btn.disabled = false;
-    return;
-  }
-  let realm: RealmsServer = JSON.parse(getPerformanceCookie(worldName()));
-  realm.players.splice(realm.players.findIndex((p) => { return p.uuid == uuid }), 1);
-  setPerformanceCookie(worldName(), JSON.stringify(realm));
-  div.parentElement.removeChild(div);
-  players.splice(players.findIndex(p => p.uuid == uuid), 1);
+  sendPOSTRequest(data, null)
+    .then((result) => {
+      let realm: RealmsServer = JSON.parse(getPerformanceCookie(worldName()));
+      realm.players.splice(realm.players.findIndex((p) => { return p.uuid == uuid }), 1);
+      setPerformanceCookie(worldName(), JSON.stringify(realm));
+      div.parentElement.removeChild(div);
+      players.splice(players.findIndex(p => p.uuid == uuid), 1);
+    })
+    .catch(() => {
+      btn.disabled = false;
+    })
 }
 
 function setupSettings() {

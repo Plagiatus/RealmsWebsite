@@ -28,12 +28,9 @@ namespace overview {
     if (tmp) {
       realm = JSON.parse(tmp);
     } else {
-      let data = getCredentials();
-      data["command"] = "detail";
-      data["world"] = localStorage.getItem("worldid");
-      let result: RealmsServer = sendPOSTRequest(data);
-      realm = result;
-      setPerformanceCookie(worldName(), JSON.stringify(realm));
+      detailRequest((result) => {
+        realm = result;
+      });
     }
     generalOverview(realm);
     worldOverview(realm);
@@ -114,8 +111,9 @@ namespace overview {
     let data = getCredentials();
     data["command"] = "getPlayers";
     data["world"] = localStorage.getItem("worldid");
-    let result = sendPOSTRequest(data);
-    playerOverview(result);
+    sendPOSTRequest(data, (result)=>{
+      playerOverview(result);
+    });
   }
 
 

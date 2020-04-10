@@ -32,12 +32,9 @@ namespace settings {
       initDisplay(realm);
       return;
     }
-    let data = getCredentials();
-    data["command"] = "detail";
-    data["world"] = worldid;
-    let request = sendPOSTRequest(data);
-    setPerformanceCookie(worldName(), JSON.stringify(request));
-    initDisplay(request);
+    detailRequest((result) => {
+      initDisplay(result);
+    })
   }
 
   function initDisplay(server: RealmsServer) {
@@ -54,6 +51,8 @@ namespace settings {
     updatePreview(null);
   }
   export function toggleOpen() {
+    let btn: HTMLButtonElement = <HTMLButtonElement>document.getElementById("toggleOpen");
+    btn.disabled = true;
     if (serverIsOpen == undefined) return;
     let data = getCredentials();
     data["world"] = worldid;
@@ -61,10 +60,14 @@ namespace settings {
       data["command"] = "close"
     else
       data["command"] = "open"
-    let request = sendPOSTRequest(data);
-    if (request.error) return;
-    serverIsOpen = !serverIsOpen;
-    updateOpenText();
+    sendPOSTRequest(data, null)
+      .then(() => {
+        serverIsOpen = !serverIsOpen;
+      })
+      .finally(() => {
+        updateOpenText();
+        btn.disabled = false;
+      })
   }
 
   function updateOpenText() {
@@ -79,13 +82,20 @@ namespace settings {
   }
 
   export function updateNameDesc() {
+    let btn: HTMLButtonElement = <HTMLButtonElement>document.getElementById("updateNameDesc");
+    btn.disabled = true;
     let data = getCredentials();
     data["command"] = "updateProperties";
     data["world"] = worldid;
     data["worldName"] = nameInput.value;
     data["worldDescription"] = descInput.value;
-    let request = sendPOSTRequest(data);
-    console.log(request);
+    sendPOSTRequest(data, null).then((res) => {
+      console.log(res);
+    })
+      .finally(() => {
+        btn.disabled = false;
+      })
+    //TODO: add feedback whether it worked or not.
   }
 
   function formatDays(daysLeft: number): string {
@@ -115,21 +125,25 @@ namespace settings {
     `
   }
   export function getIP() {
-    let btn: HTMLButtonElement = <HTMLButtonElement> document.getElementById("ip-btn");
+    let btn: HTMLButtonElement = <HTMLButtonElement>document.getElementById("ip-btn");
     btn.disabled = true;
     let data = getCredentials();
     data["command"] = "getIP";
     data["world"] = localStorage.getItem("worldid");
-    let result = sendPOSTRequest(data);
-    btn.disabled = false;
-    try {
-      result = JSON.parse(result);
-    } catch (error) {
-      
-    }
-    if(result.error) return;
-    let output = document.getElementById("ip-display");
-    output.innerText = result.address || result;
-    output.classList.remove("hidden");
+    sendPOSTRequest(data, null)
+      .then((result) => {
+        try {
+          result = JSON.parse(result);
+          let output = document.getElementById("ip-display");
+          output.innerText = result.address || result;
+          output.classList.remove("hidden");
+        }
+        catch (error) {
+          displayError(error);
+        }
+      })
+      .finally(() => {
+        btn.disabled = false;
+      })
   }
 }

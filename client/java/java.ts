@@ -145,7 +145,7 @@ function removePerformanceCookies() {
 //#endregion
 
 //#region Credentials
-function checkCredentials(andRedirect: boolean = true): boolean {
+async function checkCredentials(andRedirect: boolean = true): Promise<boolean> {
   let email: string = localStorage.getItem("email");
   let token: string = localStorage.getItem("token");
   let uuid: string = localStorage.getItem("uuid");
@@ -155,7 +155,7 @@ function checkCredentials(andRedirect: boolean = true): boolean {
     if (andRedirect) window.location.replace("../login");
     return false;
   }
-  if (!confirmCredentials(email, uuid, name, token)) {
+  if (await !confirmCredentials(email, uuid, name, token)) {
     console.log("CREDENTIALS NOT WORKING ANYMORE!")
     if (andRedirect) window.location.replace("../login");
     return false;
@@ -199,7 +199,7 @@ function getCredentials() {
   }
 }
 
-function confirmCredentials(email, uuid, name, token): boolean {
+async function confirmCredentials(email, uuid, name, token): Promise<boolean> {
   //TODO might need to check the timeout on this, it might be too long. Or even remove it after all
   if (localStorage.getItem("credentialsConfirmed")) {
     return true;
@@ -212,19 +212,19 @@ function confirmCredentials(email, uuid, name, token): boolean {
     name: name
   }
   try {
-    let xhr: XMLHttpRequest = new XMLHttpRequest();
-    xhr.open("POST", serverAddress, false);
-    xhr.send(JSON.stringify(data));
-    if (xhr.response) {
-      let result = JSON.parse(xhr.response);
-      if (result.error) {
-        return false;
-      } else {
-        // localStorage.setItem("credentialsConfirmed", "true", 0.5);
-        return true;
-      }
+    let result = await sendPOSTRequest(data, null)
+    // let xhr: XMLHttpRequest = new XMLHttpRequest();
+    // xhr.open("POST", serverAddress, false);
+    // xhr.send(JSON.stringify(data));
+    // if (xhr.response) {
+    if (result.error) {
+      return false;
+    } else {
+      // localStorage.setItem("credentialsConfirmed", "true", 0.5);
+      return true;
     }
-    return false;
+    // }
+    // return false;
   } catch (error) {
     displayError(error);
   }
@@ -252,23 +252,64 @@ function worldName(): string {
 
 //#endregion
 
-function sendPOSTRequest(data: any): any {
+//#region POST Requests
+
+async function detailRequest(callback: Function): Promise<any> {
+  let data = getCredentials();
+  data["command"] = "detail";
+  data["world"] = localStorage.getItem("worldid");
+  return sendPOSTRequest(data, (result)=>{
+    setPerformanceCookie(worldName(), JSON.stringify(result));
+    callback(result);
+  });
+}
+
+async function sendPOSTRequest(data: any, callback: Function): Promise<any> {
+  // try {
+  //   let xhr: XMLHttpRequest = new XMLHttpRequest();
+  //   xhr.open("POST", serverAddress, false);
+  //   xhr.send(JSON.stringify(data));
+  //   if (xhr.response) {
+  //     let result = JSON.parse(xhr.response);
+  //     if (result.error) {
+  //       displayError(result.error);
+  //       return;
+  //     }
+  //     return result;
+  //   }
+  // } catch (error) {
+  //   displayError(error);
+  // }
   try {
-    let xhr: XMLHttpRequest = new XMLHttpRequest();
-    xhr.open("POST", serverAddress, false);
-    xhr.send(JSON.stringify(data));
-    if (xhr.response) {
-      let result = JSON.parse(xhr.response);
+    let result = await fetch(serverAddress, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain",
+      },
+      body: JSON.stringify(data)
+    }).then((response) => {
+      return response.json();
+    })
+      .catch((error) => {
+        displayError(error);
+        return Promise.reject(error);
+      })
       if (result.error) {
         displayError(result.error);
-        return;
+        return Promise.reject(result.error);
+    } else {
+      if(callback){
+        callback(result);
       }
       return result;
-    }
+    } 
   } catch (error) {
     displayError(error);
+    return Promise.reject(error);
   }
 }
+
+//#endregion
 
 function escapeHtml(text: string): string {
   return text

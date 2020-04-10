@@ -25,12 +25,9 @@ var overview;
             realm = JSON.parse(tmp);
         }
         else {
-            let data = getCredentials();
-            data["command"] = "detail";
-            data["world"] = localStorage.getItem("worldid");
-            let result = sendPOSTRequest(data);
-            realm = result;
-            setPerformanceCookie(worldName(), JSON.stringify(realm));
+            detailRequest((result) => {
+                realm = result;
+            });
         }
         generalOverview(realm);
         worldOverview(realm);
@@ -110,8 +107,9 @@ var overview;
         let data = getCredentials();
         data["command"] = "getPlayers";
         data["world"] = localStorage.getItem("worldid");
-        let result = sendPOSTRequest(data);
-        playerOverview(result);
+        sendPOSTRequest(data, (result) => {
+            playerOverview(result);
+        });
     }
     function sortPlayers(a, b) {
         if (a.online && !b.online)

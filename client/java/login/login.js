@@ -1,11 +1,15 @@
 var login;
 (function (login) {
-    window.addEventListener("load", init);
-    headerFooter.loadLoginHeader = true;
-    if (!localStorage.getItem("performance"))
-        window.location.replace("../cookies");
-    function init() {
-        if (checkCredentials(false)) {
+    if (isLocalStorageSupported()) {
+        window.addEventListener("load", init);
+        headerFooter.loadLoginHeader = true;
+        // if (!localStorage.getItem("performance")) window.location.replace("../cookies");
+    }
+    else {
+        alert("We're sorry, but your browser does not support the technologies we're using to make this website work.\nPlease update your browser or switch to a different one.");
+    }
+    async function init() {
+        if (await checkCredentials(false)) {
             console.log("already logged in");
             window.location.replace("../realms");
             return;
@@ -70,45 +74,55 @@ var login;
             uuid: uuid,
             email: email
         };
-        let result = sendPOSTRequest(data);
-        if (result.error)
-            return;
-        let player = { name: playername, uuid: uuid, token: token, email: email };
-        let remember = Number(formData.get("remember"));
-        let refresh = Boolean(formData.get("refresh"));
-        setCredentials(player);
-        localStorage.setItem("refresh", refresh.toString());
-        window.location.replace("..");
+        sendPOSTRequest(data, (result) => {
+            let player = { name: playername, uuid: uuid, token: token, email: email };
+            // let remember: number = Number(formData.get("remember"));
+            // let refresh: boolean = Boolean(formData.get("refresh"));
+            setCredentials(player);
+            // localStorage.setItem("refresh", refresh.toString());
+            window.location.replace("..");
+        });
     }
     login.loginWithToken = loginWithToken;
-    function authenticate(_email, _password) {
+    async function authenticate(_email, _password) {
         let data = {
             command: "authenticate",
             email: _email,
             password: _password
         };
-        try {
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", serverAddress, false);
-            xhr.send(JSON.stringify(data));
-            if (xhr.response) {
-                let result = JSON.parse(xhr.response);
-                if (result.error) {
-                    displayError(result.error);
-                }
-                else {
-                    console.log(result);
-                    return result;
-                }
-            }
-        }
-        catch (error) {
-            displayError(error);
-        }
-        return null;
+        let result = await sendPOSTRequest(data, null);
+        return result;
+        // try {
+        //   let xhr: XMLHttpRequest = new XMLHttpRequest();
+        //   xhr.open("POST", serverAddress, false);
+        //   xhr.send(JSON.stringify(data));
+        //   if (xhr.response) {
+        //     let result = JSON.parse(xhr.response);
+        //     if (result.error) {
+        //       displayError(result.error);
+        //     } else {
+        //       console.log(result);
+        //     }
+        //   }
+        // } catch (error) {
+        //   displayError(error);
+        // }
+        // return null;
     }
     function loginError(msg) {
         document.getElementById("errormessage").innerText = msg;
     }
 })(login || (login = {}));
+//check whether localStorage is supported
+function isLocalStorageSupported() {
+    try {
+        const key = "__some_random_key_we_are_not_going_to_use__";
+        localStorage.setItem(key, key);
+        localStorage.removeItem(key);
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
 //TODO limit login attempts
