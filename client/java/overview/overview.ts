@@ -23,14 +23,12 @@ namespace overview {
     playerListDiv = <HTMLDivElement>document.getElementById("playerList");
   }
 
-  function createOverview() {
+  async function createOverview() {
     let tmp = getPerformanceCookie(worldName());
     if (tmp) {
       realm = JSON.parse(tmp);
     } else {
-      detailRequest((result) => {
-        realm = result;
-      });
+      realm = await detailRequest(null);
     }
     generalOverview(realm);
     worldOverview(realm);

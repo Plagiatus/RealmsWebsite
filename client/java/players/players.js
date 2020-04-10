@@ -152,6 +152,7 @@ function invite() {
         setPerformanceCookie(worldName(), JSON.stringify(result));
         //TODO: add new player to the list. it should hopefully be in the response.
         // or just update the player list altogether if it's the server that's being sent back.
+        // also, give feedback over whether it worked or not
     })
         .finally(() => {
         inviteInput.disabled = false;

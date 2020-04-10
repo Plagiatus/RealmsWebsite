@@ -129,14 +129,14 @@ var settings;
         data["world"] = localStorage.getItem("worldid");
         sendPOSTRequest(data, null)
             .then((result) => {
+            let output = document.getElementById("ip-display");
             try {
                 result = JSON.parse(result);
-                let output = document.getElementById("ip-display");
                 output.innerText = result.address || result;
                 output.classList.remove("hidden");
             }
             catch (error) {
-                displayError(error);
+                output.innerText = result;
             }
         })
             .finally(() => {

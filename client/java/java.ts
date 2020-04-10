@@ -259,9 +259,10 @@ async function detailRequest(callback: Function): Promise<any> {
   let data = getCredentials();
   data["command"] = "detail";
   data["world"] = localStorage.getItem("worldid");
-  return sendPOSTRequest(data, (result)=>{
+  return sendPOSTRequest(data, (result) => {
     setPerformanceCookie(worldName(), JSON.stringify(result));
-    callback(result);
+    if (callback)
+      callback(result);
   });
 }
 
@@ -295,15 +296,15 @@ async function sendPOSTRequest(data: any, callback: Function): Promise<any> {
         displayError(error);
         return Promise.reject(error);
       })
-      if (result.error) {
-        displayError(result.error);
-        return Promise.reject(result.error);
+    if (result.error) {
+      displayError(result.error);
+      return Promise.reject(result.error);
     } else {
-      if(callback){
+      if (callback) {
         callback(result);
       }
       return result;
-    } 
+    }
   } catch (error) {
     displayError(error);
     return Promise.reject(error);

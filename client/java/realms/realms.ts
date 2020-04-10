@@ -11,24 +11,25 @@ namespace realmsList {
     }
     document.getElementById("showAll").addEventListener("change", toggleVisibility);
     realmsList = <HTMLDivElement>document.getElementById("realmsList");
-    createRealmsDisplay();
+    await createRealmsDisplay();
     document.getElementById("showAll").dispatchEvent(new Event("change"));
     document.getElementById("search").addEventListener("input", search);
     getInvites();
     obfuscate();
   }
 
-  function createRealmsDisplay() {
+  async function createRealmsDisplay() {
     let tmp = getPerformanceCookie("realms")
     if (tmp) {
       realms = JSON.parse(tmp);
     } else {
-      detailRequest((result) => {
-        if (result.servers && result.servers.length > 0) {
-          realms = result.servers;
-          setPerformanceCookie("realms", JSON.stringify(realms));
-        }
-      })
+      let data = getCredentials();
+      data["command"] = "getWorlds";
+      let result = await sendPOSTRequest(data, null);
+      if (result.servers && result.servers.length > 0) {
+        realms = result.servers;
+        setPerformanceCookie("realms", JSON.stringify(realms));
+      }
     }
     if (realms && realms.length > 0) {
       realms = realms.sort(sortRealms);
@@ -114,7 +115,7 @@ namespace realmsList {
     let img: HTMLImageElement = <HTMLImageElement>document.getElementById("inviteStatus");
     let data = getCredentials();
     data["command"] = "getInvites";
-    sendPOSTRequest(data, (result)=>{
+    sendPOSTRequest(data, (result) => {
       if (result.invites.length <= 0) {
         document.getElementById("invitesList").querySelector("span").innerText = "No invitations."
         return;
@@ -148,7 +149,7 @@ namespace realmsList {
     data["command"] = "changeInvite";
     data["invite"] = id;
     data["accept"] = accept;
-    sendPOSTRequest(data, (res)=>{
+    sendPOSTRequest(data, (res) => {
       console.log(res);
     });
   }

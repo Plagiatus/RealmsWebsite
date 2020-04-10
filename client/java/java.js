@@ -248,7 +248,8 @@ async function detailRequest(callback) {
     data["world"] = localStorage.getItem("worldid");
     return sendPOSTRequest(data, (result) => {
         setPerformanceCookie(worldName(), JSON.stringify(result));
-        callback(result);
+        if (callback)
+            callback(result);
     });
 }
 async function sendPOSTRequest(data, callback) {
