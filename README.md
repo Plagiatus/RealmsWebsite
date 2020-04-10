@@ -23,6 +23,8 @@ That's it, now it's running and ready to be used.
 
 ## Tasks
 - [x] login
+  - [x] email+pw
+  - [x] token
 - [x] logout
 - [x] player manipulation
   - [x] invite player
@@ -34,25 +36,53 @@ That's it, now it's running and ready to be used.
   - [x] Realm status
   - [x] online players
   - [x] selected world + icon
-- [ ] settings
+- [x] settings
   - [x] show status (lights)
   - [x] show days left
   - [x] change name
   - [x] change description
   - [x] open
   - [x] close
-  - [ ] get ip
+  - [x] get ip
 - [ ] world manipulation
   - [x] switch slot
+  - [x] change slot settings
   - [ ] download world
   - [ ] reset world
+    - [x] new world
+    - [ ] upload world
+    - [x] choose template
   - [x] swap to minigame
-- [x] templates (minigames, experience, adventure, etc)
+  - [ ] list, apply and download backups
+- [ ] templates (minigames, experience, adventure, etc)
   - [x] show templates
   - [x] apply template
   - [x] search through templates
+  - [ ] favorite templates
+  - [ ] choose a random template
 - [x] list all realms
-- [ ] show and accept/deny invitations
+- [x] show and accept/deny invitations
+- [x] cookie notice page
+- [ ] performance improvements
+  - [x] save some frequently requested stuff via localStorage, to cut down on the requests needed and to decrease the loading time at the opening of the websites.
+  - [x] use async requests so the browser doesn't freeze
+  - [ ] potentially change the server request structure to direct API calls instead of using the npm module and its overhead
+- [ ] Design
+  - [x] basic styling and responsiveness
+  - [ ] rework the CSS once a cohesive design is found
+    - [ ] toggle between light/dark mode
+- [ ] Decide how multiple Tabs should behave and implement changes accordingly
+
+### Future Plans
+_(things that won't happen anytime soon, but might happen eventually)_
+
+- Add a rating system for maps
+- Add some form of stats: 
+  - for Page: amount of users, amount of actions
+  - for Maps: amount of times a map is selected, etc.
+- Turn this from a website into a mobile/standalone app
+- Include Bedrock Edition Realms
+- Include some non-intrusive ads on the website (it costs money to run the site :frowning: )
 
 ## Collaboration
 
