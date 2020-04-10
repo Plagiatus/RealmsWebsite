@@ -117,6 +117,7 @@ function getPerformanceCookie(_key, _cb) {
 }
 function removePerformanceCookies() {
     localStorage.removeItem("realms");
+    localStorage.removeItem("realms-exp");
     for (let i = 0; i < localStorage.length; i++) {
         let key = localStorage.key(i);
         if (key.includes("world-")) {
@@ -227,6 +228,7 @@ function removeCredentials() {
     localStorage.removeItem("token");
     localStorage.removeItem("uuid");
     localStorage.removeItem("name");
+    localStorage.removeItem("worldid");
 }
 let worldid;
 function checkWorldId() {
@@ -275,7 +277,8 @@ async function sendPOSTRequest(data, callback) {
                 "Content-Type": "text/plain",
             },
             body: JSON.stringify(data)
-        }).then((response) => {
+        })
+            .then((response) => {
             return response.json();
         })
             .catch((error) => {

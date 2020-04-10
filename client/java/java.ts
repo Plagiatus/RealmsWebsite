@@ -124,6 +124,7 @@ function getPerformanceCookie(_key: string, _cb?: Function) {
 
 function removePerformanceCookies() {
   localStorage.removeItem("realms");
+  localStorage.removeItem("realms-exp");
   for (let i: number = 0; i < localStorage.length; i++) {
     let key: string = localStorage.key(i);
     if (key.includes("world-")) {
@@ -236,6 +237,7 @@ function removeCredentials() {
   localStorage.removeItem("token");
   localStorage.removeItem("uuid");
   localStorage.removeItem("name");
+  localStorage.removeItem("worldid");
 }
 
 let worldid: number;
@@ -289,9 +291,10 @@ async function sendPOSTRequest(data: any, callback: Function): Promise<any> {
         "Content-Type": "text/plain",
       },
       body: JSON.stringify(data)
-    }).then((response) => {
-      return response.json();
     })
+      .then((response) => {
+        return response.json();
+      })
       .catch((error) => {
         displayError(error);
         return Promise.reject(error);
