@@ -17,10 +17,10 @@ async function changeInvite(_input, _response) {
         let p = new auth_1.Player(email, token, uuid, name);
         let c = new minecraft_realms_1.Client(p.getAuthToken(), main_1.latestVersion, p.name);
         if (accept) {
-            _response.write(c.client.acceptInvite(invite));
+            _response.write(JSON.stringify({ response: c.client.acceptInvite(invite) }));
         }
         else {
-            _response.write(c.client.rejectInvite(invite));
+            _response.write(JSON.stringify({ response: c.client.rejectInvite(invite) }));
         }
     }
 }

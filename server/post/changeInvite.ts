@@ -16,10 +16,10 @@ export async function changeInvite(_input, _response: Http.OutgoingMessage) {
     let p: Player = new Player(email, token, uuid, name);
     let c: Client = new Client(p.getAuthToken(), latestVersion, p.name);
     if (accept) {
-      _response.write(c.client.acceptInvite(invite));
+      _response.write(JSON.stringify({response: c.client.acceptInvite(invite)}));
     }
     else {
-      _response.write(c.client.rejectInvite(invite));
+      _response.write(JSON.stringify({response: c.client.rejectInvite(invite)}));
     }
   }
 }
