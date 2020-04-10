@@ -3,7 +3,8 @@ var login;
     if (isLocalStorageSupported()) {
         window.addEventListener("load", init);
         headerFooter.loadLoginHeader = true;
-        // if (!localStorage.getItem("performance")) window.location.replace("../cookies");
+        if (!localStorage.getItem("performance"))
+            window.location.replace("../cookies");
     }
     else {
         alert("We're sorry, but your browser does not support the technologies we're using to make this website work.\nPlease update your browser or switch to a different one.");
@@ -17,7 +18,7 @@ var login;
         removeCredentials();
         removePerformanceCookies();
     }
-    function loginWithEmail() {
+    async function loginWithEmail() {
         loginError("");
         let formData = new FormData(document.getElementById("login"));
         let emailElement = document.getElementById("email");
@@ -33,7 +34,7 @@ var login;
         }
         let email = emailElement.value;
         // console.log(email, password, remember, refresh);
-        let player = authenticate(email, password);
+        let player = await authenticate(email, password);
         if (player) {
             setCredentials(player);
             window.location.replace("..");

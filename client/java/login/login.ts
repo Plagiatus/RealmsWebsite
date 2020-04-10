@@ -2,7 +2,7 @@ namespace login {
   if (isLocalStorageSupported()) {
     window.addEventListener("load", init);
     headerFooter.loadLoginHeader = true;
-    // if (!localStorage.getItem("performance")) window.location.replace("../cookies");
+    if (!localStorage.getItem("performance")) window.location.replace("../cookies");
   } else {
     alert("We're sorry, but your browser does not support the technologies we're using to make this website work.\nPlease update your browser or switch to a different one.");
   }
@@ -17,7 +17,7 @@ namespace login {
     removePerformanceCookies();
   }
 
-  export function loginWithEmail() {
+  export async function loginWithEmail() {
     loginError("");
     let formData: FormData = new FormData(<HTMLFormElement>document.getElementById("login"));
     let emailElement: HTMLInputElement = <HTMLInputElement>document.getElementById("email");
@@ -33,7 +33,7 @@ namespace login {
     }
     let email: string = emailElement.value;
     // console.log(email, password, remember, refresh);
-    let player = authenticate(email, password);
+    let player = await authenticate(email, password);
     if (player) {
       setCredentials(player);
       window.location.replace("..");
