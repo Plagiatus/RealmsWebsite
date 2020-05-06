@@ -53,7 +53,7 @@ var worldsPage;
     function showSettings(slot) {
         if (!worldsPage.server)
             return;
-        closeAll();
+        closeAll(false);
         selectedSlot = slot;
         document.querySelector("#world-" + slot + " .world-settings-btn").disabled = true;
         let slotOptions = worldsPage.server.slots[slot];

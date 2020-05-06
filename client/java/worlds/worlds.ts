@@ -54,7 +54,7 @@ namespace worldsPage {
 
   export function showSettings(slot: number) {
     if (!server) return;
-    closeAll();
+    closeAll(false);
     selectedSlot = slot;
     (<HTMLButtonElement>document.querySelector("#world-" + slot + " .world-settings-btn")).disabled = true;
     let slotOptions = server.slots[slot];
