@@ -148,6 +148,7 @@ function invite() {
     data["playername"] = playername;
     sendPOSTRequest(data, null)
         .then((result) => {
+        players = result.players;
         updatePlayerDisplay(result.players);
         setPerformanceCookie(worldName(), JSON.stringify(result));
         //TODO: add new player to the list. it should hopefully be in the response.
