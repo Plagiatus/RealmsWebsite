@@ -69,8 +69,8 @@ var headerFooter;
     <footer>
       <hr>
       <div class="info">
-        <span class="bold red">THIS IS AN UNSTABLE ALPHA VERSION and currently under development!</span>
-        I know that everything currently is slow and unresponsive and ugly, I'm working on it, bit by bit.
+        <span class="bold red">This is a beta version and currently under development.</span>
+        There might still be bugs and errors. Please report them <a href="https://github.com/Plagiatus/RealmsWebsite/issues">on GitHub</a> or on <a href="https://discord.gg/upVpFQD">the Discord</a>.
       </div>
       <div class="links">
         <nav>

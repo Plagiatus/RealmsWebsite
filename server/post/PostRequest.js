@@ -21,6 +21,9 @@ const resetWorld_1 = require("./resetWorld");
 const getIP_1 = require("./getIP");
 const getInvites_1 = require("./getInvites");
 const changeInvite_1 = require("./changeInvite");
+const getBackups_1 = require("./getBackups");
+const applyBackup_1 = require("./applyBackup");
+const downloadBackup_1 = require("./downloadBackup");
 class PostRequest {
     constructor() {
         this.requests = new Map();
@@ -45,6 +48,9 @@ class PostRequest {
         this.requests.set(getIP_1.getIP.name, getIP_1.getIP);
         this.requests.set(getInvites_1.getInvites.name, getInvites_1.getInvites);
         this.requests.set(changeInvite_1.changeInvite.name, changeInvite_1.changeInvite);
+        this.requests.set(getBackups_1.getBackups.name, getBackups_1.getBackups);
+        this.requests.set(applyBackup_1.applyBackup.name, applyBackup_1.applyBackup);
+        this.requests.set(downloadBackup_1.downloadBackup.name, downloadBackup_1.downloadBackup);
     }
     get(name) {
         if (!this.requests.has(name)) {

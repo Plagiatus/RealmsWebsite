@@ -47,13 +47,16 @@ That's it, now it's running and ready to be used.
 - [ ] world manipulation
   - [x] switch slot
   - [x] change slot settings
-  - [ ] download world
+  - [x] download world
   - [ ] reset world
     - [x] new world
     - [ ] upload world
     - [x] choose template
   - [x] swap to minigame
-  - [ ] list, apply and download backups
+  - [ ] backups
+    - [x] list
+    - [ ] apply
+    - [x] download 
 - [ ] templates (minigames, experience, adventure, etc)
   - [x] show templates
   - [x] apply template

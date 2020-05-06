@@ -8,6 +8,7 @@
   <script src="../java.js"></script>
   <script src="../headerFooter.js"></script>
   <script src="worlds.js"></script>
+  <script src="templates.js"></script>
   <link rel="stylesheet" href="../main.css">
   <link rel="stylesheet" href="worlds.css">
   <title>Worlds</title>
@@ -83,6 +84,16 @@
       <button type="button" onclick="worldsPage.closeAll()">Close</button>
     </form>
   </div>
+  <div class="settings-div hidden" id="backup-wrapper">
+    <div id="template-header">
+      <h2 id="template-type">Backups</h2>
+      <button onclick="worldsPage.closeAll()">Close</button>
+    </div>
+    <button id="backup-download-btn" onclick="worldsPage.downloadBackup()">Download latest</button>
+    <a id="backup-download-a" href="" target="_blank"></a>
+    <ul id="backup-list">
+    </ul>
+  </div>
   <div class="hidden settings-div" id="template-wrapper">
     <div id="template-header">
       <h2 id="template-type">TYPE</h2>
@@ -138,10 +149,11 @@
       <tr>
         <td><label for="leveltype">Level Type</label></td>
         <td><select name="leveltype" id="leveltype">
-          <option value="0">Default</option>
-          <option value="1">Superflat</option>
-          <option value="2">Large Biomes</option>
-          <option value="3">AMPLIFIED</option></td>
+            <option value="0">Default</option>
+            <option value="1">Superflat</option>
+            <option value="2">Large Biomes</option>
+            <option value="3">AMPLIFIED</option>
+        </td>
       </tr>
       <tr>
         <td><label for="genStructures">Generate Structures</label></td>

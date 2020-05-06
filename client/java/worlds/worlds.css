@@ -4,7 +4,7 @@
 
 .world-wrapper{
   width: 160px;
-  height: 250px;
+  height: 270px;
   margin: 10px;
   padding: 10px;
   float: left;
@@ -148,6 +148,26 @@ label {
   filter: grayscale(100%);
 }
 
+#backup-wrapper {
+  width: 720px;
+  padding: 5px;
+}
+
+ul#backup-list{
+  list-style: none;
+  padding: 5px;
+}
+
+ul#backup-list li {
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid black;
+}
+
+ul#backup-list button{
+  float: right;
+}
+
 @media screen and (max-width: 795px){
   #template-header {
     grid-column: 1;
@@ -175,5 +195,8 @@ label {
   }
   .replacement {
   margin: 4px;
+  }
+  #backup-wrapper{
+    width: calc(100% - 20px);
   }
 }

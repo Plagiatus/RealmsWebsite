@@ -19,6 +19,9 @@ import { resetWorld } from "./resetWorld";
 import { getIP } from "./getIP";
 import { getInvites } from "./getInvites";
 import { changeInvite } from "./changeInvite";
+import { getBackups } from "./getBackups";
+import { applyBackup } from "./applyBackup";
+import { downloadBackup } from "./downloadBackup";
 
 export class PostRequest {
   requests: Map<string, Function> = new Map<string, Function>();
@@ -44,6 +47,9 @@ export class PostRequest {
     this.requests.set(getIP.name, getIP);
     this.requests.set(getInvites.name, getInvites);
     this.requests.set(changeInvite.name, changeInvite);
+    this.requests.set(getBackups.name, getBackups);
+    this.requests.set(applyBackup.name, applyBackup);
+    this.requests.set(downloadBackup.name, downloadBackup);
   }
   
   get(name: string): Function {
