@@ -40,7 +40,7 @@ var realmsList;
             }
         }
         else {
-            realmsList.innerHTML = "<span style='margin-left: 10px'>No Realm found.</span>";
+            realmsList.innerHTML = "<span style='margin-left: 10px' class='red'>No Realm found.</span>";
         }
     }
     function createOneRealm(_server, ownerName) {
@@ -159,6 +159,8 @@ var realmsList;
         data["accept"] = accept;
         sendPOSTRequest(data, (res) => {
             console.log(res);
+            document.getElementById(id.toString()).remove();
+            localStorage.removeItem(worldName());
         });
     }
     realmsList_1.changeInvite = changeInvite;
