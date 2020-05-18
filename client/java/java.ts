@@ -40,12 +40,11 @@ function setupError() {
   errorUnderlay.style.backgroundColor = "rgba(0,0,0,0.2)";
   errorUnderlay.style.position = "absolute";
   errorUnderlay.style.top = "0";
-  errorUnderlay.style.justifyContent = "center";
   errorUnderlay.style.display = "none";
   document.body.appendChild(errorUnderlay);
 
   errorUnderlay.innerHTML = `
-  <div style="background-color:#eee; width:300px; padding:10px; align-self:center">
+  <div style="background-color:#eee; width:300px; padding:10px; margin:auto; top:25%; position:sticky">
     <div style="text-align:center">⚠️ Error ⚠️</div>
     <span id="errorMessage" style="color:red;display:block">Error</span>
     <span id="errorInfo" style="font-style:italic;display:block">No further Information</span>
@@ -58,7 +57,7 @@ function showError(_message: string, _further: string = "No further information.
   console.error(_message);
   document.getElementById("errorMessage").innerText = _message;
   document.getElementById("errorInfo").innerHTML = _further;
-  errorUnderlay.style.display = "flex";
+  errorUnderlay.style.display = "initial";
 }
 
 function dismissError() {
