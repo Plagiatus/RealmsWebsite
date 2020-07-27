@@ -12,7 +12,7 @@ if (!port) {
 }
 
 
-export let latestVersion: string = "1.15";
+export let latestVersion: string = "1.16.1";
 getLatestVersion();
 let server: Http.Server = Http.createServer();
 server.addListener("request", handleRequest);

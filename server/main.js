@@ -10,7 +10,7 @@ let port = process.env.PORT;
 if (!port) {
     port = "8100";
 }
-exports.latestVersion = "1.15";
+exports.latestVersion = "1.16.1";
 getLatestVersion();
 let server = Http.createServer();
 server.addListener("request", handleRequest);
