@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Login</title>
-  <script src="../java.js"></script>
+  <!-- <script src="../java.js"></script>
   <script src="../headerFooter.js"></script>
-  <script src="login.js"></script>
+  <script src="login.js"></script> -->
   <link rel="stylesheet" href="../main.css">
   <link rel="stylesheet" href="login.css">
 </head>
@@ -16,6 +16,10 @@
 <body>
   <main>
     <h1><img src="../img/icon.png" alt=""> Realms Admin/Manager</h1>
+
+		<div id="notice">I am aware that account migration has begun. I'm working on a new version of the website that will be usable with a Microsoft account.<br>
+		Join the discord server to get updates about that: <a href="https://discord.gg/upVpFQD" target="_blank">https://discord.gg/upVpFQD</a></div>
+
     <form id="login">
       <div id="credentials" class="border-center">
         <label for="email">
@@ -32,6 +36,7 @@
         </label>
         <button type="button" onclick="login.loginWithEmail()">Login using Email/Password</button>
       </div>
+			<p style="text-align: center;">- or -</p>
       <div id="tokenCredentials" class="border-center">
         <label for="email2">
           <fieldset>

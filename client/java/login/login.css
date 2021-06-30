@@ -23,3 +23,12 @@ fieldset > input {
   margin: 10px;
   text-align: center;
 }
+
+#notice {
+	text-align: center;
+	color: #856404;
+	background-color: #fff3cd;
+	padding: .75rem 1.25rem;
+	border: 1px solid #ffeeba;
+	border-radius: .25rem;
+}
